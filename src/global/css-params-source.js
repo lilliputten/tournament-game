@@ -16,7 +16,7 @@ const textColor = theme.textColor || '#000';
 const defaultTransitionTime = 250;
 const defaultAnimationTime = 500;
 
-const primaryColor = theme.primaryColor || '#09357b';
+const primaryColor = theme.primaryColor || '#0074eb';
 const secondaryColor = theme.secondaryColor || '#ffa550'; // UNUSED
 
 const errorColor = theme.errorColor || '#c33';
@@ -70,6 +70,8 @@ const breakpointsPx = Object.entries(breakpoints).reduce(makePx, {});
 const breakpointsPrePx = Object.entries(breakpointsPre).reduce(makePx, {});
 
 const wrapperMaxWidth = breakpoints.xl;
+
+const defaultFont = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
 
 // module.exports = { // Common-used css variables...
 const cssConfig = {
@@ -157,10 +159,8 @@ const cssConfig = {
 
   // Fonts...
 
-  titleFont: theme.titleFont || 'Georgia, Times, serif',
-  defaultFont:
-    theme.defaultFont ||
-    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  titleFont: theme.titleFont || defaultFont,
+  defaultFont: theme.defaultFont || defaultFont,
 
   defaultFontSize: defaultFontSize,
   fontSize: defaultFontSize,

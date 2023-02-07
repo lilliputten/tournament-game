@@ -6,6 +6,7 @@
 import { TReactContent } from '@/utils/react-types';
 import { ArticlesControlNode } from '@/features/articles';
 import { ArticleControlNode } from '@/features/article';
+import { muiTheme, ThemeProvider } from '@/global/mui-theme';
 
 interface AppWrapperProps {
   children?: TReactContent;
@@ -15,9 +16,11 @@ export default function AppWrapper(props: AppWrapperProps): JSX.Element {
   const { children } = props;
   return (
     <>
-      <ArticlesControlNode />
-      <ArticleControlNode />
-      {children}
+      <ThemeProvider theme={muiTheme}>
+        <ArticlesControlNode />
+        <ArticleControlNode />
+        {children}
+      </ThemeProvider>
     </>
   );
 }

@@ -46,6 +46,10 @@ export default function Document(): JSX.Element {
         <meta name="og:image:width" content={String(opImageWidth)} />
         <meta name="og:image:height" content={String(opImageHeight)} />
         */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+        />
       </Head>
       <body>
         <Main />

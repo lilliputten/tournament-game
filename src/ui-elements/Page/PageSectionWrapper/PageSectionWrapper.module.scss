@@ -26,4 +26,7 @@
   &.flexVertical {
     flex-direction: column;
   }
+  &.flexCenter {
+    justify-content: center;
+  }
 }

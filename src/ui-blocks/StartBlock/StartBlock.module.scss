@@ -1,0 +1,17 @@
+/** @module StartBlock.module.scss
+ *  @since 2023.02.07, 20:35
+ *  @changed 2023.02.07, 20:35
+ */
+
+.container {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.actions,
+.question,
+.title {
+  margin: 10px auto;
+  text-align: center;
+}

@@ -1,6 +1,6 @@
 /** @module PageSectionWrapper
  *  @since 2023.02.01, 18:01
- *  @changed 2023.02.01, 18:11
+ *  @changed 2023.02.07, 20:42
  */
 
 import React from 'react';
@@ -16,13 +16,22 @@ interface TPageSectionWrapperProps {
   children?: TReactContent;
   flex?: boolean;
   flexVertical?: boolean;
+  flexCenter?: boolean;
   fullSizeFlexChild?: boolean;
   padded?: boolean;
 }
 
 export function PageSectionWrapper(props: TPageSectionWrapperProps): JSX.Element {
-  const { className, wrapperClassName, children, flex, flexVertical, fullSizeFlexChild, padded } =
-    props;
+  const {
+    className,
+    wrapperClassName,
+    children,
+    flex,
+    flexVertical,
+    flexCenter,
+    fullSizeFlexChild,
+    padded,
+  } = props;
   return (
     <div
       className={classnames(
@@ -39,6 +48,7 @@ export function PageSectionWrapper(props: TPageSectionWrapperProps): JSX.Element
           styles.wrapper,
           flex && styles.flex,
           flexVertical && styles.flexVertical,
+          flexCenter && styles.flexCenter,
         )}
       >
         {children}

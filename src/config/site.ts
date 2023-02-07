@@ -5,8 +5,8 @@
 
 export const titleDelim = ' — ';
 export const siteUrl = 'https://tournament-game.lilliputten.ru/';
-export const title = 'Tournament';
-export const descr = 'Tournament game';
+export const title = 'Турнир';
+export const descr = 'Турнир';
 export const keywords = ['tournament-game'];
 export const faviconUrl = '/static/favicon.ico';
 export const faviconPngUrl = '/static/favicon-120x120.png';

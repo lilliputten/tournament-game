@@ -5,14 +5,14 @@
 
 # Tournament game client app
 
-- Version: 0.0.9
-- Last changes timestamp: 2023.02.02, 08:54
+- Version: 0.0.1
+- Last changes timestamp: 2023.02.07, 22:11
 
 ## Client & server
 
-Server repo: https://github.com/lilliputten/tournament-game-server (git@github.com:lilliputten/tournament-game-server.git)
+Server repo: https://github.com/lilliputten/tournament-game-server
 
-Client repo: https://github.com/lilliputten/tournament-game (git@github.com:lilliputten/tournament-game.git)
+Client repo: https://github.com/lilliputten/tournament-game
 
 ## Install
 
