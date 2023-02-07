@@ -1,0 +1,28 @@
+/** @module ArticleWrapper.module.scss
+ *  @since 2023.01.31, 22:57
+ *  @changed 2023.01.31, 22:57
+ */
+
+.container {
+  flex: 1;
+  flex-direction: column;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.contentError {
+  color: $errorColor;
+}
+
+.contentContainer {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.smallLoader {
+  /*!KEEP*/
+}
+.loaderSplash {
+  /*!KEEP*/
+}

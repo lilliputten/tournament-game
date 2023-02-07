@@ -1,0 +1,38 @@
+# Enable dot files in root folder
+
+!.*
+
+# Disable project generated folders
+
+/node_modules*
+/.git
+/build*
+/design*
+/coverage*
+
+# Log files
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore IDE folders
+
+/.idea
+/.vscode
+/.history
+/.dependencygraph
+
+# Generated
+/src/global/css-params-generated.*
+
+# Temp & hidden files
+/temp
+**/*_{BACKUP,BASE,LOCAL,REMOTE}_*
+**/*UNUSED
+**/*.bak
+**/*.tmp
+**/.*sw?
+**/*_
+package-lock.*
+.DS_Store

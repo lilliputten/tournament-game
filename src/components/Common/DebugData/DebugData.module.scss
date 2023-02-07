@@ -1,0 +1,27 @@
+/** @module DebugData.module.scss
+ *  @since 2023.01.31, 23:16
+ *  @changed 2023.01.31, 23:16
+ */
+
+.container {
+  &.padded {
+    margin: $blockPaddingPx;
+  }
+}
+
+.dataItem,
+.dataItemLabel,
+.dataItemValue {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dataItem {
+  margin: 2px 0;
+}
+.dataItemLabel {
+  opacity: 0.5;
+}
+.dataItemValue {
+}

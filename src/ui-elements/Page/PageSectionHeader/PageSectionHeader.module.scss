@@ -1,0 +1,27 @@
+/** @module PageSectionHeader.module.scss
+ *  @since 2023.02.01, 18:01
+ *  @changed 2023.02.01, 18:01
+ */
+
+.container {
+  width: 100%;
+  box-sizing: border-box;
+  &.padded {
+    padding: $containerPaddingPx;
+  }
+}
+
+.description,
+.title {
+  margin: $itemPaddingPx auto;
+}
+
+.title {
+  font-family: $titleFont;
+  font-size: 48px;
+}
+.description {
+  opacity: 0.5;
+  font-family: $titleFont;
+  font-size: $fontSizeLgPx;
+}

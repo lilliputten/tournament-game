@@ -1,0 +1,25 @@
+/** @module Panel.module.scss
+ *  @since 2023.01.27, 16:47
+ *  @changed 2023.01.27, 16:47
+ */
+
+.container {
+  width: 100%;
+  &.padded {
+    padding: $itemPaddingPx;
+  }
+}
+
+.wrapper {
+  width: 100%;
+  max-width: $wrapperMaxWidthPx;
+  margin: 0 auto;
+  &.flex {
+    display: flex;
+    align-items: stretch;
+    align-content: stretch;
+  }
+  &.flexVertical {
+    flex-direction: column;
+  }
+}

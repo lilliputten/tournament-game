@@ -1,0 +1,73 @@
+/** @module HeaderSearchBox.module.scss
+ *  @since 2023.01.27, 17:33
+ *  @changed 2023.02.02, 02:05
+ */
+
+$iconSize: 18px;
+
+.container {
+  border-bottom: 2px solid #fff;
+  display: flex;
+  padding: 0 20px;
+  height: 30px;
+  transition: background $transitionTimeMs;
+  &.visible {
+    background-color: color.adjust(#fff, $alpha: -0.9);
+  }
+  &:not(.visible) {
+    cursor: pointer;
+  }
+}
+
+.form {
+  flex: 1;
+  display: flex;
+}
+.fieldWrapper {
+  width: 0px;
+  transition: width $transitionTimeMs, opacity $transitionTimeMs;
+  overflow: hidden;
+  position: relative;
+  flex: 1;
+  opacity: 0;
+  display: flex;
+  .visible & {
+    opacity: 1;
+    width: 80px;
+    @media (min-width: $breakpointsBasePx) {
+      width: 120px;
+    }
+    @media (min-width: $breakpointsSmPx) {
+      width: 240px;
+    }
+  }
+}
+.field {
+  width: 100%;
+  border: none;
+  background: none;
+  outline: none;
+  color: color.adjust(#fff, $alpha: -0.4);
+  &:focus {
+    color: #fff;
+  }
+  &::placeholder {
+    color: color.adjust(#fff, $alpha: -0.8);
+  }
+}
+
+.icon {
+  width: $iconSize;
+  height: $iconSize;
+  margin: 5px;
+  margin-top: 6px;
+  background-image: url('/images/assets/search-icon@2x.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer;
+  transition: opacity $transitionTimeMs;
+  &:hover {
+    opacity: 0.75;
+  }
+}

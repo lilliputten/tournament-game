@@ -1,0 +1,24 @@
+/** @module ArticlesList.module.scss
+ *  @since 2023.01.27, 19:57
+ *  @changed 2023.02.02, 01:34
+ */
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.outerWrapper {
+  // XXX: Temporary: fix the papdings
+  padding-bottom: 25px;
+}
+.messageSection {
+  padding: 15px;
+  padding-top: 0;
+  opacity: 0.5;
+}
+
+.errorSection {
+  margin: $containerPaddingPx;
+  margin-top: 0;
+}

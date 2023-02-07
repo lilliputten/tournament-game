@@ -1,0 +1,40 @@
+/** @module LoaderSplash.module.scss
+ *  @since 2023.01.27, 21:26
+ *  @changed 2023.01.27, 22:44
+ */
+
+.container {
+  position: relative;
+  padding: $itemPaddingPx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity $animationTimeMs;
+  &.mode_cover {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
+  &.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  &.bg {
+    &,
+    &_white {
+      background-color: #fff;
+    }
+    &_primary {
+      background-color: $primaryColor;
+    }
+    &_neutral,
+    &_gray {
+      background-color: $neutralColor;
+    }
+  }
+  &.fullSize {
+    flex: 1;
+  }
+}

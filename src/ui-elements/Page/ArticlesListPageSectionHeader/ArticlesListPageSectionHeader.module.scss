@@ -1,0 +1,32 @@
+/** @module ArticlesListPageSectionHeader.module.scss
+ *  @since 2023.02.02, 06:10
+ *  @changed 2023.02.02, 06:10
+ */
+
+.container {
+  width: 100%;
+  box-sizing: border-box;
+  &.padded {
+    padding: $containerPaddingPx;
+  }
+}
+
+.wrapper {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  gap: $containerPaddingPx;
+  @media (min-width: $breakpointsSmPx) {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.extraBlock {
+  /*!KEEP*/
+}
+.headerBlock {
+  flex: 1;
+}

@@ -1,0 +1,176 @@
+/** @module ArticleCard.module.scss
+ *  @since 2023.01.29, 22:45
+ *  @changed 2023.02.01, 16:50
+ */
+
+// Constants...
+$largeCardWidthPx: 540px;
+$largeCardSizePx: 425px;
+$mediumCardSizePx: 350px;
+$smallCardSizePx: 255px;
+$smallTextCardSizePx: 138px;
+$defaultTextHeightPx: 130px;
+$smallTextHeightPx: 107px;
+$colorBarSizePx: 3px;
+
+.container {
+  position: relative;
+
+  // Theming...
+  background-color: $primaryColors300; // 2 steps lighter than primary color
+  color: #fff;
+
+  // Geometry...
+  margin: $containerPaddingPx;
+  overflow: hidden;
+
+  transition: opacity $transitionTimeMs, box-shadow $transitionTimeMs;
+  $shadowColor: color.adjust($primaryColor, $alpha: -0.7);
+  &:hover {
+    box-shadow: 0 0 5px 2px $shadowColor;
+    opacity: 0.9;
+  }
+}
+
+// Basic details styles...
+.colorBar,
+.text,
+.thumbnail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  // All detail elements are full-width
+}
+.thumbnail {
+  top: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  &.thumbnailNoImage {
+    background-size: 75%; // Make background image a little smaller
+  }
+}
+.text {
+  bottom: $colorBarSizePx;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: color.adjust($primaryColor, $alpha: -0.1);
+  &.textNoImage {
+    background-color: $primaryColor;
+  }
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* // Hide bottom content clip
+   * &:after {
+   *   background: linear-gradient(transparent, $primaryColor);
+   *   mix-blend-mode: darken;
+   *   position: absolute;
+   *   left: 0;
+   *   right: 0;
+   *   bottom: 0;
+   *   height: 10px;
+   *   content: '';
+   *   border-bottom: 3px solid $primaryColor;
+   * }
+   */
+}
+.colorBar {
+  bottom: 0;
+  height: $colorBarSizePx;
+  background-color: $errorColor;
+}
+.textTitle,
+.textBody {
+  // Ellispsis on the 'last' line
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.textTitle {
+  font-family: $titleFont;
+  font-weight: bold;
+}
+.textBody {
+  margin-top: 5px;
+  line-height: 20px;
+  // letter-spacing: 0.1px;
+}
+
+// Details geometry customization...
+.cardType_medium {
+  // 350x350
+  width: $mediumCardSizePx;
+  height: $mediumCardSizePx;
+  .thumbnail {
+    $fullSize: $mediumCardSizePx - $colorBarSizePx;
+    $topSize: $fullSize - $defaultTextHeightPx;
+    height: $fullSize;
+    &.thumbnailNoImage {
+      height: $topSize;
+    }
+  }
+  .text {
+    height: $defaultTextHeightPx;
+  }
+  .textTitle {
+    font-size: 20px;
+    line-height: 29px;
+  }
+}
+.cardType_small, // 255x255
+.cardType_smallText {
+  // 255x138
+  width: $smallCardSizePx;
+  height: $smallCardSizePx;
+  .thumbnail {
+    $fullSize: $smallCardSizePx - $colorBarSizePx;
+    $topSize: $fullSize - $defaultTextHeightPx;
+    height: $fullSize;
+    &.thumbnailNoImage {
+      height: $topSize;
+    }
+  }
+  .text {
+    height: $defaultTextHeightPx;
+  }
+  .textTitle {
+    font-size: 18px;
+    line-height: 27px;
+    // letter-spacing: 0.063px;
+  }
+}
+.cardType_smallText {
+  // 255x138
+  height: $smallTextCardSizePx;
+  .thumbnail {
+    display: none;
+  }
+  .text {
+    height: $smallTextCardSizePx;
+  }
+}
+.cardType_large {
+  // 540x425
+  width: $largeCardWidthPx;
+  height: $largeCardSizePx;
+  .thumbnail {
+    $fullSize: $largeCardSizePx - $colorBarSizePx;
+    $topSize: $fullSize - $defaultTextHeightPx;
+    height: $fullSize;
+    &.thumbnailNoImage {
+      height: $topSize;
+    }
+  }
+  .text {
+    height: $defaultTextHeightPx;
+  }
+  .textTitle {
+    font-size: 24px;
+    line-height: 31px;
+    -webkit-line-clamp: 2;
+  }
+  .textBody {
+    -webkit-line-clamp: 2;
+  }
+}

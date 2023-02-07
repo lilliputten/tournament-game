@@ -1,0 +1,14 @@
+/** @module GenericPageLayout.module.scss
+ *  @since 2023.01.26, 23:51
+ *  @changed 2023.01.26, 23:51
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+
+.content {
+  flex: 1;
+}

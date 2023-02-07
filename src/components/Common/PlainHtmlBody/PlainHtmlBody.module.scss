@@ -1,0 +1,76 @@
+/** @module PlainHtmlBody.module.scss
+ *  @since 2023.02.01, 00:10
+ *  @changed 2023.02.01, 00:24
+ */
+
+.container {
+  &.padded {
+    margin: $blockPaddingPx;
+  }
+  iframe,
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  figure {
+    background-color: $neutralColors100;
+    margin: 15px 0;
+    padding: 15px;
+    img {
+      background-color: $neutralColors200;
+    }
+  }
+  figcaption {
+    opacity: 0.5;
+    :global(.element-image__credit) {
+      opacity: 0.5;
+    }
+  }
+  :global(.block-title) {
+    font-family: $titleFont;
+    font-size: $fontSizeXxlPx;
+  }
+  :global(.block) {
+    margin-top: $blockPaddingPx;
+    border-top: 1px solid $neutralColors100;
+  }
+  :global(.block-time) {
+    // updated-time
+    font-size: $fontSizeSmPx;
+    opacity: 0.3;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  :global(.updated-time) {
+    opacity: 0.2;
+    font-size: $fontSizeXsPx;
+    text-align: right;
+  }
+  // time {
+  //   opacity: .5;
+  // }
+  blockquote {
+    > p:first-child {
+      // border: 1px solid red;
+      margin-top: 0;
+    }
+    margin: 0;
+    font-family: $titleFont;
+    font-size: $fontSizeLgPx;
+    font-style: italic;
+    opacity: 0.75;
+    &:global(.twitter-tweet) {
+      font-size: $defaultFontSizePx;
+      color: $neutralColor;
+      font-style: normal;
+      > p {
+        color: black;
+        // margin-bottom: 8px;
+      }
+    }
+  }
+  strong {
+    opacity: 0.75;
+  }
+  // TODO: element-atom: Hide?
+}

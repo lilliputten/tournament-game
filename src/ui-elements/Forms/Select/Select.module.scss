@@ -1,0 +1,77 @@
+/** @module Select.module.scss
+ *  @since 2023.02.02, 06:43
+ *  @changed 2023.02.02, 06:43
+ */
+
+.container {
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+  background-color: #fff;
+  box-shadow: 2px 2px 5px 1px color.adjust(#000, $alpha: -0.9);
+  display: none;
+  .open > & {
+    display: block;
+  }
+}
+.item {
+  padding: 4px 5px;
+  cursor: pointer;
+  transition: background $transitionTimeMs;
+  &.selected {
+    background-color: color.adjust($neutralColor, $alpha: -0.7);
+  }
+  &:hover {
+    background-color: color.adjust($neutralColor, $alpha: -0.3);
+  }
+}
+
+.control {
+  position: relative;
+  overflow: hidden;
+  height: 32px;
+  min-width: 150px; // DEBUG
+  display: flex;
+  align-content: stretch;
+  align-items: center;
+  border-bottom: 1px solid $neutralColor;
+  cursor: pointer;
+  transition: background $transitionTimeMs;
+  &:hover {
+    background-color: color.adjust($neutralColor, $alpha: -0.9);
+  }
+  .open & {
+    background-color: color.adjust($neutralColor, $alpha: -0.7);
+  }
+}
+.controlValue {
+  padding: 2px 4px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+$iconSize: 3px;
+.controlIcon {
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform $transitionTimeMs;
+  .open & {
+    transform: rotate(-90deg);
+  }
+}
+.controlIconTriangle {
+  width: 0;
+  height: 0;
+  border-left: $iconSize solid transparent;
+  border-right: $iconSize solid transparent;
+  border-top: $iconSize solid $primaryColor;
+}
