@@ -11,7 +11,7 @@ import { subPageTitle } from '@/ui-support/pageUtils';
 import { StartBlock } from '@/ui-blocks/StartBlock/StartBlock';
 
 export default function IndexPage(): JSX.Element {
-  const pageTitle = 'Top stories';
+  const pageTitle = 'Стартовая страница';
   const title = subPageTitle(pageTitle);
   return (
     <GenericPageLayout title={title}>
