@@ -1,6 +1,6 @@
 <!--
 @since 2023.02.07, 20:04
-@changed 2023.02.07, 20:04
+@changed 2023.02.09, 16:22
 -->
 
 # Tournament game client app
@@ -54,5 +54,5 @@ npm run publish
 ## Deploy server
 
 When publishing, the project is deployed to
-[https://tournament-game.lilliputten.ru/](https://tournament-game.lilliputten.ru/)
+[https://tournament-game-build.march.team/](https://tournament-game-build.march.team/)
 (access credentials are provided by request).
