@@ -71,7 +71,8 @@ const breakpointsPrePx = Object.entries(breakpointsPre).reduce(makePx, {});
 
 const wrapperMaxWidth = breakpoints.xl;
 
-const defaultFont = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+const defaultFont =
+  '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
 
 // module.exports = { // Common-used css variables...
 const cssConfig = {
