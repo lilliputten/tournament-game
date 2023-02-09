@@ -10,6 +10,14 @@ interface TResponseData {
   timestamp: string; // 1675943834956
   timestr: string; // '2023.02.09 18:57:14'
 }
+interface TResponseError {
+  code: number; //  404
+  error: string; //  'Not Found'
+  systemError?: string; //  'NotFound: 404 Not Found: The requested URL was not found on the server...'
+  method: string; //  'GET'
+  protocol: string; //  'http'
+  url: string; //  'http://localhost:5000/api/v1.0/start'
+}
 interface TResult {
   token?: string;
   error?: Error;
@@ -24,32 +32,42 @@ export function useAppInfo(): TResult {
     console.log('[useAppInfo:Effect]: request start', {
       url,
     });
-    try {
-      axios.get<TResponseData>(url).then((res) => {
+    axios<TResponseData & TResponseError>({
+      method: 'get',
+      url,
+      withCredentials: true,
+      headers: {
+        // 'Access-Control-Allow-Origin': '*',
+      },
+    })
+      .then((res) => {
         const { data } = res;
-        const { Token: token } = data;
-        console.log('[useAppInfo:Effect]: request done', {
-          data,
-        });
+        // Check error...
+        if (typeof data === 'string') {
+          throw new Error('Server error (text): ' + data);
+        } else if (data.error) {
+          throw new Error('Server error (property): ' + data.error);
+        } else if (!data.Token) {
+          throw new Error('Token not defined');
+        }
+        // Fetch data...
+        console.log('[useAppInfo:Effect]: request done', data);
         // debugger;
-        memo.token = token;
+        memo.token = data.Token;
         memo.error = undefined;
         setResult({ ...memo });
+      })
+      .catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error('[useAppInfo:Effect]: request catch', {
+          error,
+          url,
+        });
+        debugger; // eslint-disable-line no-debugger
+        memo.error = error as Error;
+        memo.token = undefined;
+        setResult({ ...memo });
       });
-    } catch (error) {
-      // NOTE: Error type is AxiosError.
-      // eslint-disable-next-line no-console
-      console.error('[useAppInfo:Effect]: request catch', {
-        error,
-        url,
-      });
-      debugger; // eslint-disable-line no-debugger
-      // TODO: Extend error with request parameters (url, params, srcParams, etc)?
-      // TODO: Use our own error class, extending AxiosError?
-      // throw error;
-      memo.error = error as Error;
-      setResult({ ...memo });
-    }
   }, [memo]);
   return result;
 }
