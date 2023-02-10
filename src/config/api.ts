@@ -23,3 +23,11 @@ const authStr = apiUser + ':' + apiPass;
 export const apiAuth = 'Basic ' + Buffer.from(authStr).toString('base64');
 
 // export const apiKey = '4f726c71-33a7-4294-a1a4-88aec3824322';
+
+// Request
+
+export const defaultDataRequestHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Content-Type': 'application/json',
+  Authorization: apiAuth,
+};

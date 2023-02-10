@@ -1,6 +1,6 @@
-/** @module NameDialog
+/** @module UserNameDialog
  *  @since 2023.02.10, 15:33
- *  @changed 2023.02.10, 17:33
+ *  @changed 2023.02.10, 21:51
  */
 
 import * as React from 'react';
@@ -15,9 +15,9 @@ import TextField from '@mui/material/TextField';
 
 import classnames from 'classnames';
 
-import styles from './NameDialog.module.scss';
+import styles from './UserNameDialog.module.scss';
 
-export interface TNameDialogProps {
+export interface TUserNameDialogProps {
   className?: string;
   open: boolean;
   name: string;
@@ -25,7 +25,7 @@ export interface TNameDialogProps {
   onSubmit: (value: string) => void;
 }
 
-export function NameDialog(props: TNameDialogProps): JSX.Element {
+export function UserNameDialog(props: TUserNameDialogProps): JSX.Element {
   const { className } = props;
   const { onClose, onSubmit, name: defaultName, open } = props;
   const [name, setName] = React.useState<string>(defaultName);
@@ -33,23 +33,18 @@ export function NameDialog(props: TNameDialogProps): JSX.Element {
   const onChange = React.useCallback(
     (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const name = ev.currentTarget.value;
-      // console.log('onChange', { name, ev });
-      // debugger;
       setName(name);
     },
     [],
   );
 
   const onButtonSubmit = React.useCallback(() => {
-    // console.log('onButtonSubmit', { name });
-    // debugger;
     onSubmit(name);
   }, [name, onSubmit]);
 
   const onFormSubmit = React.useCallback(
     (ev?: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLDivElement>) => {
       ev?.preventDefault(); // Disable html form submission!
-      // console.log('onFormSubmit');
       onButtonSubmit();
     },
     [onButtonSubmit],
@@ -65,7 +60,6 @@ export function NameDialog(props: TNameDialogProps): JSX.Element {
               <TextField
                 id="name"
                 label="Имя"
-                // variant="outlined"
                 variant="filled"
                 defaultValue={defaultName}
                 onChange={onChange}
@@ -79,9 +73,7 @@ export function NameDialog(props: TNameDialogProps): JSX.Element {
                 disabled={!name}
                 onClick={onButtonSubmit}
                 variant="contained"
-                // variant="outlined"
                 startIcon={<CheckIcon />}
-                // color="success"
               >
                 <span className="Text">Продолжить</span>
               </Button>
@@ -90,7 +82,6 @@ export function NameDialog(props: TNameDialogProps): JSX.Element {
                 onClick={onClose}
                 variant="outlined"
                 startIcon={<CloseIcon />}
-                // color="error"
               >
                 <span className="Text">Отменить</span>
               </Button>

@@ -3,12 +3,10 @@
  *  @changed 2023.02.02, 08:41
  */
 
-// import Link from 'next/link';
-
 import GenericPageLayout from '@/layout/GenericPageLayout';
 import { PageSectionWrapper } from '@/ui-elements';
 import { subPageTitle } from '@/ui-support/pageUtils';
-import { StartBlock } from '@/ui-blocks/StartBlock/StartBlock';
+import { WrappedStartBlock } from '@/ui-blocks/StartBlock';
 
 export default function IndexPage(): JSX.Element {
   const pageTitle = 'Стартовая страница';
@@ -16,7 +14,7 @@ export default function IndexPage(): JSX.Element {
   return (
     <GenericPageLayout title={title}>
       <PageSectionWrapper flex flexVertical fullSizeFlexChild flexCenter>
-        <StartBlock />
+        <WrappedStartBlock />
       </PageSectionWrapper>
     </GenericPageLayout>
   );

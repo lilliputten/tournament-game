@@ -1,54 +1,53 @@
-/** @module withArticlesWrapper
- *  @desc Wrapping any component (articles list with ArticlesWrapper)
- *  @since 2023.01.30, 18:03
- *  @changed 2023.02.01, 21:41
+/** @module withGameParamsWrapper
+ *  @desc Wrapping any component (with GameParamsWrapper)
+ *  @since 2023.02.10, 20:24
+ *  @changed 2023.02.10, 20:24
  */
 
 import React from 'react';
 import classnames from 'classnames';
 
-import { useArticles, useArticlesLoading, useArticlesError } from '@/core/app/app-reducer';
+import { useGameParamsLoading, useGameParamsError } from '@/core/app/app-reducer';
 import { errorToString } from '@/utils';
 import { LoaderSplash } from '@/ui-elements';
+import { Typography } from '@mui/material';
 
-import styles from './ArticlesWrapper.module.scss';
+import styles from './GameParamsWrapper.module.scss';
 
-export interface TWithArticlesWrapperParams {
+export interface TWithGameParamsWrapperParams {
   wrapperClassName?: string;
   errorClassName?: string;
   showErrorInWrapper?: boolean;
 }
 
-export interface TWithArticlesWrapperProps extends JSX.IntrinsicAttributes {
+export interface TWithGameParamsWrapperProps extends JSX.IntrinsicAttributes {
   error?: Error;
   isLoading?: boolean;
-  isEmpty?: boolean;
 }
 
-export function withArticlesWrapperFabric<P extends JSX.IntrinsicAttributes>(
-  params: TWithArticlesWrapperParams,
-): (Component: React.ComponentType<P & TWithArticlesWrapperProps>) => (props: P) => JSX.Element {
+export function withGameParamsWrapperFabric<P extends JSX.IntrinsicAttributes>(
+  params: TWithGameParamsWrapperParams,
+): (Component: React.ComponentType<P & TWithGameParamsWrapperProps>) => (props: P) => JSX.Element {
   const { wrapperClassName, errorClassName, showErrorInWrapper = true } = params;
-  return function withArticlesWrapper<P extends JSX.IntrinsicAttributes>(
+  return function withGameParamsWrapper<P extends JSX.IntrinsicAttributes>(
     Component: React.ComponentType<P>,
   ) {
-    return function ArticlesWrapper(props: P) {
-      const isLoading = useArticlesLoading();
-      const error = useArticlesError();
-      const articles = useArticles();
-      const isEmpty = !articles.length;
+    return function GameParamsWrapper(props: P) {
+      const isLoading = useGameParamsLoading();
+      const error = useGameParamsError();
       return (
         <div className={classnames(wrapperClassName, styles.container)}>
+          {/* Show error */}
           {showErrorInWrapper && error && (
-            <div className={classnames(errorClassName, styles.contentError)}>
+            <Typography className={classnames(errorClassName, styles.contentError)}>
               {errorToString(error)}
-            </div>
+            </Typography>
           )}
           <div className={styles.contentContainer}>
-            <Component {...props} error={error} isLoading={isLoading} isEmpty={isEmpty} />
+            <Component {...props} error={error} isLoading={isLoading} />
           </div>
           {/* Show small loader at the end of article items if some data has loaded */}
-          {isLoading && !isEmpty && (
+          {isLoading && (
             <LoaderSplash
               className={styles.smallLoader}
               spinnerSize="medium"
@@ -56,14 +55,16 @@ export function withArticlesWrapperFabric<P extends JSX.IntrinsicAttributes>(
             />
           )}
           {/* Show large covering loader splash if no data loaded */}
+          {/*
           <LoaderSplash
             className={styles.loaderSplash}
-            show={isLoading && isEmpty}
+            show={isLoading}
             spinnerSize="large"
             bg="white"
             mode="cover"
             fullSize
           />
+          */}
         </div>
       );
     };

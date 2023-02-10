@@ -1,123 +1,78 @@
 /** @module reducer
  *  @since 2023.01.28, 19:17
- *  @changed 2023.02.02, 08:33
+ *  @changed 2023.02.10, 18:26
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { TArticle, TArticleId } from '@/core/types';
-import { TGameParamsSearchResult, TSortMode, TGameParamsState, TGameParamsParams } from './types';
-import { initialState, startPageNo } from './constants';
-import { fetchGameParamsThunk } from './thunks';
-import { TArticleCardType } from '@/components';
+import { TGameMode, TGameParamsState } from './types';
+import { defaultState } from './constants';
+import { fetchAppInfoThunk, TFetchAppInfoResult } from './services/fetchAppInfo';
 
-type GameParamsPayloadAction = PayloadAction<TGameParamsSearchResult, string, unknown, Error>;
+type TFetchAppInfoPayloadAction = PayloadAction<TFetchAppInfoResult, string, unknown, Error>;
 
-function getUniqueArticleId(ids: TArticleId[], id: TArticleId): TArticleId {
-  let newId = id;
-  let count = 0;
-  while (ids.includes(newId)) {
-    newId = id + '-DUP-' + ++count;
-  }
-  return newId;
-}
+const hasLocalStorage = typeof localStorage !== 'undefined';
 
-const articlesSlice = createSlice({
-  name: 'articles',
+const defaultUserName = (hasLocalStorage && localStorage.getItem('gameParams:userName')) || '';
+const initialState: TGameParamsState = {
+  ...defaultState,
+  userName: defaultUserName,
+};
+
+const gameParamsSlice = createSlice({
+  name: 'gameParams',
   initialState,
   reducers: {
-    setQuery: (state, action: PayloadAction<string>) => {
-      state.query = action.payload;
+    setUserName: (state, action: PayloadAction<string>) => {
+      const userName = action.payload;
+      state.userName = userName;
+      hasLocalStorage && localStorage.setItem('gameParams:userName', userName);
     },
-    setSortMode: (state, action: PayloadAction<TSortMode>) => {
-      state.sortMode = action.payload;
+    setToken: (state, action: PayloadAction<string>) => {
+      state.token = action.payload;
     },
-    setPageNo: (state, action: PayloadAction<number>) => {
-      state.pageNo = action.payload;
-    },
-    setNextPage: (state) => {
-      state.pageNo = state.pageNo + 1;
-    },
-    setPageSize: (state, action: PayloadAction<number>) => {
-      state.pageSize = action.payload;
-    },
-    // DEBUG: Allow to change article preview card type for demonstration purposes.
-    setCardType: (state, action: PayloadAction<TArticleCardType>) => {
-      state.cardType = action.payload;
+    setGameMode: (state, action: PayloadAction<TGameMode>) => {
+      state.gameMode = action.payload;
     },
     resetData: (state) => {
       state.error = undefined;
-      state.ids = [];
-      state.articles = [];
-      state.articlesHash = {};
-      state.pageNo = startPageNo; // ???
+      // TODO: To reset `userName`, `token`?
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(
-        String(fetchGameParamsThunk.pending),
-        (state: TGameParamsState, _action: GameParamsPayloadAction) => {
+        String(fetchAppInfoThunk.pending),
+        (state: TGameParamsState, _action: TFetchAppInfoPayloadAction) => {
           state.isLoading = true;
           state.error = undefined;
         },
       )
       .addCase(
-        String(fetchGameParamsThunk.fulfilled),
-        (state: TGameParamsState, action: GameParamsPayloadAction) => {
+        String(fetchAppInfoThunk.fulfilled),
+        (state: TGameParamsState, action: TFetchAppInfoPayloadAction) => {
           const { payload } = action;
-          const { info, articles } = payload;
-          /* // Info data sample (NOTE: Indices start with 1, not 0!):
-           * status: 'ok',
-           * userTier: 'developer',
-           * total: 2402038,
-           * startIndex: 1,
-           * pageSize: 5,
-           * currentPage: 1,
-           * pages: 480408,
-           * orderBy: 'newest'
+          const { token } = payload;
+          /* console.log('[features/GameParams/reducer:fetchAppInfoThunk.fulfilled]: success', {
+           *   token,
+           *   payload,
+           * });
            */
-          const { startIndex } = info;
-          const start = startIndex - 1; // NOTE: Indices start with 1, not 0!
-          const newIds = [...state.ids];
-          const newGameParams = [...state.articles];
-          const newGameParamsHash = { ...state.articlesHash };
-          for (let i = 0; i < articles.length; i++) {
-            const article = articles[i];
-            const { id } = article;
-            if (newIds.includes(id)) {
-              // NOTE: Sometimes one article may appear several times in one
-              // list (especially we fetching it with delayed chunks).
-              const uniqueId = getUniqueArticleId(newIds, id);
-              article.uniqueId = uniqueId;
-              // eslint-disable-next-line no-console
-              console.warn('[articles/reducer:fetchGameParamsThunk.fulfilled]: duplicated id', {
-                id,
-                uniqueId,
-              });
-            }
-            // TODO: Check for duplicate items?
-            newIds[start + i] = id;
-            newGameParams[start + i] = article;
-            newGameParamsHash[id] = article;
-          }
-          state.ids = newIds;
-          state.articles = newGameParams;
-          state.articlesHash = newGameParamsHash;
+          state.token = token;
           state.isLoading = false;
           state.error = undefined;
         },
       )
       .addCase(
-        String(fetchGameParamsThunk.rejected),
-        (state: TGameParamsState, action: GameParamsPayloadAction) => {
+        String(fetchAppInfoThunk.rejected),
+        (state: TGameParamsState, action: TFetchAppInfoPayloadAction) => {
           const { error, meta } = action;
           // eslint-disable-next-line no-console
-          console.log('[features/articles/reducer:fetchGameParamsThunk.rejected]', {
+          console.log('[features/GameParams/reducer:fetchAppInfoThunk.rejected]', {
             error,
             meta,
           });
-          debugger; // eslint-disable-line no-debugger
+          // debugger; // eslint-disable-line no-debugger
           state.error = error;
           state.isLoading = false;
         },
@@ -129,26 +84,12 @@ const articlesSlice = createSlice({
 export const selectLoading = (state: TGameParamsState): TGameParamsState['isLoading'] =>
   state.isLoading;
 export const selectError = (state: TGameParamsState): TGameParamsState['error'] => state.error;
-export const selectArticleIds = (state: TGameParamsState): TArticleId[] => state.ids;
-export const selectGameParams = (state: TGameParamsState): TArticle[] => state.articles;
-export const selectGameParamsHash = (state: TGameParamsState): Record<TArticleId, TArticle> =>
-  state.articlesHash;
-export const selectArticleById = (state: TGameParamsState, id: TArticleId): TArticle | undefined =>
-  state.articlesHash[id];
-export const selectParams = (state: TGameParamsState): TGameParamsParams => {
-  // TODO: To memoize entire params object?
-  const { query, sortMode, pageNo, pageSize, cardType } = state;
-  return { query, sortMode, pageNo, pageSize, cardType };
-};
+export const selectToken = (state: TGameParamsState): TGameParamsState['token'] => state.token;
+export const selectUserName = (state: TGameParamsState): TGameParamsState['userName'] =>
+  state.userName;
+export const selectGameMode = (state: TGameParamsState): TGameParamsState['gameMode'] =>
+  state.gameMode;
 
-export const {
-  setQuery,
-  setSortMode,
-  setPageNo,
-  setNextPage,
-  setPageSize,
-  setCardType,
-  resetData,
-} = articlesSlice.actions;
+export const { setUserName, setToken, setGameMode, resetData } = gameParamsSlice.actions;
 
-export const articlesReducer = articlesSlice.reducer;
+export const reducer = gameParamsSlice.reducer;

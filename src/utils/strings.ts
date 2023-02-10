@@ -195,5 +195,8 @@ export function errorToString(error: Error | AxiosError): string {
     name,
     // stack
   } = metaError;
-  return [name, code, message].filter(Boolean).join(': ');
+  return [name, code, message]
+    .filter(Boolean)
+    .join(': ')
+    .replace(/^Error:\s*/, '');
 }

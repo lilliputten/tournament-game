@@ -81,8 +81,6 @@ interface ErrorLike {
 type SingleError = string | Error | ErrorLike;
 type PluralErrors = SingleError | SingleError[];
 export function errorToPlainString(error: undefined | PluralErrors): string {
-  // opt = opt || {};
-
   let text = '',
     plusText,
     match;
@@ -107,12 +105,12 @@ export function errorToPlainString(error: undefined | PluralErrors): string {
     }
     // Object with an error
     else if (error instanceof Error) {
-      text = error.message || String(error);
+      text = (error.message || String(error)).replace(/^Error:\s*/, '');
     } else if (typeof error.message === 'string') {
-      console.error('errors.errorToPlainString message', { error: error }); // eslint-disable-line no-console
+      // console.error('errors.errorToPlainString message', { error: error }); // eslint-disable-line no-console
       text += error.message;
     } else if (Array.isArray(error.errorMessages)) {
-      console.error('errors.errorToPlainString errorMessages', { error: error }); // eslint-disable-line no-console
+      // console.error('errors.errorToPlainString errorMessages', { error: error }); // eslint-disable-line no-console
       text += error.errorMessages
         .map(function (error: SingleError) {
           return errorToPlainString(error);
@@ -135,7 +133,7 @@ export function errorToPlainString(error: undefined | PluralErrors): string {
     } else if (error.jqXHR && !error.error && error.textStatus === 'error') {
       text = 'Incorrect server response (the server is unavailable)';
     } else if (error.error === 'jqXHR') {
-      console.error('errors.errorToPlainString jqXHR', { error: error }); // eslint-disable-line no-console
+      // console.error('errors.errorToPlainString jqXHR', { error: error }); // eslint-disable-line no-console
       text = error.description || 'AJAX error';
       const props = {
           address: error.url || error.location,

@@ -1,6 +1,6 @@
 /** @module StartBlock
  *  @since 2023.02.07, 20:35
- *  @changed 2023.02.09, 23:05
+ *  @changed 2023.02.10, 21:53
  */
 
 import React from 'react';
@@ -10,20 +10,23 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import classnames from 'classnames';
 
-import { NameDialog } from '@/ui-blocks/NameDialog';
+import { UserNameDialog } from '@/ui-blocks/UserNameDialog';
 
-// import { TReactContent } from '@/utils/react-types';
-import { useAppInfo } from './useAppInfo';
+import {
+  useAppDispatch,
+  useGameParamsGameMode,
+  useGameParamsLoading,
+  useGameParamsToken,
+  useGameParamsUserName,
+} from '@/core';
+import { setGameMode, setUserName } from '@/features/GameParams/reducer';
+import { TWithGameParamsWrapperProps } from '../withGameParamsWrapper/withGameParamsWrapper';
 
 import styles from './StartBlock.module.scss';
 
-export interface TStartBlockProps {
+export interface TStartBlockProps extends TWithGameParamsWrapperProps {
   className?: string;
 }
-
-const hasLocalStorage = typeof localStorage !== 'undefined';
-
-const emails = ['username@gmail.com', 'user02@gmail.com'];
 
 export function StartBlock(props: TStartBlockProps): JSX.Element {
   const { className } = props;
@@ -32,79 +35,76 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
    * - [React Typography component - Material UI](https://mui.com/material-ui/react-typography/)
    */
 
-  // DEBUG: Test api requests...
-  const result = useAppInfo();
-  React.useEffect(() => {
-    console.log('[StartBlock:useAppInfo]', result);
-  }, [result]);
+  const dispatch = useAppDispatch();
 
-  const [choosingName, startChoosingNameFlag] = React.useState(true);
-  const [name, setName] = React.useState<string>(
-    (hasLocalStorage && localStorage.getItem('name')) || '',
-  );
-  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+  const isLoading = useGameParamsLoading();
+  const token = useGameParamsToken();
+  const userName = useGameParamsUserName();
+  const gameMode = useGameParamsGameMode();
 
-  const updateName = React.useCallback((name: string) => {
-    console.log('[StartBlock:updateName]', { name });
-    debugger;
-    setName(name);
-    hasLocalStorage && localStorage.setItem('name', name);
-    // TODO...
+  const [isUserNameDialogOpened, openUserNameDialog] = React.useState(false);
+
+  /* // DEBUG
+   * React.useEffect(() => {
+   *   console.log('[StartBlock:DEBUG]', { isLoading, token, userName, gameMode });
+   * }, [isLoading, token, userName, gameMode]);
+   */
+
+  const closeNameDialog = React.useCallback(() => {
+    openUserNameDialog(false);
   }, []);
 
-  const startChoosingName = React.useCallback(() => {
-    startChoosingNameFlag(true);
-  }, []);
-
-  const stopChoosingName = React.useCallback(() => {
-    console.log('[StartBlock:stopChoosingName]');
-    debugger;
-    startChoosingNameFlag(false);
-  }, []);
-
-  const handleChoosenName = React.useCallback(
+  const handleUserName = React.useCallback(
     (name: string) => {
-      console.log('[StartBlock:handleChoosenName]', { name });
-      debugger;
-      updateName(name);
-      startChoosingNameFlag(false);
+      closeNameDialog();
+      dispatch(setUserName(name));
+      // TODO: Start wainting for a game partner...
+      console.log('[StartBlock:handleUserName] (Start wainting for a game partner)', {
+        name,
+        gameMode,
+        token,
+      });
     },
-    [updateName],
+    [dispatch, closeNameDialog, gameMode, token],
   );
+
+  const chooseSinglePlayer = React.useCallback(() => {
+    dispatch(setGameMode('single'));
+    openUserNameDialog(true);
+  }, [dispatch]);
+
+  const chooseMultiPlayer = React.useCallback(() => {
+    dispatch(setGameMode('multi'));
+    openUserNameDialog(true);
+  }, [dispatch]);
 
   return (
-    <Box className={classnames(className, styles.container)} m={2}>
+    <Box className={classnames(className, styles.container)}>
       <Typography variant="h5" gutterBottom className={classnames(styles.title)}>
         Турнир по теме «Что проверить в договорах»
       </Typography>
       <Typography variant="body1" gutterBottom className={classnames(styles.question)}>
         Как вы хотите сыграть?
       </Typography>
-      <ButtonGroup
-        className={classnames(styles.actions)}
-        variant="outlined"
-        aria-label="outlined primary button group"
-      >
-        <Button
-          //
-          className="FixMuiButton"
+      {!isLoading && (
+        <ButtonGroup
+          className={classnames(styles.actions)}
+          variant="outlined"
+          aria-label="outlined primary button group"
         >
-          <span className="Text">Турнир для одного</span>
-        </Button>
-        <Button
-          //
-          className="FixMuiButton"
-        >
-          <span className="Text">Турнир для двоих</span>
-        </Button>
-      </ButtonGroup>
-      <NameDialog
-        //
-        name={name}
-        // selectedValue={selectedValue}
-        open={choosingName}
-        onClose={stopChoosingName}
-        onSubmit={handleChoosenName}
+          <Button className="FixMuiButton" onClick={chooseSinglePlayer}>
+            <span className="Text">Турнир для одного</span>
+          </Button>
+          <Button className="FixMuiButton" onClick={chooseMultiPlayer}>
+            <span className="Text">Турнир для двоих</span>
+          </Button>
+        </ButtonGroup>
+      )}
+      <UserNameDialog
+        name={userName || ''}
+        open={isUserNameDialogOpened}
+        onClose={closeNameDialog}
+        onSubmit={handleUserName}
       />
     </Box>
   );
