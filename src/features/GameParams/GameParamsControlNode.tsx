@@ -1,4 +1,4 @@
-/** @module ArticlesControlNode
+/** @module GameParamsControlNode
  *  @desc Bare component to cintrol articles events on the top level of react nodes
  *  @since 2023.01.29, 21:22
  *  @changed 2023.01.30, 00:35
@@ -8,19 +8,19 @@ import { useEffect, useMemo } from 'react';
 import { useStore } from 'react-redux';
 
 import { useAppDispatch } from '@/core/app/app-store';
-import { useArticlesSearchParams, RootState } from '@/core/app/app-reducer';
+import { useGameParamsSearchParams, RootState } from '@/core/app/app-reducer';
 import { defaultParams } from '@/features/articles/constants'; // NOTE: Temporaily trick: Avoiding cycling imports
-import { TArticlesParams, fetchArticlesAction } from '@/features/articles';
+import { TGameParamsParams, fetchGameParamsAction } from '@/features/articles';
 import { resetData } from '@/features/articles/reducer';
 
-type TMemo = TArticlesParams;
+type TMemo = TGameParamsParams;
 const defaultMemo = { ...defaultParams };
 
-export function ArticlesControlNode(): null {
+export function GameParamsControlNode(): null {
   const dispatch = useAppDispatch();
   const appStateStore = useStore<RootState>();
 
-  const { query, sortMode, pageNo, pageSize } = useArticlesSearchParams();
+  const { query, sortMode, pageNo, pageSize } = useGameParamsSearchParams();
 
   const memo = useMemo<TMemo>(() => ({ ...defaultMemo }), []);
 
@@ -32,7 +32,7 @@ export function ArticlesControlNode(): null {
     if (needReset) {
       dispatch(resetData());
     }
-    fetchArticlesAction(appStateStore);
+    fetchGameParamsAction(appStateStore);
     // Save parameters to memo
     memo.query = query;
     memo.sortMode = sortMode;

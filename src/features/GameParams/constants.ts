@@ -4,7 +4,7 @@
  */
 
 import * as buildConfig from '@/config/build';
-import { sortModeIds, TArticlesParams, TArticlesState } from './types';
+import { sortModeIds, TGameParamsParams, TGameParamsState } from './types';
 
 /* // Info:
  * @see https://open-platform.theguardian.com/documentation/search
@@ -28,7 +28,7 @@ export const defaultPageSize = buildConfig.DEBUG ? 5 : 20;
 export const startPageNo = 1;
 
 // Default parameters
-export const defaultParams: TArticlesParams = {
+export const defaultParams: TGameParamsParams = {
   query: '',
   sortMode: defaultSortMode,
   pageNo: startPageNo,
@@ -38,7 +38,7 @@ export const defaultParams: TArticlesParams = {
 };
 
 // Default state
-export const initialState: TArticlesState = {
+export const initialState: TGameParamsState = {
   ...defaultParams,
   ids: [],
   articlesHash: {},

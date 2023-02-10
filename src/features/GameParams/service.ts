@@ -8,10 +8,10 @@ import axios from 'axios';
 import config from '@/config';
 import { defaultFieldsString } from '@/core/constants';
 import {
-  TArticlesSearchResult,
-  TArticlesSearchParams,
-  TArticlesSearchQueryParams,
-  TArticlesSearchQueryResult,
+  TGameParamsSearchResult,
+  TGameParamsSearchParams,
+  TGameParamsSearchQueryParams,
+  TGameParamsSearchQueryResult,
 } from './types';
 import { combineArticleData } from '@/core/helpers';
 
@@ -29,12 +29,12 @@ import { combineArticleData } from '@/core/helpers';
  * - order-by=relevance
  */
 
-export async function fetchArticles(
-  srcParams: TArticlesSearchParams,
-): Promise<TArticlesSearchResult> {
+export async function fetchGameParams(
+  srcParams: TGameParamsSearchParams,
+): Promise<TGameParamsSearchResult> {
   const url = config.api.apiUrlPrefix + '/search';
   const { query, pageNo, pageSize, sortMode, showFields } = srcParams;
-  const params: TArticlesSearchQueryParams = {
+  const params: TGameParamsSearchQueryParams = {
     'api-key': config.api.apiKey,
     q: query,
     page: pageNo,
@@ -43,12 +43,12 @@ export async function fetchArticles(
     'show-fields': showFields ? showFields.join(',') : defaultFieldsString,
   };
   try {
-    const res = await axios.get<TArticlesSearchQueryResult>(url, { params });
+    const res = await axios.get<TGameParamsSearchQueryResult>(url, { params });
     const { data } = res;
     const response = data.response;
     const { results, ...info } = response;
     const articles = results.map(combineArticleData);
-    const resultData: TArticlesSearchResult = {
+    const resultData: TGameParamsSearchResult = {
       articles,
       info,
     };
@@ -56,7 +56,7 @@ export async function fetchArticles(
   } catch (error) {
     // NOTE: Error type is AxiosError.
     // eslint-disable-next-line no-console
-    console.error('[Search:fetchArticles]: request catch', {
+    console.error('[Search:fetchGameParams]: request catch', {
       error,
       url,
       params,
