@@ -16,4 +16,10 @@ export const apiRoot = '/api/v1.0';
 export const apiUrlPrefix = apiHost + apiRoot;
 
 // Authorization...
-export const apiKey = '4f726c71-33a7-4294-a1a4-88aec3824322';
+export const apiUser = 'api';
+export const apiPass = 'pusplndvqaivbynv';
+const authStr = apiUser + ':' + apiPass;
+// Authorization: Basic YXBpOnB1c3BsbmR2cWFpdmJ5bnY=
+export const apiAuth = 'Basic ' + Buffer.from(authStr).toString('base64');
+
+// export const apiKey = '4f726c71-33a7-4294-a1a4-88aec3824322';

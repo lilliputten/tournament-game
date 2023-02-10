@@ -72,10 +72,10 @@ overrides:
             - 'PascalCase'
             - 'camelCase'
       '@typescript-eslint/explicit-module-boundary-types': 'off' # Disable 'Missing return type on function' if no explicit `: void` specified
-      '@typescript-eslint/explicit-function-return-type': # (Is required!) Causes 'Missing return type on function' if no explicit `: void` specified
-        # @see https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/docs/rules/explicit-function-return-type.md
-        - 'warn'
-        - allowExpressions: true
+      # '@typescript-eslint/explicit-function-return-type': # (Is required!) Causes 'Missing return type on function' if no explicit `: void` specified
+      #   # @see https://github.com/typescript-eslint/typescript-eslint/blob/main/packages/eslint-plugin/docs/rules/explicit-function-return-type.md
+      #   - 'warn'
+      #   - allowExpressions: true
       '@typescript-eslint/func-call-spacing':
         - 'error'
         - 'never'

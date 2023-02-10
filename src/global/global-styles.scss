@@ -1,6 +1,6 @@
 /** @module styles.less
  *  @since 2023.01.27, 13:36
- *  @changed 2023.01.27, 19:50
+ *  @changed 2023.02.10, 17:17
  */
 
 #__next,
@@ -25,5 +25,15 @@ a {
   text-decoration: none;
   &:hover {
     opacity: 0.8;
+  }
+}
+
+// Fix MUI buttons
+button.FixMuiButton {
+  // TODO: To fix it with MUI tools?
+  > .Text {
+    $shift: 2px;
+    margin-top: $shift;
+    margin-bottom: -$shift;
   }
 }

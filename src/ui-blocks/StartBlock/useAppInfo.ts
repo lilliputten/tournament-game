@@ -29,16 +29,20 @@ export function useAppInfo(): TResult {
   const memo = useMemo<TResult>(() => ({ ...defaultResult }), []);
   useEffect(() => {
     const url = config.api.apiUrlPrefix + '/start';
+    const headers = {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
+      Authorization: config.api.apiAuth,
+    };
     console.log('[useAppInfo:Effect]: request start', {
+      headers,
       url,
     });
     axios<TResponseData & TResponseError>({
       method: 'get',
       url,
       withCredentials: true,
-      headers: {
-        // 'Access-Control-Allow-Origin': '*',
-      },
+      headers,
     })
       .then((res) => {
         const { data } = res;
@@ -51,7 +55,7 @@ export function useAppInfo(): TResult {
           throw new Error('Token not defined');
         }
         // Fetch data...
-        console.log('[useAppInfo:Effect]: request done', data);
+        console.log('[useAppInfo:Effect]: request done', data, { url });
         // debugger;
         memo.token = data.Token;
         memo.error = undefined;
@@ -63,7 +67,7 @@ export function useAppInfo(): TResult {
           error,
           url,
         });
-        debugger; // eslint-disable-line no-debugger
+        // debugger; // eslint-disable-line no-debugger
         memo.error = error as Error;
         memo.token = undefined;
         setResult({ ...memo });
