@@ -7,6 +7,7 @@ import { muiTheme, ThemeProvider } from '@/global/mui-theme';
 
 import { TReactContent } from '@/utils/react-types';
 import GameParamsControlNode from '@/features/GameParams/expose-control-node';
+import GameSessionControlNode from '@/features/GameSession/expose-control-node';
 
 interface AppWrapperProps {
   children?: TReactContent;
@@ -18,6 +19,7 @@ export default function AppWrapper(props: AppWrapperProps): JSX.Element {
     <>
       <ThemeProvider theme={muiTheme}>
         <GameParamsControlNode />
+        <GameSessionControlNode />
         {children}
       </ThemeProvider>
     </>

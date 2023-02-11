@@ -44,7 +44,7 @@ export async function fetchAppInfo(): Promise<TFetchAppInfoResult> {
       return result;
     })
     .catch((error) => {
-      const errorText = 'Ошибка получения данных сессии от сервера';
+      const errorText = 'Ошибка получения параметров приложения';
       const throwError = new Error(errorText + ': ' + error.message);
       // eslint-disable-next-line no-console
       console.error('[fetchAppInfo]: request catch', {
@@ -66,6 +66,5 @@ export const fetchAppInfoThunk = createAsyncThunk(
 
 export function fetchAppInfoAction(rootStore: Store<TRootState>): void {
   const thunkDispatch = rootStore.dispatch as ThunkDispatch<TRootState, void, AnyAction>;
-  // const articlesState = rootStore.getState().articles;
   thunkDispatch(fetchAppInfoThunk());
 }

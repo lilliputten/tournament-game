@@ -20,7 +20,7 @@ import {
   useGameParamsToken,
   useGameParamsUserName,
 } from '@/core';
-import { setGameMode, setUserName } from '@/features/GameParams/reducer';
+import { actions as gameParamsActions } from '@/features/GameParams/reducer';
 import { TWithGameParamsWrapperProps } from '../withGameParamsWrapper/withGameParamsWrapper';
 
 import styles from './StartBlock.module.scss';
@@ -59,7 +59,7 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
   const handleUserName = React.useCallback(
     (name: string) => {
       closeNameDialog();
-      dispatch(setUserName(name));
+      dispatch(gameParamsActions.setUserName(name));
       // TODO: Start wainting for a game partner...
       console.log('[StartBlock:handleUserName] (Start wainting for a game partner)', {
         name,
@@ -73,12 +73,12 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
   );
 
   const chooseSinglePlayer = React.useCallback(() => {
-    dispatch(setGameMode('single'));
+    dispatch(gameParamsActions.setGameMode('single'));
     openUserNameDialog(true);
   }, [dispatch]);
 
   const chooseMultiPlayer = React.useCallback(() => {
-    dispatch(setGameMode('multi'));
+    dispatch(gameParamsActions.setGameMode('multi'));
     openUserNameDialog(true);
   }, [dispatch]);
 

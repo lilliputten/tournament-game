@@ -5,7 +5,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { TGameMode, TGameParamsState } from './types';
+import { TGameParamsState } from './types';
 import { defaultState } from './constants';
 import { fetchAppInfoThunk, TFetchAppInfoResult } from './services/fetchAppInfo';
 
@@ -23,20 +23,20 @@ const gameParamsSlice = createSlice({
   name: 'gameParams',
   initialState,
   reducers: {
-    setUserName: (state, action: PayloadAction<string>) => {
-      const userName = action.payload;
-      state.userName = userName;
-      hasLocalStorage && localStorage.setItem('gameParams:userName', userName);
-    },
-    setToken: (state, action: PayloadAction<string>) => {
-      state.token = action.payload;
-    },
-    setGameMode: (state, action: PayloadAction<TGameMode>) => {
-      state.gameMode = action.payload;
-    },
     resetData: (state) => {
       state.error = undefined;
       // TODO: To reset `userName`, `token`?
+    },
+    setUserName: (state, action: PayloadAction<TGameParamsState['userName']>) => {
+      const userName = action.payload;
+      state.userName = userName;
+      hasLocalStorage && localStorage.setItem('gameParams:userName', userName || '');
+    },
+    setToken: (state, action: PayloadAction<TGameParamsState['token']>) => {
+      state.token = action.payload;
+    },
+    setGameMode: (state, action: PayloadAction<TGameParamsState['gameMode']>) => {
+      state.gameMode = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -80,16 +80,22 @@ const gameParamsSlice = createSlice({
   },
 });
 
-// See reducers creation in `src/app/app-reducer.ts`
-export const selectLoading = (state: TGameParamsState): TGameParamsState['isLoading'] =>
-  state.isLoading;
-export const selectError = (state: TGameParamsState): TGameParamsState['error'] => state.error;
-export const selectToken = (state: TGameParamsState): TGameParamsState['token'] => state.token;
-export const selectUserName = (state: TGameParamsState): TGameParamsState['userName'] =>
-  state.userName;
-export const selectGameMode = (state: TGameParamsState): TGameParamsState['gameMode'] =>
-  state.gameMode;
+// Exports (see reducers creation in `src/app/app-reducer.ts`)...
 
-export const { setUserName, setToken, setGameMode, resetData } = gameParamsSlice.actions;
+// Export selecors...
+export const selectors = {
+  // Basic (common) selectors...
+  selectLoading: (state: TGameParamsState): TGameParamsState['isLoading'] => state.isLoading,
+  selectError: (state: TGameParamsState): TGameParamsState['error'] => state.error,
 
+  // Custom selectors...
+  selectToken: (state: TGameParamsState): TGameParamsState['token'] => state.token,
+  selectUserName: (state: TGameParamsState): TGameParamsState['userName'] => state.userName,
+  selectGameMode: (state: TGameParamsState): TGameParamsState['gameMode'] => state.gameMode,
+};
+
+// Actions...
+export const actions = gameParamsSlice.actions;
+
+// Core reducer...
 export const reducer = gameParamsSlice.reducer;

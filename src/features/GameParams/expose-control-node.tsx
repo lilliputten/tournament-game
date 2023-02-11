@@ -11,7 +11,7 @@ import { useAppDispatch } from '@/core/app/app-store';
 import { TRootState } from '@/core/app/app-root-state';
 
 import { fetchAppInfoAction } from './services/fetchAppInfo';
-import { resetData } from './reducer';
+import { actions } from './reducer';
 
 // type TMemo = TGameParamsParams;
 // const defaultMemo = { ...defaultParams };
@@ -27,7 +27,7 @@ export default function ExposeControlNode(): null {
     const needReset = false;
     // Call actions...
     if (needReset) {
-      dispatch(resetData());
+      dispatch(actions.resetData());
     }
     fetchAppInfoAction(appStateStore);
   }, [dispatch, appStateStore]);

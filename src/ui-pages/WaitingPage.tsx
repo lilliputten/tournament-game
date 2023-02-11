@@ -1,12 +1,12 @@
 /** @module WaitingPage
  *  @since 2023.02.11, 14:23
- *  @changed 2023.02.11, 14:23
+ *  @changed 2023.02.11, 16:48
  */
 
 import GenericPageLayout from '@/layout/GenericPageLayout';
 import { PageSectionWrapper } from '@/ui-elements';
 import { subPageTitle } from '@/ui-support/pageUtils';
-import { WaitingBlock } from '@/ui-blocks/WaitingBlock';
+import { WrappedWaitingBlock } from '@/ui-blocks/WaitingBlock';
 
 export default function IndexPage(): JSX.Element {
   const pageTitle = 'Старт игры';
@@ -14,7 +14,7 @@ export default function IndexPage(): JSX.Element {
   return (
     <GenericPageLayout title={title}>
       <PageSectionWrapper flex flexVertical fullSizeFlexChild flexCenter>
-        <WaitingBlock />
+        <WrappedWaitingBlock />
       </PageSectionWrapper>
     </GenericPageLayout>
   );

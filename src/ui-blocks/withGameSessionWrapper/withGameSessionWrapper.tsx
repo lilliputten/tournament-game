@@ -1,0 +1,105 @@
+/** @module withGameSessionWrapper
+ *  @desc Wrapping any component (with GameSessionWrapper)
+ *  @since 2023.02.10, 20:24
+ *  @changed 2023.02.10, 20:24
+ */
+
+import React from 'react';
+import { useRouter } from 'next/router';
+import classnames from 'classnames';
+
+import {
+  useGameParamsLoading,
+  useGameParamsError,
+  useGameSessionLoading,
+  useGameSessionError,
+} from '@/core/app/app-reducer';
+import { errorToString } from '@/utils';
+import { LoaderSplash } from '@/ui-elements';
+import { Box, Button, Stack, Typography } from '@mui/material';
+
+import styles from './GameSessionWrapper.module.scss';
+
+export interface TWithGameSessionWrapperParams {
+  wrapperClassName?: string;
+  errorClassName?: string;
+  showErrorInWrapper?: boolean;
+}
+
+export interface TWithGameSessionWrapperProps extends JSX.IntrinsicAttributes {
+  error?: Error;
+  isLoading?: boolean;
+}
+
+export function withGameSessionWrapperFabric<P extends JSX.IntrinsicAttributes>(
+  params: TWithGameSessionWrapperParams,
+): (Component: React.ComponentType<P & TWithGameSessionWrapperProps>) => (props: P) => JSX.Element {
+  const { wrapperClassName, errorClassName, showErrorInWrapper = true } = params;
+  return function withGameSessionWrapper<P extends JSX.IntrinsicAttributes>(
+    Component: React.ComponentType<P>,
+  ) {
+    return function GameSessionWrapper(props: P) {
+      const isGameParamsLoading = useGameParamsLoading();
+      const gameParamsError = useGameParamsError();
+      const isLoading = useGameSessionLoading();
+      const error = useGameSessionError() || gameParamsError;
+      const displayContent = !isGameParamsLoading && !isLoading && !error;
+      console.log('[withGameSessionWrapper:GameSessionWrapper]', {
+        isGameParamsLoading,
+        gameParamsError,
+        isLoading,
+        error,
+        displayContent,
+      });
+      const router = useRouter();
+      const goToStartPage = React.useCallback(() => {
+        router.push('/');
+      }, [router]);
+      return (
+        <div className={classnames(wrapperClassName, styles.container)}>
+          {/* Show error */}
+          {showErrorInWrapper && error && (
+            <Box className={classnames(styles.contentErrorContainer)} m={2}>
+              <Typography className={classnames(errorClassName, styles.contentError)} m={2}>
+                {errorToString(error)}
+              </Typography>
+              <Stack
+                className={styles.actions}
+                spacing={2}
+                direction="row"
+                m={2}
+                justifyContent="center"
+              >
+                <Button className="FixMuiButton" onClick={goToStartPage} variant="contained">
+                  <span className="Text">Перейти на стартовую страницу</span>
+                </Button>
+              </Stack>
+            </Box>
+          )}
+          {displayContent && (
+            <div className={styles.contentContainer}>
+              <Component {...props} error={error} isLoading={isLoading} />
+            </div>
+          )}
+          {/* Show small loader at the end of article items if some data has loaded */}
+          {isLoading && (
+            <LoaderSplash
+              className={styles.smallLoader}
+              spinnerSize="medium"
+              show // Without animations!
+            />
+          )}
+          {/* Show large covering loader splash if no data loaded */}
+          <LoaderSplash
+            className={styles.loaderSplash}
+            show={isGameParamsLoading}
+            spinnerSize="large"
+            bg="white"
+            mode="cover"
+            fullSize
+          />
+        </div>
+      );
+    };
+  };
+}

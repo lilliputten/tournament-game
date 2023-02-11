@@ -1,30 +1,31 @@
 /** @module WaitingBlock
  *  @since 2023.02.07, 20:35
- *  @changed 2023.02.11, 15:34
+ *  @changed 2023.02.11, 17:54
  */
 
 import React from 'react';
+import { useStore } from 'react-redux';
 import { useRouter } from 'next/router';
 import Button from '@mui/material/Button';
-// import ButtonGroup from '@mui/material/ButtonGroup';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import classnames from 'classnames';
 
+import config from '@/config';
+import { TRootState } from '@/core/app/app-root-state';
 import {
   useAppDispatch,
   useGameParamsGameMode,
-  // useGameParamsLoading,
   useGameParamsToken,
   useGameParamsUserName,
 } from '@/core';
-import { setGameMode } from '@/features/GameParams/reducer';
+import { actions as gameParamsActions } from '@/features/GameParams/reducer';
 import { Stack } from '@mui/system';
-import { LoaderSplash } from '@/ui-elements';
+import { fetchWaitingAction } from '@/features/GameSession/services';
 
 import styles from './WaitingBlock.module.scss';
 
-export interface TWaitingBlockProps {
+export interface TWaitingBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
 }
 
@@ -39,11 +40,6 @@ function WaitingMulti({ cancelWaiting }: { cancelWaiting?: TCb }) {
       <Typography variant="body1" gutterBottom>
         Это может занять несколько минут.
       </Typography>
-      <LoaderSplash
-        className={styles.smallLoader}
-        spinnerSize="medium"
-        show // Without animations!
-      />
       <Stack className={styles.actions} spacing={2} direction="row">
         {!!cancelWaiting && (
           <Button className="FixMuiButton" onClick={cancelWaiting} variant="contained">
@@ -61,11 +57,6 @@ function WaitingSingle({ cancelWaiting }: { cancelWaiting?: TCb }) {
       <Typography variant="h5" gutterBottom>
         Запуск игры
       </Typography>
-      <LoaderSplash
-        className={styles.smallLoader}
-        spinnerSize="medium"
-        show // Without animations!
-      />
       <Stack className={styles.actions} spacing={2} direction="row">
         {!!cancelWaiting && (
           <Button className="FixMuiButton" onClick={cancelWaiting} variant="contained">
@@ -125,6 +116,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
    * - [React Typography component - Material UI](https://mui.com/material-ui/react-typography/)
    */
 
+  const appStateStore = useStore<TRootState>();
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -140,16 +132,23 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
     router.push('/');
   }, [router]);
 
+  // DEBUG: fetchWaiting
   React.useEffect(() => {
-    // console.log('[WaitingBlock:Effect: Check environment status]', { isLoading, token, userName, gameMode });
-    // // Go to the start page if environment isn't ready yet
-    if (!isReady) {
+    console.log('[WaitingBlock]: DEBUG: fetchWaiting', { token, userName, gameMode });
+    if (isReady && token && userName /* && gameMode === 'multi' */) {
+      fetchWaitingAction(appStateStore);
+    }
+  }, [token, isReady, userName, gameMode, appStateStore]);
+
+  React.useEffect(() => {
+    // Go to the start page if environment isn't ready yet
+    if (!isReady && !config.build.isDev) {
       goToStartPage();
     }
   }, [goToStartPage, isReady, isLoading, token, userName, gameMode]);
 
   const handlePlaySingle = React.useCallback(() => {
-    dispatch(setGameMode('single'));
+    dispatch(gameParamsActions.setGameMode('single'));
     // TODO: Clear isFailed
   }, [dispatch]);
 
@@ -160,27 +159,25 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
 
   const content = React.useMemo(() => {
     if (!isReady) {
+      // Don't render nothing and go to the start page if environment isn't ready yet...
       return null;
     } else if (isFailed) {
+      // All is ok but server returned 'partner not found' status...
       return <WaitingFailed onSingleClick={handlePlaySingle} goToStartPage={goToStartPage} />;
     } else if (!isLoading) {
+      // All is ok: start game (TODO)...
       return <GameReady />;
     } else if (gameMode === 'multi') {
+      // Waiting for multi player game...
       return <WaitingMulti cancelWaiting={cancelWaiting} />;
     } else {
+      // Waiting for single player game (no waiting required?)...
       return <WaitingSingle cancelWaiting={cancelWaiting} />;
     }
   }, [isReady, isFailed, isLoading, gameMode, goToStartPage, cancelWaiting, handlePlaySingle]);
 
-  // Don't render nothing and go to the start page if environment isn't ready yet
-  if (!isReady) {
-    // goToStartPage();
-    return null;
-  }
-
   return (
-    <Box className={classnames(className, styles.container)}>
-      {/* Pre-rendered content */}
+    <Box className={classnames(className, styles.container)} my={2}>
       {content}
     </Box>
   );
