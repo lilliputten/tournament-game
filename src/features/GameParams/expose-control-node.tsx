@@ -5,10 +5,9 @@
  */
 
 import { useEffect } from 'react';
-import { useStore } from 'react-redux';
 
 import { useAppDispatch } from '@/core/app/app-store';
-import { TRootState, useRootStore } from '@/core/app/app-root-state';
+import { useRootStore } from '@/core/app/app-root-state';
 
 import { fetchAppInfoAction } from './services/fetchAppInfo';
 import { actions } from './reducer';
