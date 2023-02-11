@@ -5,7 +5,7 @@
 
 import * as buildConfig from './build';
 
-const useDebugApi = true;
+const useDebugApi = false;
 
 export const apiHost =
   useDebugApi && buildConfig.isDev

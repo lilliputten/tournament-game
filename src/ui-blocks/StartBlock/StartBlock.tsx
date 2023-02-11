@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { useRouter } from 'next/router';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Box from '@mui/material/Box';
@@ -36,6 +37,7 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
    */
 
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const isLoading = useGameParamsLoading();
   const token = useGameParamsToken();
@@ -64,8 +66,10 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
         gameMode,
         token,
       });
+      // Go to the waiting page...
+      router.push('/waiting');
     },
-    [dispatch, closeNameDialog, gameMode, token],
+    [dispatch, router, closeNameDialog, gameMode, token],
   );
 
   const chooseSinglePlayer = React.useCallback(() => {

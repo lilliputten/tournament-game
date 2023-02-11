@@ -1,21 +1,24 @@
-/** @module StartBlock.module.scss
+/** @module WaitingBlock.module.scss
  *  @since 2023.02.07, 20:35
  *  @changed 2023.02.07, 20:35
  */
+
+$sectionsMargin: 10px;
 
 .container {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   text-align: center;
-}
-
-.actions,
-.question,
-.title {
-  margin: 10px auto;
+  > * {
+    margin: $sectionsMargin auto;
+  }
 }
 
 .error {
   color: $errorColor;
+}
+
+.actions {
+  margin: $sectionsMargin auto;
 }
