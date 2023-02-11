@@ -69,12 +69,14 @@ const gameParamsSlice = createSlice({
         (state: TGameParamsState, action: TFetchAppInfoPayloadAction) => {
           const { error, meta } = action;
           // eslint-disable-next-line no-console
-          console.log('[features/GameParams/reducer:fetchAppInfoThunk.rejected]', {
+          console.error('[features/GameParams/reducer:fetchAppInfoThunk.rejected]', {
             error,
             meta,
           });
           // debugger; // eslint-disable-line no-debugger
-          state.error = error;
+          if (error.name !== 'CanceledError') {
+            state.error = error;
+          }
           state.isLoading = false;
         },
       );

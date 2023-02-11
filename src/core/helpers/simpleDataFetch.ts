@@ -3,9 +3,9 @@
  *  @changed 2023.02.10, 20:05
  */
 
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-import { apiUrlPrefix, defaultDataRequestHeaders } from '@/config/api';
+import { defaultDataRequestHeaders } from '@/config/api';
 
 interface TResponseError {
   code: number; //  404
@@ -19,22 +19,66 @@ interface TResponseError {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TRequestParams = AxiosRequestConfig<any>;
 
+// Initiate cancel requests object
+let source = axios.CancelToken.source();
+
+// All active requests list
+const activeRequests: Promise<AxiosResponse>[] = [];
+
 export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
-  const url = apiUrlPrefix + '/start';
+  // const url = apiUrlPrefix + '/start';
   const requestParams = {
+    /* // Available parameters (@see https://github.com/axios/axios#request-config):
+     * url?: string;
+     * method?: Method;
+     * baseURL?: string;
+     * transformRequest?: AxiosRequestTransformer | AxiosRequestTransformer[];
+     * transformResponse?: AxiosResponseTransformer | AxiosResponseTransformer[];
+     * headers?: AxiosRequestHeaders;
+     * params?: any;
+     * paramsSerializer?: (params: any) => string;
+     * data?: D;
+     * timeout?: number;
+     * timeoutErrorMessage?: string;
+     * withCredentials?: boolean;
+     * adapter?: AxiosAdapter;
+     * auth?: AxiosBasicCredentials;
+     * responseType?: ResponseType;
+     * xsrfCookieName?: string;
+     * xsrfHeaderName?: string;
+     * onUploadProgress?: (progressEvent: any) => void;
+     * onDownloadProgress?: (progressEvent: any) => void;
+     * maxContentLength?: number;
+     * validateStatus?: ((status: number) => boolean) | null;
+     * maxBodyLength?: number;
+     * maxRedirects?: number;
+     * socketPath?: string | null;
+     * httpAgent?: any;
+     * httpsAgent?: any;
+     * proxy?: AxiosProxyConfig | false;
+     * cancelToken?: CancelToken;
+     * decompress?: boolean;
+     * transitional?: TransitionalOptions;
+     * signal?: AbortSignal;
+     * insecureHTTPParser?: boolean;
+     */
     method: 'get',
-    url,
     withCredentials: true,
     ...params,
     headers: { ...defaultDataRequestHeaders, ...params.headers },
+    cancelToken: source.token,
   };
   /* console.log('[simpleDataFetch]: request start', {
    *   requestParams,
    *   params,
-   *   url,
    * });
    */
-  return axios<T & TResponseError>(requestParams)
+  // Start request
+  const axiosRequest = axios<T & TResponseError>(requestParams);
+  // Add axios request to active requests list
+  activeRequests.push(axiosRequest);
+  // Return operation promise...
+  return axiosRequest
     .then((res) => {
       const { data } = res;
       // Check error...
@@ -56,9 +100,38 @@ export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
         data,
         statusText,
         error,
-        url,
+        params,
+        requestParams,
       });
-      debugger; // eslint-disable-line no-debugger
+      // debugger; // eslint-disable-line no-debugger
       throw error;
+    })
+    .finally(() => {
+      // Remove axios request from active requests list
+      const p = activeRequests.indexOf(axiosRequest);
+      if (p !== -1) {
+        /* console.log('[simpleDataFetch:finally]', {
+         *   axiosRequest,
+         *   activeRequests,
+         *   p,
+         *   params,
+         *   requestParams,
+         * });
+         */
+        activeRequests.splice(p, 1);
+      }
     });
+}
+
+export function cancelAllActiveRequests() {
+  /* console.log('[simpleDataFetch:cancelAllActiveRequests]', {
+   *   activeRequests,
+   *   source,
+   * });
+   */
+  // Cancel all registered requests
+  source.cancel();
+  // NOTE: Causes `CanceledError`.
+  // Re-initiate cancel requests object
+  source = axios.CancelToken.source();
 }

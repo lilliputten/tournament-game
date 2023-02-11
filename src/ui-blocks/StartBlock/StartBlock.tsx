@@ -18,7 +18,7 @@ import {
   // useGameParamsToken,
   useAppDispatch,
   useGameParamsGameMode,
-  useGameParamsLoading,
+  useGameParamsIsLoading,
   useGameParamsUserName,
 } from '@/core';
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
@@ -42,18 +42,11 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
   // const appRootStore = useRootStore();
   const router = useRouter();
 
-  const isLoading = useGameParamsLoading();
-  // const token = useGameParamsToken();
+  const isLoading = useGameParamsIsLoading();
   const userName = useGameParamsUserName();
   const gameMode = useGameParamsGameMode();
 
   const [isUserNameDialogOpened, openUserNameDialog] = React.useState(false);
-
-  /* // DEBUG
-   * React.useEffect(() => {
-   *   console.log('[StartBlock:DEBUG]', { isLoading, token, userName, gameMode });
-   * }, [isLoading, token, userName, gameMode]);
-   */
 
   const closeNameDialog = React.useCallback(() => {
     openUserNameDialog(false);
@@ -69,7 +62,6 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
       console.log('[StartBlock:handleUserName] (Start waiting for a game partner)', {
         name,
         gameMode,
-        // token,
       });
       // Go to the waiting page...
       router.push('/waiting'); // DEBUG

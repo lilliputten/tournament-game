@@ -1,6 +1,6 @@
 /** @module reducer
  *  @since 2023.02.11, 17:02
- *  @changed 2023.02.11, 17:06
+ *  @changed 2023.02.12, 00:08
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -32,6 +32,9 @@ const gameSessionSlice = createSlice({
     setIsStarted: (state, action: PayloadAction<TGameSessionState['isStarted']>) => {
       state.isStarted = action.payload;
     },
+    setIsFailed: (state, action: PayloadAction<TGameSessionState['isFailed']>) => {
+      state.isFailed = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -40,6 +43,7 @@ const gameSessionSlice = createSlice({
         (state: TGameSessionState, _action: TFetchAppInfoPayloadAction) => {
           state.isLoading = true;
           state.isWaiting = true;
+          state.isStarted = false;
           state.error = undefined;
         },
       )
@@ -63,13 +67,17 @@ const gameSessionSlice = createSlice({
         (state: TGameSessionState, action: TFetchAppInfoPayloadAction) => {
           const { error, meta } = action;
           // eslint-disable-next-line no-console
-          console.log('[features/GameSession/reducer:fetchStartWaitingThunk.rejected]', {
+          console.error('[features/GameSession/reducer:fetchStartWaitingThunk.rejected]', {
             error,
             meta,
           });
           // debugger; // eslint-disable-line no-debugger
-          state.error = error;
+          if (error.name !== 'CanceledError') {
+            state.error = error;
+          }
           state.isLoading = false;
+          state.isWaiting = false;
+          state.isStarted = false;
         },
       );
   },
@@ -87,6 +95,7 @@ export const selectors = {
   selectToken: (state: TGameSessionState): TGameSessionState['token'] => state.token,
   selectIsWaiting: (state: TGameSessionState): TGameSessionState['isWaiting'] => state.isWaiting,
   selectIsStarted: (state: TGameSessionState): TGameSessionState['isStarted'] => state.isStarted,
+  selectIsFailed: (state: TGameSessionState): TGameSessionState['isFailed'] => state.isFailed,
 };
 
 // Actions (TODO, SAMPLE)...

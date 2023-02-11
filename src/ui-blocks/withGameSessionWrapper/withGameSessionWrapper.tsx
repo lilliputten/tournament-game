@@ -9,12 +9,13 @@ import { useRouter } from 'next/router';
 import classnames from 'classnames';
 
 import {
-  useGameParamsLoading,
+  useGameParamsIsLoading,
   useGameParamsError,
-  useGameSessionLoading,
+  useGameSessionIsLoading,
   useGameSessionError,
   useGameSessionIsStarted,
   useGameSessionIsWaiting,
+  useGameSessionIsFailed,
 } from '@/core/app/app-reducer';
 import { errorToString } from '@/utils';
 import { LoaderSplash } from '@/ui-elements';
@@ -33,6 +34,7 @@ export interface TWithGameSessionWrapperProps extends JSX.IntrinsicAttributes {
   isLoading?: boolean;
   isWaiting?: boolean;
   isStarted?: boolean;
+  isFailed?: boolean;
 }
 
 export function withGameSessionWrapperFabric<P extends JSX.IntrinsicAttributes>(
@@ -43,20 +45,22 @@ export function withGameSessionWrapperFabric<P extends JSX.IntrinsicAttributes>(
     Component: React.ComponentType<P>,
   ) {
     return function GameSessionWrapper(props: P) {
-      const isGameParamsLoading = useGameParamsLoading();
+      const isGameParamsLoading = useGameParamsIsLoading();
       const gameParamsError = useGameParamsError();
-      const isLoading = useGameSessionLoading();
+      const isLoading = useGameSessionIsLoading();
       const error = useGameSessionError() || gameParamsError;
       const isWaiting = useGameSessionIsWaiting();
       const isStarted = useGameSessionIsStarted();
+      const isFailed = useGameSessionIsFailed();
       const displayContent = !isGameParamsLoading; // && !isLoading && !error;
-      console.log('[withGameSessionWrapper:GameSessionWrapper]', {
-        isGameParamsLoading,
-        gameParamsError,
-        isLoading,
-        error,
-        displayContent,
-      });
+      /* console.log('[withGameSessionWrapper:GameSessionWrapper]', {
+       *   isGameParamsLoading,
+       *   gameParamsError,
+       *   isLoading,
+       *   error,
+       *   displayContent,
+       * });
+       */
       const router = useRouter();
       const goToStartPage = React.useCallback(() => {
         router.push('/');
@@ -77,7 +81,7 @@ export function withGameSessionWrapperFabric<P extends JSX.IntrinsicAttributes>(
                 justifyContent="center"
               >
                 <Button className="FixMuiButton" onClick={goToStartPage} variant="contained">
-                  <span className="Text">Перейти на стартовую страницу</span>
+                  <span className="Text">Начать сначала</span>
                 </Button>
               </Stack>
             </Box>
@@ -90,6 +94,7 @@ export function withGameSessionWrapperFabric<P extends JSX.IntrinsicAttributes>(
                 isLoading={isLoading}
                 isWaiting={isWaiting}
                 isStarted={isStarted}
+                isFailed={isFailed}
               />
             </div>
           )}

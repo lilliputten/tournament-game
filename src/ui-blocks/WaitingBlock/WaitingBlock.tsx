@@ -14,10 +14,15 @@ import classnames from 'classnames';
 import config from '@/config';
 import { TRootState } from '@/core/app/app-root-state';
 import {
+  cancelAllActiveRequests,
   useAppDispatch,
   useGameParamsGameMode,
   useGameParamsToken,
   useGameParamsUserName,
+  useGameSessionIsFailed,
+  useGameSessionIsLoading,
+  useGameSessionIsStarted,
+  useGameSessionIsWaiting,
 } from '@/core';
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
 import { Stack } from '@mui/system';
@@ -31,7 +36,7 @@ export interface TWaitingBlockProps extends JSX.IntrinsicAttributes {
 
 type TCb = () => void;
 
-function WaitingMulti({ cancelWaiting }: { cancelWaiting?: TCb }) {
+function WaitingMulti({ cancelWaiting, isWaiting }: { cancelWaiting?: TCb; isWaiting: boolean }) {
   return (
     <>
       <Typography variant="h5" gutterBottom>
@@ -41,7 +46,7 @@ function WaitingMulti({ cancelWaiting }: { cancelWaiting?: TCb }) {
         Это может занять несколько минут.
       </Typography>
       <Stack className={styles.actions} spacing={2} direction="row">
-        {!!cancelWaiting && (
+        {isWaiting && !!cancelWaiting && (
           <Button className="FixMuiButton" onClick={cancelWaiting} variant="contained">
             <span className="Text">Отменить</span>
           </Button>
@@ -51,14 +56,14 @@ function WaitingMulti({ cancelWaiting }: { cancelWaiting?: TCb }) {
   );
 }
 
-function WaitingSingle({ cancelWaiting }: { cancelWaiting?: TCb }) {
+function WaitingSingle({ cancelWaiting, isWaiting }: { cancelWaiting?: TCb; isWaiting: boolean }) {
   return (
     <>
       <Typography variant="h5" gutterBottom>
         Запуск игры
       </Typography>
       <Stack className={styles.actions} spacing={2} direction="row">
-        {!!cancelWaiting && (
+        {isWaiting && !!cancelWaiting && (
           <Button className="FixMuiButton" onClick={cancelWaiting} variant="contained">
             <span className="Text">Отменить</span>
           </Button>
@@ -91,7 +96,24 @@ function WaitingFailed({
         )}
         {!!goToStartPage && (
           <Button className="FixMuiButton" onClick={goToStartPage}>
-            <span className="Text">Перейти на стартовую страницу</span>
+            <span className="Text">Начать сначала</span>
+          </Button>
+        )}
+      </Stack>
+    </>
+  );
+}
+
+function WasCancelled({ goToStartPage }: { goToStartPage?: TCb }) {
+  return (
+    <>
+      <Typography variant="h5" gutterBottom>
+        Старт игры был отменён
+      </Typography>
+      <Stack className={styles.actions} spacing={2} direction="row">
+        {!!goToStartPage && (
+          <Button className="FixMuiButton" onClick={goToStartPage} variant="contained">
+            <span className="Text">Начать сначала</span>
           </Button>
         )}
       </Stack>
@@ -123,8 +145,13 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   const token = useGameParamsToken();
   const userName = useGameParamsUserName();
   const gameMode = useGameParamsGameMode();
-  const isLoading = true;
-  const isFailed = false;
+  const isLoading = useGameSessionIsLoading();
+  const isWaiting = useGameSessionIsWaiting();
+  const isStarted = useGameSessionIsStarted();
+  const isFailed = useGameSessionIsFailed();
+
+  // const isLoading = true;
+  // const isFailed = false;
 
   const isReady = !!userName && !!token;
 
@@ -152,29 +179,46 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
     // TODO: Clear isFailed
   }, [dispatch]);
 
+  const [wasCancelled, setCancelled] = React.useState(false);
+
   const cancelWaiting = React.useCallback(() => {
-    // TODO: Cancel waiting
-    goToStartPage();
-  }, [goToStartPage]);
+    cancelAllActiveRequests();
+    setCancelled(true);
+  }, []);
 
   const content = React.useMemo(() => {
     if (!isReady) {
       // Don't render nothing and go to the start page if environment isn't ready yet...
       return null;
+    } else if (isStarted) {
+      // All is ok: start game (TODO)...
+      return <GameReady />;
     } else if (isFailed) {
       // All is ok but server returned 'partner not found' status...
       return <WaitingFailed onSingleClick={handlePlaySingle} goToStartPage={goToStartPage} />;
-    } else if (!isLoading) {
-      // All is ok: start game (TODO)...
-      return <GameReady />;
+    } else if (wasCancelled) {
+      return <WasCancelled goToStartPage={goToStartPage} />;
+    } else if (!isWaiting) {
+      // ???
+      return null;
     } else if (gameMode === 'multi') {
       // Waiting for multi player game...
-      return <WaitingMulti cancelWaiting={cancelWaiting} />;
+      return <WaitingMulti cancelWaiting={cancelWaiting} isWaiting={isWaiting} />;
     } else {
       // Waiting for single player game (no waiting required?)...
-      return <WaitingSingle cancelWaiting={cancelWaiting} />;
+      return <WaitingSingle cancelWaiting={cancelWaiting} isWaiting={isWaiting} />;
     }
-  }, [isReady, isFailed, isLoading, gameMode, goToStartPage, cancelWaiting, handlePlaySingle]);
+  }, [
+    cancelWaiting,
+    gameMode,
+    goToStartPage,
+    handlePlaySingle,
+    isFailed,
+    isReady,
+    isStarted,
+    isWaiting,
+    wasCancelled,
+  ]);
 
   return (
     <Box className={classnames(className, styles.container)} my={2}>

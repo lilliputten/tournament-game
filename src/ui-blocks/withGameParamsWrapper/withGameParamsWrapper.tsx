@@ -7,7 +7,7 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { useGameParamsLoading, useGameParamsError } from '@/core/app/app-reducer';
+import { useGameParamsIsLoading, useGameParamsError } from '@/core/app/app-reducer';
 import { errorToString } from '@/utils';
 import { LoaderSplash } from '@/ui-elements';
 import { Typography } from '@mui/material';
@@ -33,7 +33,7 @@ export function withGameParamsWrapperFabric<P extends JSX.IntrinsicAttributes>(
     Component: React.ComponentType<P>,
   ) {
     return function GameParamsWrapper(props: P) {
-      const isLoading = useGameParamsLoading();
+      const isLoading = useGameParamsIsLoading();
       const error = useGameParamsError();
       return (
         <div className={classnames(wrapperClassName, styles.container)}>

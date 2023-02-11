@@ -45,15 +45,15 @@ export async function fetchAppInfo(): Promise<TFetchAppInfoResult> {
     })
     .catch((error) => {
       const errorText = 'Ошибка получения параметров приложения';
-      const throwError = new Error(errorText + ': ' + error.message);
+      const errorMessage = errorText + ': ' + error.message;
+      error.message = errorMessage;
       // eslint-disable-next-line no-console
       console.error('[fetchAppInfo]: request catch', {
-        throwError,
         error,
         url,
       });
       // debugger; // eslint-disable-line no-debugger
-      throw throwError;
+      throw error;
     });
 }
 

@@ -14,7 +14,7 @@ export const useGameParamsState = (): TGameParamsState =>
   useTypedSelector((state) => selectGameParamsState(state));
 
 // Basic (common) hooks...
-export const useGameParamsLoading = (): ReturnType<typeof selectors.selectLoading> =>
+export const useGameParamsIsLoading = (): ReturnType<typeof selectors.selectLoading> =>
   selectors.selectLoading(useGameParamsState());
 export const useGameParamsError = (): ReturnType<typeof selectors.selectError> =>
   selectors.selectError(useGameParamsState());

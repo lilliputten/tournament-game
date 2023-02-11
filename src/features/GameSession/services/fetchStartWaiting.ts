@@ -1,6 +1,6 @@
 /** @module Search
  *  @since 2023.02.11, 17:02
- *  @changed 2023.02.11, 22:33
+ *  @changed 2023.02.12, 00:08
  */
 
 import { AnyAction, createAsyncThunk, Store, ThunkDispatch } from '@reduxjs/toolkit';
@@ -34,12 +34,13 @@ export async function fetchStartWaiting(
   const url = config.api.apiUrlPrefix + '/waitingStart';
   const { userName } = params;
   const queryData: TFetchStartWaitingQuery = { name: userName };
-  console.log('[fetchStartWaiting]: request start', {
-    params,
-    queryData,
-    method,
-    url,
-  });
+  /* console.log('[fetchStartWaiting]: request start', {
+   *   params,
+   *   queryData,
+   *   method,
+   *   url,
+   * });
+   */
   return simpleDataFetch<TResponseData>({ url, method, data: queryData })
     .then((data) => {
       const { Token: token, success, error } = data;
@@ -54,29 +55,30 @@ export async function fetchStartWaiting(
       const result: TFetchStartWaitingResult = {
         token,
       };
-      console.log('[fetchStartWaiting]: request done', data, {
-        result,
-        data,
-        success,
-        token,
-        params,
-        url,
-      });
+      /* console.log('[fetchStartWaiting]: request done', data, {
+       *   result,
+       *   data,
+       *   success,
+       *   token,
+       *   params,
+       *   url,
+       * });
+       */
       return result;
     })
     .catch((error) => {
       const errorText = 'Ошибка запроса старта ожидания начала игры от сервера';
-      const throwError = new Error(errorText + ': ' + error.message);
+      const errorMessage = errorText + ': ' + error.message;
+      error.message = errorMessage;
       // eslint-disable-next-line no-console
       console.error('[fetchStartWaiting]: request catch', {
-        throwError,
         error,
         queryData,
         method,
         url,
       });
-      debugger; // eslint-disable-line no-debugger
-      throw throwError;
+      // debugger; // eslint-disable-line no-debugger
+      throw error;
     });
 }
 
@@ -91,10 +93,11 @@ export function fetchStartWaitingAction(rootStore: Store<TRootState>): void {
   const thunkDispatch = rootStore.dispatch as ThunkDispatch<TRootState, void, AnyAction>;
   const gameParamsState = rootStore.getState().gameParams;
   const { userName } = gameParamsState;
-  console.log('[fetchStartWaiting:fetchStartWaitingAction]: start', {
-    userName,
-    gameParamsState,
-  });
+  /* console.log('[fetchStartWaiting:fetchStartWaitingAction]: start', {
+   *   userName,
+   *   gameParamsState,
+   * });
+   */
   if (!userName) {
     const error = new Error('User name is not defined');
     // eslint-disable-next-line no-console
