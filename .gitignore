@@ -65,6 +65,7 @@ tsconfig.tsbuildinfo
 *.tgz
 *.log
 ~$*.doc
+*crashed-session*
 
 # Git conflicts
 *_BASE_*

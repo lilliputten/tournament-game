@@ -7,9 +7,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TGameSessionState } from './types';
 import { defaultState } from './constants';
-import { fetchWaitingThunk, TFetchAppInfoResult } from './services/fetchWaiting';
+import { fetchStartWaitingThunk, TFetchStartWaitingResult } from './services/fetchStartWaiting';
 
-type TFetchAppInfoPayloadAction = PayloadAction<TFetchAppInfoResult, string, unknown, Error>;
+type TFetchAppInfoPayloadAction = PayloadAction<TFetchStartWaitingResult, string, unknown, Error>;
 
 const initialState: TGameSessionState = {
   ...defaultState,
@@ -36,18 +36,19 @@ const gameSessionSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(
-        String(fetchWaitingThunk.pending),
+        String(fetchStartWaitingThunk.pending),
         (state: TGameSessionState, _action: TFetchAppInfoPayloadAction) => {
           state.isLoading = true;
+          state.isWaiting = true;
           state.error = undefined;
         },
       )
       .addCase(
-        String(fetchWaitingThunk.fulfilled),
+        String(fetchStartWaitingThunk.fulfilled),
         (state: TGameSessionState, action: TFetchAppInfoPayloadAction) => {
           const { payload } = action;
           const { token } = payload;
-          /* console.log('[features/GameSession/reducer:fetchWaitingThunk.fulfilled]: success', {
+          /* console.log('[features/GameSession/reducer:fetchStartWaitingThunk.fulfilled]: success', {
            *   token,
            *   payload,
            * });
@@ -58,11 +59,11 @@ const gameSessionSlice = createSlice({
         },
       )
       .addCase(
-        String(fetchWaitingThunk.rejected),
+        String(fetchStartWaitingThunk.rejected),
         (state: TGameSessionState, action: TFetchAppInfoPayloadAction) => {
           const { error, meta } = action;
           // eslint-disable-next-line no-console
-          console.log('[features/GameSession/reducer:fetchWaitingThunk.rejected]', {
+          console.log('[features/GameSession/reducer:fetchStartWaitingThunk.rejected]', {
             error,
             meta,
           });

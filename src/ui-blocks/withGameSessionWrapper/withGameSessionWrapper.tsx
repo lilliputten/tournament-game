@@ -13,6 +13,8 @@ import {
   useGameParamsError,
   useGameSessionLoading,
   useGameSessionError,
+  useGameSessionIsStarted,
+  useGameSessionIsWaiting,
 } from '@/core/app/app-reducer';
 import { errorToString } from '@/utils';
 import { LoaderSplash } from '@/ui-elements';
@@ -29,6 +31,8 @@ export interface TWithGameSessionWrapperParams {
 export interface TWithGameSessionWrapperProps extends JSX.IntrinsicAttributes {
   error?: Error;
   isLoading?: boolean;
+  isWaiting?: boolean;
+  isStarted?: boolean;
 }
 
 export function withGameSessionWrapperFabric<P extends JSX.IntrinsicAttributes>(
@@ -43,7 +47,9 @@ export function withGameSessionWrapperFabric<P extends JSX.IntrinsicAttributes>(
       const gameParamsError = useGameParamsError();
       const isLoading = useGameSessionLoading();
       const error = useGameSessionError() || gameParamsError;
-      const displayContent = !isGameParamsLoading && !isLoading && !error;
+      const isWaiting = useGameSessionIsWaiting();
+      const isStarted = useGameSessionIsStarted();
+      const displayContent = !isGameParamsLoading; // && !isLoading && !error;
       console.log('[withGameSessionWrapper:GameSessionWrapper]', {
         isGameParamsLoading,
         gameParamsError,
@@ -78,11 +84,17 @@ export function withGameSessionWrapperFabric<P extends JSX.IntrinsicAttributes>(
           )}
           {displayContent && (
             <div className={styles.contentContainer}>
-              <Component {...props} error={error} isLoading={isLoading} />
+              <Component
+                {...props}
+                error={error}
+                isLoading={isLoading}
+                isWaiting={isWaiting}
+                isStarted={isStarted}
+              />
             </div>
           )}
           {/* Show small loader at the end of article items if some data has loaded */}
-          {isLoading && (
+          {(isLoading || isWaiting) && (
             <LoaderSplash
               className={styles.smallLoader}
               spinnerSize="medium"

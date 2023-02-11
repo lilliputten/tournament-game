@@ -39,6 +39,7 @@ export async function postSetName(params: TSetNameParams): Promise<TPostSetNameR
   return simpleDataFetch<TResponseData>({ url, method, data: queryData })
     .then((data) => {
       const { Token: token, success, error } = data;
+      // Check possible errors...
       if (!success || error) {
         throw new Error(error || 'Операция завершена с неопределённой ошибкой');
       }
@@ -46,14 +47,15 @@ export async function postSetName(params: TSetNameParams): Promise<TPostSetNameR
         throw new Error('Не получен токен сессии!');
       }
       // Fetch data...
+      const result: TPostSetNameResult = {
+        token,
+      };
       console.log('[postSetName]: request done', data, {
+        result,
         success,
         token,
         url,
       });
-      const result: TPostSetNameResult = {
-        token,
-      };
       return result;
     })
     .catch((error) => {

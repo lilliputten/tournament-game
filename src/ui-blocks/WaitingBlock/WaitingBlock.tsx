@@ -21,7 +21,7 @@ import {
 } from '@/core';
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
 import { Stack } from '@mui/system';
-import { fetchWaitingAction } from '@/features/GameSession/services';
+import { fetchStartWaitingAction } from '@/features/GameSession/services';
 
 import styles from './WaitingBlock.module.scss';
 
@@ -134,11 +134,11 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
 
   // DEBUG: fetchWaiting
   React.useEffect(() => {
-    console.log('[WaitingBlock]: DEBUG: fetchWaiting', { token, userName, gameMode });
+    // console.log('[WaitingBlock]: DEBUG: fetchWaiting', { token, userName, gameMode });
     if (isReady && token && userName /* && gameMode === 'multi' */) {
-      // fetchWaitingAction(appRootStore); // DEBUG
+      fetchStartWaitingAction(appRootStore); // DEBUG
     }
-  }, [token, isReady, userName, gameMode, appRootStore]);
+  }, [token, isReady, userName, appRootStore]);
 
   React.useEffect(() => {
     // Go to the start page if environment isn't ready yet
