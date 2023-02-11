@@ -17,7 +17,7 @@ import {
   // useRootStore,
   // useGameParamsToken,
   useAppDispatch,
-  useGameParamsGameMode,
+  // useGameParamsGameMode,
   useGameParamsIsLoading,
   useGameParamsUserName,
 } from '@/core';
@@ -44,7 +44,7 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
 
   const isLoading = useGameParamsIsLoading();
   const userName = useGameParamsUserName();
-  const gameMode = useGameParamsGameMode();
+  // const gameMode = useGameParamsGameMode();
 
   const [isUserNameDialogOpened, openUserNameDialog] = React.useState(false);
 
@@ -56,17 +56,12 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
     (name: string) => {
       closeNameDialog();
       dispatch(gameParamsActions.setUserName(name));
-      // XXX: Save name here?
+      // XXX: To save name to server here?
       // postSetNameAction(appRootStore, { name });
-      // TODO: Start waiting for a game partner...
-      console.log('[StartBlock:handleUserName] (Start waiting for a game partner)', {
-        name,
-        gameMode,
-      });
       // Go to the waiting page...
       router.push('/waiting'); // DEBUG
     },
-    [dispatch, router, closeNameDialog, gameMode],
+    [dispatch, router, closeNameDialog],
   );
 
   const chooseSinglePlayer = React.useCallback(() => {

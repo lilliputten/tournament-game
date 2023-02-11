@@ -30,12 +30,13 @@ export async function postSetName(params: TSetNameParams): Promise<TPostSetNameR
   const queryData = {
     name,
   };
-  console.log('[postSetName]: request start', {
-    queryData,
-    params,
-    method,
-    url,
-  });
+  /* console.log('[postSetName]: request start', {
+   *   queryData,
+   *   params,
+   *   method,
+   *   url,
+   * });
+   */
   return simpleDataFetch<TResponseData>({ url, method, data: queryData })
     .then((data) => {
       const { Token: token, success, error } = data;
@@ -50,12 +51,13 @@ export async function postSetName(params: TSetNameParams): Promise<TPostSetNameR
       const result: TPostSetNameResult = {
         token,
       };
-      console.log('[postSetName]: request done', data, {
-        result,
-        success,
-        token,
-        url,
-      });
+      /* console.log('[postSetName]: request done', data, {
+       *   result,
+       *   success,
+       *   token,
+       *   url,
+       * });
+       */
       return result;
     })
     .catch((error) => {

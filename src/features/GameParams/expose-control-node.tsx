@@ -12,14 +12,9 @@ import { useRootStore } from '@/core/app/app-root-state';
 import { fetchAppInfoAction } from './services/fetchAppInfo';
 import { actions } from './reducer';
 
-// type TMemo = TGameParamsParams;
-// const defaultMemo = { ...defaultParams };
-
 export default function ExposeControlNode(): null {
   const dispatch = useAppDispatch();
   const appRootStore = useRootStore();
-
-  // const memo = useMemo<TMemo>(() => ({ ...defaultMemo }), []);
 
   // Effect: Update data on essential parameters change
   useEffect(() => {
