@@ -1,7 +1,7 @@
 /** @module strings
  *  @description Strings utilities
  *  @since 2023.01.26, 20:43
- *  @changed 2023.01.29, 02:16
+ *  @changed 2023.02.12, 02:27
  */
 
 import { AxiosError } from 'axios';
@@ -190,12 +190,16 @@ export function errorToString(error: Error | AxiosError): string {
    * stack: "AxiosError: Network Error\n    at XMLHttpRequest.handleError (webpack-internal:///./node_modules/axios/lib/adapters/xhr.js:168:14)"
    */
   const {
-    code,
-    message,
-    name,
+    // code,
+    // name,
     // stack
+    message,
   } = metaError;
-  return [name, code, message]
+  return [
+    // name,
+    // code,
+    message,
+  ]
     .filter(Boolean)
     .join(': ')
     .replace(/^Error:\s*/, '');
