@@ -14,16 +14,18 @@ import classnames from 'classnames';
 import { UserNameDialog } from '@/ui-blocks/UserNameDialog';
 
 import {
+  // useRootStore,
+  // useGameParamsToken,
   useAppDispatch,
   useGameParamsGameMode,
   useGameParamsLoading,
-  useGameParamsToken,
   useGameParamsUserName,
 } from '@/core';
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
 import { TWithGameParamsWrapperProps } from '../withGameParamsWrapper/withGameParamsWrapper';
 
 import styles from './StartBlock.module.scss';
+// import { postSetNameAction } from '@/features/GameParams/services';
 
 export interface TStartBlockProps extends TWithGameParamsWrapperProps {
   className?: string;
@@ -37,10 +39,11 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
    */
 
   const dispatch = useAppDispatch();
+  // const appRootStore = useRootStore();
   const router = useRouter();
 
   const isLoading = useGameParamsLoading();
-  const token = useGameParamsToken();
+  // const token = useGameParamsToken();
   const userName = useGameParamsUserName();
   const gameMode = useGameParamsGameMode();
 
@@ -60,16 +63,18 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
     (name: string) => {
       closeNameDialog();
       dispatch(gameParamsActions.setUserName(name));
-      // TODO: Start wainting for a game partner...
-      console.log('[StartBlock:handleUserName] (Start wainting for a game partner)', {
+      // XXX: Save name here?
+      // postSetNameAction(appRootStore, { name });
+      // TODO: Start waiting for a game partner...
+      console.log('[StartBlock:handleUserName] (Start waiting for a game partner)', {
         name,
         gameMode,
-        token,
+        // token,
       });
       // Go to the waiting page...
-      router.push('/waiting');
+      router.push('/waiting'); // DEBUG
     },
-    [dispatch, router, closeNameDialog, gameMode, token],
+    [dispatch, router, closeNameDialog, gameMode],
   );
 
   const chooseSinglePlayer = React.useCallback(() => {

@@ -1,6 +1,6 @@
 /** @module reducer
  *  @since 2023.01.28, 19:17
- *  @changed 2023.02.10, 18:26
+ *  @changed 2023.02.11, 21:36
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -25,12 +25,13 @@ const gameParamsSlice = createSlice({
   reducers: {
     resetData: (state) => {
       state.error = undefined;
-      // TODO: To reset `userName`, `token`?
+      // TODO: To reset `userName`, `token`, etc?
     },
     setUserName: (state, action: PayloadAction<TGameParamsState['userName']>) => {
       const userName = action.payload;
       state.userName = userName;
       hasLocalStorage && localStorage.setItem('gameParams:userName', userName || '');
+      // TODO: Save name to server here?
     },
     setToken: (state, action: PayloadAction<TGameParamsState['token']>) => {
       state.token = action.payload;

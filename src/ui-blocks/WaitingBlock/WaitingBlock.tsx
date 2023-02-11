@@ -116,7 +116,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
    * - [React Typography component - Material UI](https://mui.com/material-ui/react-typography/)
    */
 
-  const appStateStore = useStore<TRootState>();
+  const appRootStore = useStore<TRootState>();
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -136,9 +136,9 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   React.useEffect(() => {
     console.log('[WaitingBlock]: DEBUG: fetchWaiting', { token, userName, gameMode });
     if (isReady && token && userName /* && gameMode === 'multi' */) {
-      fetchWaitingAction(appStateStore);
+      // fetchWaitingAction(appRootStore); // DEBUG
     }
-  }, [token, isReady, userName, gameMode, appStateStore]);
+  }, [token, isReady, userName, gameMode, appRootStore]);
 
   React.useEffect(() => {
     // Go to the start page if environment isn't ready yet

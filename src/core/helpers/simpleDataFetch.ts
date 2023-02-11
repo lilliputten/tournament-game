@@ -48,11 +48,17 @@ export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
     })
     .catch((error) => {
       // eslint-disable-next-line no-console
+      const { response } = error;
+      const data = response?.data;
+      const statusText = response?.statusText;
+      // eslint-disable-next-line no-console
       console.error('[simpleDataFetch]: request catch', {
+        data,
+        statusText,
         error,
         url,
       });
-      // debugger; // eslint-disable-line no-debugger
+      debugger; // eslint-disable-line no-debugger
       throw error;
     });
 }
