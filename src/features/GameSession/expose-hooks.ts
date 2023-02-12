@@ -22,6 +22,8 @@ export const useGameSessionError = (): ReturnType<typeof selectors.selectError> 
 // Custom hooks
 export const useGameSessionIsWaiting = (): ReturnType<typeof selectors.selectIsWaiting> =>
   selectors.selectIsWaiting(useGameSessionState());
+export const useGameSessionIsWaitingCycle = (): ReturnType<typeof selectors.selectIsWaitingCycle> =>
+  selectors.selectIsWaitingCycle(useGameSessionState());
 export const useGameSessionIsStarted = (): ReturnType<typeof selectors.selectIsStarted> =>
   selectors.selectIsStarted(useGameSessionState());
 export const useGameSessionIsFailed = (): ReturnType<typeof selectors.selectIsFailed> =>

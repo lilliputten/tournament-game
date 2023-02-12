@@ -7,11 +7,12 @@ import { TGameSessionState } from './types';
 
 // Default state
 export const defaultState: TGameSessionState = {
-  token: undefined, // DEMO
   isWaiting: false,
+  isWaitingCycle: false,
   isStarted: false,
   isFailed: false,
 
+  loadingCount: 0,
   isLoading: false,
   error: undefined,
 };

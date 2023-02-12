@@ -10,14 +10,15 @@ import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
 
 interface TResponseData {
-  Token: string; // '230209-185714-942-3589518'
+  // Token: string; // '230209-185714-942-3589518'
   success: boolean | string;
   error?: string;
 }
 // TODO!
-export interface TFetchStartWaitingResult {
-  token?: string;
-}
+export type TFetchStartWaitingResult = void;
+// export interface TFetchStartWaitingResult {
+//   // token?: string;
+// }
 
 export interface TFetchStartWaitingParams {
   userName: string;
@@ -26,6 +27,8 @@ export interface TFetchStartWaitingParams {
 export interface TFetchStartWaitingQuery {
   name: string;
 }
+
+const requestErrorText = 'Ошибка запроса старта ожидания начала игры от сервера';
 
 export async function fetchStartWaiting(
   params: TFetchStartWaitingParams,
@@ -43,31 +46,20 @@ export async function fetchStartWaiting(
    */
   return simpleDataFetch<TResponseData>({ url, method, data: queryData })
     .then((data) => {
-      const { Token: token, success, error } = data;
+      const { success, error } = data;
       // Check possible errors...
       if (!success || error) {
         throw new Error(error || 'Операция завершена с неопределённой ошибкой');
       }
-      if (!token) {
-        throw new Error('Не получен токен сессии!');
-      }
-      // Fetch data...
-      const result: TFetchStartWaitingResult = {
-        token,
-      };
-      /* console.log('[fetchStartWaiting]: request done', data, {
-       *   result,
-       *   data,
-       *   success,
-       *   token,
-       *   params,
-       *   url,
-       * });
-       */
-      return result;
+      console.log('[fetchStartWaiting]: request done', data, {
+        data,
+        success,
+        params,
+        url,
+      });
     })
     .catch((error) => {
-      const errorText = 'Ошибка запроса старта ожидания начала игры от сервера';
+      const errorText = requestErrorText;
       const errorMessage = errorText + ': ' + error.message;
       error.message = errorMessage;
       // eslint-disable-next-line no-console

@@ -79,22 +79,24 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
       <Typography variant="h5" gutterBottom className={classnames(styles.title)}>
         Турнир по теме «Что проверить в договорах»
       </Typography>
-      <Typography variant="body1" gutterBottom className={classnames(styles.question)}>
-        Как вы хотите сыграть?
-      </Typography>
       {!isLoading && (
-        <ButtonGroup
-          className={classnames(styles.actions)}
-          variant="outlined"
-          aria-label="outlined primary button group"
-        >
-          <Button className="FixMuiButton" onClick={chooseSinglePlayer}>
-            <span className="Text">Турнир для одного</span>
-          </Button>
-          <Button className="FixMuiButton" onClick={chooseMultiPlayer}>
-            <span className="Text">Турнир для двоих</span>
-          </Button>
-        </ButtonGroup>
+        <>
+          <Typography variant="body1" gutterBottom className={classnames(styles.question)}>
+            Как вы хотите сыграть?
+          </Typography>
+          <ButtonGroup
+            className={classnames(styles.actions)}
+            variant="outlined"
+            aria-label="outlined primary button group"
+          >
+            <Button className="FixMuiButton" onClick={chooseSinglePlayer}>
+              <span className="Text">Турнир для одного</span>
+            </Button>
+            <Button className="FixMuiButton" onClick={chooseMultiPlayer}>
+              <span className="Text">Турнир для двоих</span>
+            </Button>
+          </ButtonGroup>
+        </>
       )}
       <UserNameDialog
         name={userName || ''}

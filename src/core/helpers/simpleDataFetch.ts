@@ -63,6 +63,7 @@ export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
      * insecureHTTPParser?: boolean;
      */
     method: 'get',
+    timeout: 10000,
     withCredentials: true,
     ...params,
     headers: { ...defaultDataRequestHeaders, ...params.headers },

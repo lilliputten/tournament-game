@@ -6,9 +6,7 @@
 import React from 'react';
 import { useStore } from 'react-redux';
 import { useRouter } from 'next/router';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import classnames from 'classnames';
 
 import config from '@/config';
@@ -23,112 +21,26 @@ import {
   useGameSessionIsLoading,
   useGameSessionIsStarted,
   useGameSessionIsWaiting,
+  useGameSessionIsWaitingCycle,
 } from '@/core';
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
-import { Stack } from '@mui/system';
+import { actions as gameSessionActions } from '@/features/GameSession/reducer';
 import { fetchStartWaitingAction } from '@/features/GameSession/services';
+import {
+  // TCb,
+  WaitingMulti,
+  WaitingSingle,
+  WaitingFailed,
+  WasCancelled,
+  GameReady,
+  WaitingStart,
+} from './WaitingBlockContent';
 
 import styles from './WaitingBlock.module.scss';
+import { sendStopWaitingThunk } from '@/features/GameSession/services/sendStopWaiting';
 
 export interface TWaitingBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
-}
-
-type TCb = () => void;
-
-function WaitingMulti({ cancelWaiting, isWaiting }: { cancelWaiting?: TCb; isWaiting: boolean }) {
-  return (
-    <>
-      <Typography variant="h5" gutterBottom>
-        Ищем соперника
-      </Typography>
-      <Typography variant="body1" gutterBottom>
-        Это может занять несколько минут.
-      </Typography>
-      <Stack className={styles.actions} spacing={2} direction="row">
-        {isWaiting && !!cancelWaiting && (
-          <Button className="FixMuiButton" onClick={cancelWaiting} variant="contained">
-            <span className="Text">Отменить</span>
-          </Button>
-        )}
-      </Stack>
-    </>
-  );
-}
-
-function WaitingSingle({ cancelWaiting, isWaiting }: { cancelWaiting?: TCb; isWaiting: boolean }) {
-  return (
-    <>
-      <Typography variant="h5" gutterBottom>
-        Запуск игры
-      </Typography>
-      <Stack className={styles.actions} spacing={2} direction="row">
-        {isWaiting && !!cancelWaiting && (
-          <Button className="FixMuiButton" onClick={cancelWaiting} variant="contained">
-            <span className="Text">Отменить</span>
-          </Button>
-        )}
-      </Stack>
-    </>
-  );
-}
-
-function WaitingFailed({
-  onSingleClick,
-  goToStartPage,
-}: {
-  onSingleClick?: TCb;
-  goToStartPage?: TCb;
-}) {
-  return (
-    <>
-      <Typography variant="h5" gutterBottom>
-        Похоже, сейчас нет подходщих соперников
-      </Typography>
-      <Typography variant="body1" gutterBottom>
-        Вы можете сыграть самостоятельно и подняться в рейтинге
-      </Typography>
-      <Stack className={styles.actions} spacing={2} direction="row">
-        {!!onSingleClick && (
-          <Button className="FixMuiButton" onClick={onSingleClick} variant="contained">
-            <span className="Text">Турнир для одного</span>
-          </Button>
-        )}
-        {!!goToStartPage && (
-          <Button className="FixMuiButton" onClick={goToStartPage}>
-            <span className="Text">Начать сначала</span>
-          </Button>
-        )}
-      </Stack>
-    </>
-  );
-}
-
-function WasCancelled({ goToStartPage }: { goToStartPage?: TCb }) {
-  return (
-    <>
-      <Typography variant="h5" gutterBottom>
-        Старт игры был отменён
-      </Typography>
-      <Stack className={styles.actions} spacing={2} direction="row">
-        {!!goToStartPage && (
-          <Button className="FixMuiButton" onClick={goToStartPage} variant="contained">
-            <span className="Text">Начать сначала</span>
-          </Button>
-        )}
-      </Stack>
-    </>
-  );
-}
-
-function GameReady() {
-  return (
-    <>
-      <Typography variant="h5" gutterBottom>
-        Игра готова
-      </Typography>
-    </>
-  );
 }
 
 export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
@@ -147,6 +59,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   const gameMode = useGameParamsGameMode();
   const isLoading = useGameSessionIsLoading();
   const isWaiting = useGameSessionIsWaiting();
+  const isWaitingCycle = useGameSessionIsWaitingCycle();
   const isStarted = useGameSessionIsStarted();
   const isFailed = useGameSessionIsFailed();
 
@@ -182,9 +95,12 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   const [wasCancelled, setCancelled] = React.useState(false);
 
   const cancelWaiting = React.useCallback(() => {
+    console.log('[WaitingBlock]: DEBUG: cancelWaiting');
     cancelAllActiveRequests();
+    dispatch(sendStopWaitingThunk());
+    dispatch(gameSessionActions.resetData());
     setCancelled(true);
-  }, []);
+  }, [dispatch]);
 
   const content = React.useMemo(() => {
     if (!isReady) {
@@ -201,12 +117,14 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
     } else if (!isWaiting) {
       // ???
       return null;
-    } else if (gameMode === 'multi') {
-      // Waiting for multi player game...
-      return <WaitingMulti cancelWaiting={cancelWaiting} isWaiting={isWaiting} />;
-    } else {
+    } else if (!isWaitingCycle) {
+      return <WaitingStart cancelWaiting={cancelWaiting} isWaiting />;
+    } else if (gameMode === 'single') {
       // Waiting for single player game (no waiting required?)...
-      return <WaitingSingle cancelWaiting={cancelWaiting} isWaiting={isWaiting} />;
+      return <WaitingSingle cancelWaiting={cancelWaiting} isWaiting />;
+    } else {
+      // Waiting for multi player game...
+      return <WaitingMulti cancelWaiting={cancelWaiting} isWaiting />;
     }
   }, [
     cancelWaiting,
@@ -217,6 +135,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
     isReady,
     isStarted,
     isWaiting,
+    isWaitingCycle,
     wasCancelled,
   ]);
 
