@@ -102,9 +102,12 @@ const gameSessionSlice = createSlice({
             action,
           });
           if (status !== 'waiting') {
-            console.log('[features/GameSession/reducer:fetchCheckWaitingThunk.fulfilled]: not waiting', {
-              status,
-            });
+            console.log(
+              '[features/GameSession/reducer:fetchCheckWaitingThunk.fulfilled]: not waiting',
+              {
+                status,
+              },
+            );
             debugger;
             // Stop waiting loop...
             state.isWaiting = false;

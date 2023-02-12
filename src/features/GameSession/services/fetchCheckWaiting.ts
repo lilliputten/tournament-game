@@ -18,7 +18,10 @@ interface TResponseData {
   partnerName?: string;
   error?: string;
 }
-export type TFetchCheckWaitingResult = Pick<TResponseData, 'status' | 'partnerToken' | 'partnerName'>;
+export type TFetchCheckWaitingResult = Pick<
+  TResponseData,
+  'status' | 'partnerToken' | 'partnerName'
+>;
 
 export type TFetchCheckWaitingPayloadAction = PayloadAction<
   TFetchCheckWaitingResult,
