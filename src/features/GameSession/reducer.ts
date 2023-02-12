@@ -1,16 +1,20 @@
 /** @module reducer
  *  @since 2023.02.11, 17:02
- *  @changed 2023.02.12, 00:08
+ *  @changed 2023.02.13, 01:02
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TGameSessionState } from './types';
 import { defaultState } from './constants';
-import { fetchStartWaitingThunk, TFetchStartWaitingResult } from './services/fetchStartWaiting';
-import { sendStopWaitingThunk } from './services/sendStopWaiting';
-
-type TFetchAppInfoPayloadAction = PayloadAction<TFetchStartWaitingResult, string, unknown, Error>;
+import {
+  fetchCheckWaitingThunk,
+  fetchStartWaitingThunk,
+  sendStopWaitingThunk,
+  TFetchCheckWaitingPayloadAction,
+  TFetchStartWaitingPayloadAction,
+  TSendStopWaitingPayloadAction,
+} from './services';
 
 const initialState: TGameSessionState = {
   ...defaultState,
@@ -45,7 +49,7 @@ const gameSessionSlice = createSlice({
       // fetchStartWaiting...
       .addCase(
         String(fetchStartWaitingThunk.pending),
-        (state: TGameSessionState, _action: TFetchAppInfoPayloadAction) => {
+        (state: TGameSessionState, _action: TFetchStartWaitingPayloadAction) => {
           state.error = undefined;
           state.loadingCount++;
           state.isLoading = true;
@@ -56,7 +60,7 @@ const gameSessionSlice = createSlice({
       )
       .addCase(
         String(fetchStartWaitingThunk.fulfilled),
-        (state: TGameSessionState, _action: TFetchAppInfoPayloadAction) => {
+        (state: TGameSessionState, _action: TFetchStartWaitingPayloadAction) => {
           // console.log('[features/GameSession/reducer:fetchStartWaitingThunk.fulfilled]: success', action.payload);
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
@@ -66,7 +70,7 @@ const gameSessionSlice = createSlice({
       )
       .addCase(
         String(fetchStartWaitingThunk.rejected),
-        (state: TGameSessionState, action: TFetchAppInfoPayloadAction) => {
+        (state: TGameSessionState, action: TFetchStartWaitingPayloadAction) => {
           const { error, meta } = action;
           // eslint-disable-next-line no-console
           console.error('[features/GameSession/reducer:fetchStartWaitingThunk.rejected]', {
@@ -84,6 +88,56 @@ const gameSessionSlice = createSlice({
           state.isWaitingCycle = false;
         },
       )
+      // fetchCheckWaiting...
+      .addCase(String(fetchCheckWaitingThunk.pending), (state: TGameSessionState) => {
+        state.loadingCount++;
+        state.isLoading = true;
+      })
+      .addCase(
+        String(fetchCheckWaitingThunk.fulfilled),
+        (state: TGameSessionState, action: TFetchCheckWaitingPayloadAction) => {
+          const { status } = action.payload;
+          console.log('[features/GameSession/reducer:fetchCheckWaitingThunk.fulfilled]', {
+            status,
+            action,
+          });
+          if (status !== 'waiting') {
+            console.log('[features/GameSession/reducer:fetchCheckWaitingThunk.fulfilled]: not waiting', {
+              status,
+            });
+            debugger;
+            // Stop waiting loop...
+            state.isWaiting = false;
+            state.isWaitingCycle = false;
+            if (status === 'finished') {
+              state.isStarted = true;
+            } else if (status === 'failed') {
+              state.isFailed = true;
+            }
+          }
+          state.loadingCount--;
+          state.isLoading = !!state.loadingCount;
+        },
+      )
+      .addCase(
+        String(fetchCheckWaitingThunk.rejected),
+        (state: TGameSessionState, action: TFetchCheckWaitingPayloadAction) => {
+          const { error, meta } = action;
+          // TODO: Process case when partner not found!
+          // eslint-disable-next-line no-console
+          console.error('[features/GameSession/reducer:fetchCheckWaitingThunk.rejected]', {
+            error,
+            meta,
+          });
+          debugger; // eslint-disable-line no-debugger
+          if (error.name !== 'CanceledError') {
+            state.error = error;
+          }
+          state.loadingCount--;
+          state.isLoading = !!state.loadingCount;
+          // XXX: To stop cycle?
+        },
+      )
       // sendStopWaiting...
       .addCase(String(sendStopWaitingThunk.pending), (state: TGameSessionState) => {
         state.loadingCount++;
@@ -95,7 +149,7 @@ const gameSessionSlice = createSlice({
       })
       .addCase(
         String(sendStopWaitingThunk.rejected),
-        (state: TGameSessionState, action: TFetchAppInfoPayloadAction) => {
+        (state: TGameSessionState, action: TSendStopWaitingPayloadAction) => {
           const { error, meta } = action;
           // eslint-disable-next-line no-console
           console.error('[features/GameSession/reducer:sendStopWaitingThunk.rejected]', {

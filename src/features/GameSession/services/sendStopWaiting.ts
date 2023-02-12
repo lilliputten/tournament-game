@@ -1,9 +1,9 @@
-/** @module Search
+/** @module sendStopWaiting
  *  @since 2023.02.12, 21:48
  *  @changed 2023.02.12, 21:48
  */
 
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
@@ -15,7 +15,15 @@ interface TResponseData {
 export type TSendStopWaitingResult = void;
 export type TSendStopWaitingParams = void;
 
+export type TSendStopWaitingPayloadAction = PayloadAction<
+  TSendStopWaitingResult,
+  string,
+  unknown,
+  Error
+>;
+
 const requestErrorText = 'Ошибка запроса отмена ожидания начала игры от сервера';
+const unknownErrorText = 'Операция завершена с неопределённой ошибкой';
 
 export async function sendStopWaiting(/* params: TSendStopWaitingParams */): Promise<TSendStopWaitingResult> {
   const method = 'POST';
@@ -30,17 +38,15 @@ export async function sendStopWaiting(/* params: TSendStopWaitingParams */): Pro
       const { success, error } = data;
       // Check possible errors...
       if (!success || error) {
-        throw new Error(error || 'Операция завершена с неопределённой ошибкой');
+        throw new Error(error || unknownErrorText);
       }
       console.log('[sendStopWaiting]: request done', data, {
-        data,
         success,
         url,
       });
     })
     .catch((error) => {
-      const errorText = requestErrorText;
-      const errorMessage = errorText + ': ' + error.message;
+      const errorMessage = requestErrorText + ': ' + error.message;
       error.message = errorMessage;
       // eslint-disable-next-line no-console
       console.error('[sendStopWaiting]: request catch', {

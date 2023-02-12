@@ -10,7 +10,6 @@
  * polling.subscribe({
  *   next: (res) => {
  *     console.log(res);
- *
  *     if (res.ok) {
  *       polling.close();
  *     }
@@ -38,7 +37,6 @@ interface Observable<R> {
 
 export interface IntervalObserver<R = unknown> extends Observable<R> {
   polling(): this;
-
   close(): this;
 }
 

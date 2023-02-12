@@ -1,24 +1,20 @@
-/** @module Search
+/** @module fetchStartWaiting
  *  @since 2023.02.11, 17:02
  *  @changed 2023.02.12, 00:08
  */
 
-import { AnyAction, createAsyncThunk, Store, ThunkDispatch } from '@reduxjs/toolkit';
+import { AnyAction, createAsyncThunk, PayloadAction, Store, ThunkDispatch } from '@reduxjs/toolkit';
 
 import { TRootState } from '@/core/app/app-root-state';
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
 
 interface TResponseData {
-  // Token: string; // '230209-185714-942-3589518'
   success: boolean | string;
   error?: string;
 }
 // TODO!
 export type TFetchStartWaitingResult = void;
-// export interface TFetchStartWaitingResult {
-//   // token?: string;
-// }
 
 export interface TFetchStartWaitingParams {
   userName: string;
@@ -28,7 +24,15 @@ export interface TFetchStartWaitingQuery {
   name: string;
 }
 
+export type TFetchStartWaitingPayloadAction = PayloadAction<
+  TFetchStartWaitingResult,
+  string,
+  unknown,
+  Error
+>;
+
 const requestErrorText = 'Ошибка запроса старта ожидания начала игры от сервера';
+const unknownErrorText = 'Операция завершена с неопределённой ошибкой';
 
 export async function fetchStartWaiting(
   params: TFetchStartWaitingParams,
@@ -49,18 +53,16 @@ export async function fetchStartWaiting(
       const { success, error } = data;
       // Check possible errors...
       if (!success || error) {
-        throw new Error(error || 'Операция завершена с неопределённой ошибкой');
+        throw new Error(error || unknownErrorText);
       }
       console.log('[fetchStartWaiting]: request done', data, {
-        data,
         success,
         params,
         url,
       });
     })
     .catch((error) => {
-      const errorText = requestErrorText;
-      const errorMessage = errorText + ': ' + error.message;
+      const errorMessage = requestErrorText + ': ' + error.message;
       error.message = errorMessage;
       // eslint-disable-next-line no-console
       console.error('[fetchStartWaiting]: request catch', {
