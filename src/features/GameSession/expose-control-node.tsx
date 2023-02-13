@@ -18,32 +18,38 @@ export default function ExposeControlNode(): null {
   const isWaitingCycle = useGameSessionIsWaitingCycle();
   React.useEffect(() => {
     if (isWaitingCycle) {
-      console.log('[src/features/GameSession/expose-control-node]: start requests cycle');
+      console.log('[src/features/GameSession/expose-control-node]: start waiting cycle');
       const waitingCyclePolling = intervalPolling(async () => {
-        console.log('[src/features/GameSession/expose-control-node]: iteration');
-        return dispatch(fetchCheckWaitingThunk());
-        /* // TODO: Process iteratiion result?
-         * .then(
-         *   (action: TFetchCheckWaitingPayloadAction) => {
-         *     const { status } = action.payload;
-         *     console.log('[src/features/GameSession/expose-control-node]: iteration result', {
-         *       status,
-         *       action,
-         *     });
-         *     // TODO? Or all actions can be accomplished in reducer (fetchCheckWaitingThunk.fulfilled)?
-         *     // debugger;
-         *     return action;
-         *   },
-         * );
-         */
+        console.log('[src/features/GameSession/expose-control-node]: waiting iteration');
+        return (
+          dispatch(fetchCheckWaitingThunk())
+            // TODO: Process iteratiion result?
+            .then((action: TFetchCheckWaitingPayloadAction) => {
+              const { status, reason, gameToken, partnerToken, partnerName } = action.payload;
+              if (status === 'finished' && gameToken) {
+                console.log('[src/features/GameSession/expose-control-node]: iteration result', {
+                  status,
+                  action,
+                  reason,
+                  gameToken,
+                  partnerToken,
+                  partnerName,
+                });
+                // TODO? Or all actions can be accomplished in reducer (fetchCheckWaitingThunk.fulfilled)?
+                debugger;
+                // TODO: Start game
+              }
+              return action;
+            })
+        );
       }, waitingCyclePollingTimeout);
       waitingCyclePolling.polling();
       return () => {
-        console.log('[src/features/GameSession/expose-control-node]: stop requests cycle');
+        console.log('[src/features/GameSession/expose-control-node]: stop waiting cycle');
         waitingCyclePolling.close();
       };
     }
-  }, [isWaitingCycle]);
+  }, [dispatch, isWaitingCycle]);
 
   return null;
 }

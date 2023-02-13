@@ -5,7 +5,7 @@
 
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-import { defaultDataRequestHeaders } from '@/config/api';
+import * as apiConfig from '@/config/api';
 
 interface TResponseError {
   code: number; //  404
@@ -63,10 +63,10 @@ export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
      * insecureHTTPParser?: boolean;
      */
     method: 'get',
-    timeout: 10000,
+    timeout: apiConfig.requestTimeout,
     withCredentials: true,
     ...params,
-    headers: { ...defaultDataRequestHeaders, ...params.headers },
+    headers: { ...apiConfig.defaultDataRequestHeaders, ...params.headers },
     cancelToken: source.token,
   };
   /* console.log('[simpleDataFetch]: request start', {

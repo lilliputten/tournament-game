@@ -96,19 +96,15 @@ const gameSessionSlice = createSlice({
       .addCase(
         String(fetchCheckWaitingThunk.fulfilled),
         (state: TGameSessionState, action: TFetchCheckWaitingPayloadAction) => {
-          const { status } = action.payload;
+          const { status, reason } = action.payload;
           console.log('[features/GameSession/reducer:fetchCheckWaitingThunk.fulfilled]', {
             status,
+            reason,
             action,
           });
           if (status !== 'waiting') {
-            console.log(
-              '[features/GameSession/reducer:fetchCheckWaitingThunk.fulfilled]: not waiting',
-              {
-                status,
-              },
-            );
-            debugger;
+            // prettier-ignore
+            console.log('[features/GameSession/reducer:fetchCheckWaitingThunk.fulfilled]: not waiting');
             // Stop waiting loop...
             state.isWaiting = false;
             state.isWaitingCycle = false;
@@ -138,7 +134,7 @@ const gameSessionSlice = createSlice({
           }
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
-          // XXX: To stop cycle?
+          // XXX: To stop cycle? (Stops in `GameSession/expose-control-node`)
         },
       )
       // sendStopWaiting...

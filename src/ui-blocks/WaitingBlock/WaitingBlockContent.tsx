@@ -1,6 +1,8 @@
 import React from 'react';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import classnames from 'classnames';
 
 import { Stack } from '@mui/system';
 
@@ -12,6 +14,12 @@ export interface TWaitingBlockProps extends JSX.IntrinsicAttributes {
 
 export type TCb = () => void;
 
+export function Empty({ reason }: { reason?: string }) {
+  return (
+    <Box data-reason={reason || null} className={classnames(styles.container, styles.Empty)} />
+  );
+}
+
 export function WaitingStart({
   cancelWaiting,
   isWaiting,
@@ -20,7 +28,7 @@ export function WaitingStart({
   isWaiting: boolean;
 }) {
   return (
-    <>
+    <Box className={classnames(styles.container, styles.WaitingStart)}>
       <Typography variant="h5" gutterBottom>
         Старт игры
       </Typography>
@@ -31,7 +39,7 @@ export function WaitingStart({
           </Button>
         )}
       </Stack>
-    </>
+    </Box>
   );
 }
 
@@ -43,7 +51,7 @@ export function WaitingMulti({
   isWaiting: boolean;
 }) {
   return (
-    <>
+    <Box className={classnames(styles.container, styles.WaitingMulti)}>
       <Typography variant="h5" gutterBottom>
         Ищем соперника
       </Typography>
@@ -57,7 +65,7 @@ export function WaitingMulti({
           </Button>
         )}
       </Stack>
-    </>
+    </Box>
   );
 }
 
@@ -69,7 +77,7 @@ export function WaitingSingle({
   isWaiting: boolean;
 }) {
   return (
-    <>
+    <Box className={classnames(styles.container, styles.WaitingSingle)}>
       <Typography variant="h5" gutterBottom>
         Запуск игры
       </Typography>
@@ -80,7 +88,7 @@ export function WaitingSingle({
           </Button>
         )}
       </Stack>
-    </>
+    </Box>
   );
 }
 
@@ -92,7 +100,7 @@ export function WaitingFailed({
   goToStartPage?: TCb;
 }) {
   return (
-    <>
+    <Box className={classnames(styles.container, styles.WaitingFailed)}>
       <Typography variant="h5" gutterBottom>
         Похоже, сейчас нет подходщих соперников
       </Typography>
@@ -111,13 +119,13 @@ export function WaitingFailed({
           </Button>
         )}
       </Stack>
-    </>
+    </Box>
   );
 }
 
 export function WasCancelled({ goToStartPage }: { goToStartPage?: TCb }) {
   return (
-    <>
+    <Box className={classnames(styles.container, styles.WasCancelled)}>
       <Typography variant="h5" gutterBottom>
         Старт игры был отменён
       </Typography>
@@ -128,16 +136,19 @@ export function WasCancelled({ goToStartPage }: { goToStartPage?: TCb }) {
           </Button>
         )}
       </Stack>
-    </>
+    </Box>
   );
 }
 
 export function GameReady() {
   return (
-    <>
+    <Box className={classnames(styles.container, styles.GameReady)}>
       <Typography variant="h5" gutterBottom>
         Игра готова
       </Typography>
-    </>
+      <Typography variant="body1" gutterBottom>
+        (Имя партнёра, продолжить)
+      </Typography>
+    </Box>
   );
 }

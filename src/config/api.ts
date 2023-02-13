@@ -15,6 +15,10 @@ export const apiHost =
 export const apiRoot = '/api/v1.0';
 export const apiUrlPrefix = apiHost + apiRoot;
 
+export const requestTimeout = buildConfig.isDev
+  ? 180000 // DEBUG
+  : 30000;
+
 // Authorization...
 export const apiUser = 'api';
 export const apiPass = 'pusplndvqaivbynv';

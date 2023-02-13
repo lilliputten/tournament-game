@@ -1,6 +1,6 @@
 /** @module WaitingBlock
  *  @since 2023.02.07, 20:35
- *  @changed 2023.02.11, 17:54
+ *  @changed 2023.02.13, 19:34
  */
 
 import React from 'react';
@@ -27,7 +27,7 @@ import { actions as gameParamsActions } from '@/features/GameParams/reducer';
 import { actions as gameSessionActions } from '@/features/GameSession/reducer';
 import { fetchStartWaitingAction } from '@/features/GameSession/services';
 import {
-  // TCb,
+  Empty,
   WaitingMulti,
   WaitingSingle,
   WaitingFailed,
@@ -82,7 +82,12 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
 
   React.useEffect(() => {
     // Go to the start page if environment isn't ready yet
-    if (!isReady && !config.build.isDev) {
+    if (
+      !isReady &&
+      // DEBUG: Do not redirect in dev mode & userName has set
+      !config.build.isDev &&
+      !localStorage.getItem('gameParams:userName')
+    ) {
       goToStartPage();
     }
   }, [goToStartPage, isReady, isLoading, token, userName, gameMode]);
@@ -105,7 +110,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   const content = React.useMemo(() => {
     if (!isReady) {
       // Don't render nothing and go to the start page if environment isn't ready yet...
-      return null;
+      return <Empty reason="Not ready" />;
     } else if (isStarted) {
       // All is ok: start game (TODO)...
       return <GameReady />;
@@ -116,7 +121,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
       return <WasCancelled goToStartPage={goToStartPage} />;
     } else if (!isWaiting) {
       // ???
-      return null;
+      return <Empty reason="Not waiting" />;
     } else if (!isWaitingCycle) {
       return <WaitingStart cancelWaiting={cancelWaiting} isWaiting />;
     } else if (gameMode === 'single') {

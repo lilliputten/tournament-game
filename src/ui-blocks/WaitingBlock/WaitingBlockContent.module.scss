@@ -1,5 +1,17 @@
 $sectionsMargin: 10px;
 
+.container,
+.Empty,
+.WaitingMulti,
+.WaitingSingle,
+.WaitingFailed,
+.WasCancelled,
+.GameReady,
+.WaitingStart,
+.DEBUG {
+  /*!KEEP*/
+}
+
 .error {
   color: $errorColor;
 }

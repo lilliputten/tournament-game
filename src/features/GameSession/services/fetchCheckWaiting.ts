@@ -7,20 +7,42 @@ import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
-import { CallTrackerReportInformation } from 'assert';
 
 export type TFetchCheckWaitingStatus = 'waiting' | 'finished' | 'failed';
 
 interface TResponseData {
-  success: boolean | string;
-  status: TFetchCheckWaitingStatus;
-  partnerToken?: string;
-  partnerName?: string;
-  error?: string;
+  // Data fields from server response as on 2023.02.13, 17:56
+
+  // Operation result...
+  error?: string; // Error text (if occured)
+  reason?: string; // ('Partner found, game started')
+  status?: TFetchCheckWaitingStatus; // ('finished')
+  success: boolean; // true
+
+  // Waiting from date/time...
+  timestamp?: number; // (1676285683570)
+  timestr?: string; // ('2023.02.13 17:54:43')
+
+  // Game start date/time...
+  gameTimeStr?: number; // ('2023.02.13 17:54:44')
+  gameTimestamp?: string; // (1676285684078)
+
+  // Game info...
+  gameRecordId?: number; // Technical parameter, debugging only (2)
+  gameToken?: string; // ('230213-175444-095-7818545')
+
+  // Your own info (echoed)...
+  Token?: string; // Your token ('230211-165455-365-5694359')
+  name?: string; // Your own name ('aaa')
+  ip?: string; // ('127.0.0.1')
+
+  // Partner info...
+  partnerName?: string; // 'fox'
+  partnerToken?: string; // '230213-170431-705-495361'
 }
 export type TFetchCheckWaitingResult = Pick<
   TResponseData,
-  'status' | 'partnerToken' | 'partnerName'
+  'status' | 'reason' | 'partnerToken' | 'partnerName' | 'gameToken'
 >;
 
 export type TFetchCheckWaitingPayloadAction = PayloadAction<
@@ -42,29 +64,30 @@ export async function fetchCheckWaiting(): Promise<TFetchCheckWaitingResult> {
   });
   return simpleDataFetch<TResponseData>({ url, method })
     .then((data) => {
-      const { success, status, error } = data;
+      const { success, status, error, reason } = data;
       // Check possible errors...
       if (!success || error) {
         throw new Error(error || unknownErrorText);
       }
       if (status === 'finished') {
         // Success!
-        const { partnerToken, partnerName } = data;
+        const { partnerToken, partnerName, gameToken } = data;
         console.log('[fetchCheckWaiting]: request done: finished', data, {
           partnerToken,
           partnerName,
+          gameToken,
           status,
+          reason,
         });
-        debugger;
-        return { status, partnerToken, partnerName };
+        return { status, reason, partnerToken, partnerName, gameToken };
       }
       console.log('[fetchCheckWaiting]: request done', data, {
         success,
         status,
+        reason,
         url,
       });
-      // debugger;
-      return { status };
+      return { status, reason };
     })
     .catch((error) => {
       const errorMessage = requestErrorText + ': ' + error.message;
@@ -75,7 +98,7 @@ export async function fetchCheckWaiting(): Promise<TFetchCheckWaitingResult> {
         method,
         url,
       });
-      debugger; // eslint-disable-line no-debugger
+      // debugger; // eslint-disable-line no-debugger
       throw error;
     });
 }
