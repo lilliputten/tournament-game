@@ -5,7 +5,7 @@
 
 import { AnyAction, Reducer } from 'redux';
 
-export interface TGameSessionState {
+export interface TGameWaitingState {
   isWaiting: boolean; // Waiting for partner match and game start
   isWaitingCycle: boolean; // Waiting cycle started
   isStarted: boolean; // Is game started
@@ -17,4 +17,4 @@ export interface TGameSessionState {
   error?: Error;
 }
 
-export type TGameSessionReducerType = Reducer<TGameSessionState, AnyAction>;
+export type TGameWaitingReducerType = Reducer<TGameWaitingState, AnyAction>;

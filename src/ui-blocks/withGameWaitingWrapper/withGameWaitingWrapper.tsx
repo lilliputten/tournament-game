@@ -1,5 +1,5 @@
-/** @module withGameSessionWrapper
- *  @desc Wrapping any component (with GameSessionWrapper)
+/** @module withGameWaitingWrapper
+ *  @desc Wrapping any component (with GameWaitingWrapper)
  *  @since 2023.02.10, 20:24
  *  @changed 2023.02.10, 20:24
  */
@@ -11,25 +11,25 @@ import classnames from 'classnames';
 import {
   useGameParamsIsLoading,
   useGameParamsError,
-  useGameSessionIsLoading,
-  useGameSessionError,
-  useGameSessionIsStarted,
-  useGameSessionIsWaiting,
-  useGameSessionIsFailed,
+  useGameWaitingIsLoading,
+  useGameWaitingError,
+  useGameWaitingIsStarted,
+  useGameWaitingIsWaiting,
+  useGameWaitingIsFailed,
 } from '@/core/app/app-reducer';
 import { errorToString } from '@/utils';
 import { LoaderSplash } from '@/ui-elements';
 import { Box, Button, Stack, Typography } from '@mui/material';
 
-import styles from './GameSessionWrapper.module.scss';
+import styles from './GameWaitingWrapper.module.scss';
 
-export interface TWithGameSessionWrapperParams {
+export interface TWithGameWaitingWrapperParams {
   wrapperClassName?: string;
   errorClassName?: string;
   showErrorInWrapper?: boolean;
 }
 
-export interface TWithGameSessionWrapperProps extends JSX.IntrinsicAttributes {
+export interface TWithGameWaitingWrapperProps extends JSX.IntrinsicAttributes {
   error?: Error;
   isLoading?: boolean;
   isWaiting?: boolean;
@@ -37,23 +37,23 @@ export interface TWithGameSessionWrapperProps extends JSX.IntrinsicAttributes {
   isFailed?: boolean;
 }
 
-export function withGameSessionWrapperFabric<P extends JSX.IntrinsicAttributes>(
-  params: TWithGameSessionWrapperParams,
-): (Component: React.ComponentType<P & TWithGameSessionWrapperProps>) => (props: P) => JSX.Element {
+export function withGameWaitingWrapperFabric<P extends JSX.IntrinsicAttributes>(
+  params: TWithGameWaitingWrapperParams,
+): (Component: React.ComponentType<P & TWithGameWaitingWrapperProps>) => (props: P) => JSX.Element {
   const { wrapperClassName, errorClassName, showErrorInWrapper = true } = params;
-  return function withGameSessionWrapper<P extends JSX.IntrinsicAttributes>(
+  return function withGameWaitingWrapper<P extends JSX.IntrinsicAttributes>(
     Component: React.ComponentType<P>,
   ) {
-    return function GameSessionWrapper(props: P) {
+    return function GameWaitingWrapper(props: P) {
       const isGameParamsLoading = useGameParamsIsLoading();
       const gameParamsError = useGameParamsError();
-      const isLoading = useGameSessionIsLoading();
-      const error = useGameSessionError() || gameParamsError;
-      const isWaiting = useGameSessionIsWaiting();
-      const isStarted = useGameSessionIsStarted();
-      const isFailed = useGameSessionIsFailed();
+      const isLoading = useGameWaitingIsLoading();
+      const error = useGameWaitingError() || gameParamsError;
+      const isWaiting = useGameWaitingIsWaiting();
+      const isStarted = useGameWaitingIsStarted();
+      const isFailed = useGameWaitingIsFailed();
       const displayContent = !isGameParamsLoading; // && !isLoading && !error;
-      /* console.log('[withGameSessionWrapper:GameSessionWrapper]', {
+      /* console.log('[withGameWaitingWrapper:GameWaitingWrapper]', {
        *   isGameParamsLoading,
        *   gameParamsError,
        *   isLoading,

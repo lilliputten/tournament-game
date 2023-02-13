@@ -17,15 +17,15 @@ import {
   useGameParamsGameMode,
   useGameParamsToken,
   useGameParamsUserName,
-  useGameSessionIsFailed,
-  useGameSessionIsLoading,
-  useGameSessionIsStarted,
-  useGameSessionIsWaiting,
-  useGameSessionIsWaitingCycle,
+  useGameWaitingIsFailed,
+  useGameWaitingIsLoading,
+  useGameWaitingIsStarted,
+  useGameWaitingIsWaiting,
+  useGameWaitingIsWaitingCycle,
 } from '@/core';
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
-import { actions as gameSessionActions } from '@/features/GameSession/reducer';
-import { fetchStartWaitingAction } from '@/features/GameSession/services';
+import { actions as gameWaitingActions } from '@/features/GameWaiting/reducer';
+import { fetchStartWaitingAction } from '@/features/GameWaiting/services';
 import {
   Empty,
   WaitingMulti,
@@ -37,7 +37,7 @@ import {
 } from './WaitingBlockContent';
 
 import styles from './WaitingBlock.module.scss';
-import { sendStopWaitingThunk } from '@/features/GameSession/services/sendStopWaiting';
+import { sendStopWaitingThunk } from '@/features/GameWaiting/services/sendStopWaiting';
 
 export interface TWaitingBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
@@ -57,11 +57,11 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   const token = useGameParamsToken();
   const userName = useGameParamsUserName();
   const gameMode = useGameParamsGameMode();
-  const isLoading = useGameSessionIsLoading();
-  const isWaiting = useGameSessionIsWaiting();
-  const isWaitingCycle = useGameSessionIsWaitingCycle();
-  const isStarted = useGameSessionIsStarted();
-  const isFailed = useGameSessionIsFailed();
+  const isLoading = useGameWaitingIsLoading();
+  const isWaiting = useGameWaitingIsWaiting();
+  const isWaitingCycle = useGameWaitingIsWaitingCycle();
+  const isStarted = useGameWaitingIsStarted();
+  const isFailed = useGameWaitingIsFailed();
 
   // const isLoading = true;
   // const isFailed = false;
@@ -103,7 +103,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
     console.log('[WaitingBlock]: DEBUG: cancelWaiting');
     cancelAllActiveRequests();
     dispatch(sendStopWaitingThunk());
-    dispatch(gameSessionActions.resetData());
+    dispatch(gameWaitingActions.resetData());
     setCancelled(true);
   }, [dispatch]);
 

@@ -4,11 +4,11 @@ import { AnyAction, CombinedState, Reducer } from 'redux';
 
 import { TGameParamsState } from '@/features/GameParams/types';
 
-import { TGameSessionState } from '@/features/GameSession/types';
+import { TGameWaitingState } from '@/features/GameWaiting/types';
 
 export interface TRootState {
   gameParams: TGameParamsState;
-  gameSession: TGameSessionState;
+  gameWaiting: TGameWaitingState;
 }
 
 export type TRootReducer = Reducer<CombinedState<TRootState>, AnyAction>;

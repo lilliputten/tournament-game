@@ -10,10 +10,10 @@ import { TRootReducer } from './app-root-state';
 import { reducer as gameParams } from '@/features/GameParams/reducer';
 export * from '@/features/GameParams/expose-hooks';
 
-import { reducer as gameSession } from '@/features/GameSession/reducer';
-export * from '@/features/GameSession/expose-hooks';
+import { reducer as gameWaiting } from '@/features/GameWaiting/reducer';
+export * from '@/features/GameWaiting/expose-hooks';
 
 export const rootReducer: TRootReducer = combineReducers({
   gameParams,
-  gameSession,
+  gameWaiting,
 });

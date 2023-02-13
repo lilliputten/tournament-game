@@ -3,10 +3,10 @@
  *  @changed 2023.02.12, 00:08
  */
 
-import { TGameSessionState } from './types';
+import { TGameWaitingState } from './types';
 
 // Default state
-export const defaultState: TGameSessionState = {
+export const defaultState: TGameWaitingState = {
   isWaiting: false,
   isWaitingCycle: false,
   isStarted: false,

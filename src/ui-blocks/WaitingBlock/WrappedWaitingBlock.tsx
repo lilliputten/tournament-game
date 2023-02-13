@@ -6,7 +6,7 @@
 import React from 'react';
 import { compose } from 'redux';
 
-import { withGameSessionWrapperFabric } from '@/ui-blocks/withGameSessionWrapper';
+import { withGameWaitingWrapperFabric } from '@/ui-blocks/withGameWaitingWrapper';
 
 import { WaitingBlock, TWaitingBlockProps } from './WaitingBlock';
 
@@ -14,7 +14,7 @@ import styles from './WrappedWaitingBlock.module.scss';
 
 // Export wrapped version
 export const WrappedWaitingBlock = compose<React.FC<TWaitingBlockProps>>(
-  withGameSessionWrapperFabric<TWaitingBlockProps>({
+  withGameWaitingWrapperFabric<TWaitingBlockProps>({
     errorClassName: styles.error,
     wrapperClassName: styles.wrapper,
   }),

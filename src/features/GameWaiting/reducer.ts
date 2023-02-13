@@ -5,7 +5,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { TGameSessionState } from './types';
+import { TGameWaitingState } from './types';
 import { defaultState } from './constants';
 import {
   fetchCheckWaitingThunk,
@@ -16,12 +16,12 @@ import {
   TSendStopWaitingPayloadAction,
 } from './services';
 
-const initialState: TGameSessionState = {
+const initialState: TGameWaitingState = {
   ...defaultState,
 };
 
-const gameSessionSlice = createSlice({
-  name: 'gameSession',
+const gameWaitingSlice = createSlice({
+  name: 'gameWaiting',
   initialState,
   reducers: {
     resetData: (state) => {
@@ -31,16 +31,16 @@ const gameSessionSlice = createSlice({
       state.isWaiting = false;
       state.isWaitingCycle = false;
     },
-    setIsWaiting: (state, action: PayloadAction<TGameSessionState['isWaiting']>) => {
+    setIsWaiting: (state, action: PayloadAction<TGameWaitingState['isWaiting']>) => {
       state.isWaiting = action.payload;
     },
-    setIsWaitingCycle: (state, action: PayloadAction<TGameSessionState['isWaitingCycle']>) => {
+    setIsWaitingCycle: (state, action: PayloadAction<TGameWaitingState['isWaitingCycle']>) => {
       state.isWaitingCycle = action.payload;
     },
-    setIsStarted: (state, action: PayloadAction<TGameSessionState['isStarted']>) => {
+    setIsStarted: (state, action: PayloadAction<TGameWaitingState['isStarted']>) => {
       state.isStarted = action.payload;
     },
-    setIsFailed: (state, action: PayloadAction<TGameSessionState['isFailed']>) => {
+    setIsFailed: (state, action: PayloadAction<TGameWaitingState['isFailed']>) => {
       state.isFailed = action.payload;
     },
   },
@@ -49,7 +49,7 @@ const gameSessionSlice = createSlice({
       // fetchStartWaiting...
       .addCase(
         String(fetchStartWaitingThunk.pending),
-        (state: TGameSessionState, _action: TFetchStartWaitingPayloadAction) => {
+        (state: TGameWaitingState, _action: TFetchStartWaitingPayloadAction) => {
           state.error = undefined;
           state.loadingCount++;
           state.isLoading = true;
@@ -60,8 +60,8 @@ const gameSessionSlice = createSlice({
       )
       .addCase(
         String(fetchStartWaitingThunk.fulfilled),
-        (state: TGameSessionState, _action: TFetchStartWaitingPayloadAction) => {
-          // console.log('[features/GameSession/reducer:fetchStartWaitingThunk.fulfilled]: success', action.payload);
+        (state: TGameWaitingState, _action: TFetchStartWaitingPayloadAction) => {
+          // console.log('[features/GameWaiting/reducer:fetchStartWaitingThunk.fulfilled]: success', action.payload);
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
           state.error = undefined;
@@ -70,10 +70,10 @@ const gameSessionSlice = createSlice({
       )
       .addCase(
         String(fetchStartWaitingThunk.rejected),
-        (state: TGameSessionState, action: TFetchStartWaitingPayloadAction) => {
+        (state: TGameWaitingState, action: TFetchStartWaitingPayloadAction) => {
           const { error, meta } = action;
           // eslint-disable-next-line no-console
-          console.error('[features/GameSession/reducer:fetchStartWaitingThunk.rejected]', {
+          console.error('[features/GameWaiting/reducer:fetchStartWaitingThunk.rejected]', {
             error,
             meta,
           });
@@ -89,22 +89,22 @@ const gameSessionSlice = createSlice({
         },
       )
       // fetchCheckWaiting...
-      .addCase(String(fetchCheckWaitingThunk.pending), (state: TGameSessionState) => {
+      .addCase(String(fetchCheckWaitingThunk.pending), (state: TGameWaitingState) => {
         state.loadingCount++;
         state.isLoading = true;
       })
       .addCase(
         String(fetchCheckWaitingThunk.fulfilled),
-        (state: TGameSessionState, action: TFetchCheckWaitingPayloadAction) => {
+        (state: TGameWaitingState, action: TFetchCheckWaitingPayloadAction) => {
           const { status, reason } = action.payload;
-          console.log('[features/GameSession/reducer:fetchCheckWaitingThunk.fulfilled]', {
+          console.log('[features/GameWaiting/reducer:fetchCheckWaitingThunk.fulfilled]', {
             status,
             reason,
             action,
           });
           if (status !== 'waiting') {
             // prettier-ignore
-            console.log('[features/GameSession/reducer:fetchCheckWaitingThunk.fulfilled]: not waiting');
+            console.log('[features/GameWaiting/reducer:fetchCheckWaitingThunk.fulfilled]: not waiting');
             // Stop waiting loop...
             state.isWaiting = false;
             state.isWaitingCycle = false;
@@ -120,11 +120,11 @@ const gameSessionSlice = createSlice({
       )
       .addCase(
         String(fetchCheckWaitingThunk.rejected),
-        (state: TGameSessionState, action: TFetchCheckWaitingPayloadAction) => {
+        (state: TGameWaitingState, action: TFetchCheckWaitingPayloadAction) => {
           const { error, meta } = action;
           // TODO: Process case when partner not found!
           // eslint-disable-next-line no-console
-          console.error('[features/GameSession/reducer:fetchCheckWaitingThunk.rejected]', {
+          console.error('[features/GameWaiting/reducer:fetchCheckWaitingThunk.rejected]', {
             error,
             meta,
           });
@@ -134,24 +134,24 @@ const gameSessionSlice = createSlice({
           }
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
-          // XXX: To stop cycle? (Stops in `GameSession/expose-control-node`)
+          // XXX: To stop cycle? (Stops in `GameWaiting/expose-control-node`)
         },
       )
       // sendStopWaiting...
-      .addCase(String(sendStopWaitingThunk.pending), (state: TGameSessionState) => {
+      .addCase(String(sendStopWaitingThunk.pending), (state: TGameWaitingState) => {
         state.loadingCount++;
         state.isLoading = true;
       })
-      .addCase(String(sendStopWaitingThunk.fulfilled), (state: TGameSessionState) => {
+      .addCase(String(sendStopWaitingThunk.fulfilled), (state: TGameWaitingState) => {
         state.loadingCount--;
         state.isLoading = !!state.loadingCount;
       })
       .addCase(
         String(sendStopWaitingThunk.rejected),
-        (state: TGameSessionState, action: TSendStopWaitingPayloadAction) => {
+        (state: TGameWaitingState, action: TSendStopWaitingPayloadAction) => {
           const { error, meta } = action;
           // eslint-disable-next-line no-console
-          console.error('[features/GameSession/reducer:sendStopWaitingThunk.rejected]', {
+          console.error('[features/GameWaiting/reducer:sendStopWaitingThunk.rejected]', {
             error,
             meta,
           });
@@ -171,19 +171,19 @@ const gameSessionSlice = createSlice({
 // Export selecors...
 export const selectors = {
   // Basic (common) selectors...
-  selectLoading: (state: TGameSessionState): TGameSessionState['isLoading'] => state.isLoading,
-  selectError: (state: TGameSessionState): TGameSessionState['error'] => state.error,
+  selectLoading: (state: TGameWaitingState): TGameWaitingState['isLoading'] => state.isLoading,
+  selectError: (state: TGameWaitingState): TGameWaitingState['error'] => state.error,
 
   // Custom selectors (TODO, SAMPLE)...
-  selectIsWaiting: (state: TGameSessionState): TGameSessionState['isWaiting'] => state.isWaiting,
-  selectIsWaitingCycle: (state: TGameSessionState): TGameSessionState['isWaitingCycle'] =>
+  selectIsWaiting: (state: TGameWaitingState): TGameWaitingState['isWaiting'] => state.isWaiting,
+  selectIsWaitingCycle: (state: TGameWaitingState): TGameWaitingState['isWaitingCycle'] =>
     state.isWaitingCycle,
-  selectIsStarted: (state: TGameSessionState): TGameSessionState['isStarted'] => state.isStarted,
-  selectIsFailed: (state: TGameSessionState): TGameSessionState['isFailed'] => state.isFailed,
+  selectIsStarted: (state: TGameWaitingState): TGameWaitingState['isStarted'] => state.isStarted,
+  selectIsFailed: (state: TGameWaitingState): TGameWaitingState['isFailed'] => state.isFailed,
 };
 
 // Actions (TODO, SAMPLE)...
-export const actions = gameSessionSlice.actions;
+export const actions = gameWaitingSlice.actions;
 
 // Core reducer...
-export const reducer = gameSessionSlice.reducer;
+export const reducer = gameWaitingSlice.reducer;
