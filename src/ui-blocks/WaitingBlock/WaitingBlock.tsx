@@ -17,6 +17,7 @@ import {
   useGameParamsGameMode,
   useGameParamsToken,
   useGameParamsUserName,
+  useGameSessionPartnerName,
   useGameWaitingIsFailed,
   useGameWaitingIsLoading,
   useGameWaitingIsStarted,
@@ -62,6 +63,8 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   const isWaitingCycle = useGameWaitingIsWaitingCycle();
   const isStarted = useGameWaitingIsStarted();
   const isFailed = useGameWaitingIsFailed();
+
+  const partnerName = useGameSessionPartnerName();
 
   // const isLoading = true;
   // const isFailed = false;
@@ -113,7 +116,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
       return <Empty reason="Not ready" />;
     } else if (isStarted) {
       // All is ok: start game (TODO)...
-      return <GameReady />;
+      return <GameReady partnerName={partnerName} />;
     } else if (isFailed) {
       // All is ok but server returned 'partner not found' status...
       return <WaitingFailed onSingleClick={handlePlaySingle} goToStartPage={goToStartPage} />;
@@ -141,6 +144,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
     isStarted,
     isWaiting,
     isWaitingCycle,
+    partnerName,
     wasCancelled,
   ]);
 

@@ -2,9 +2,10 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { Stack } from '@mui/system';
 import classnames from 'classnames';
 
-import { Stack } from '@mui/system';
+import { TGameSessionState } from '@/features/GameSession';
 
 import styles from './WaitingBlock.module.scss';
 
@@ -140,14 +141,19 @@ export function WasCancelled({ goToStartPage }: { goToStartPage?: TCb }) {
   );
 }
 
-export function GameReady() {
+export function GameReady({ partnerName }: Pick<TGameSessionState, 'partnerName'>) {
   return (
     <Box className={classnames(styles.container, styles.GameReady)}>
       <Typography variant="h5" gutterBottom>
         Игра готова
       </Typography>
+      {partnerName && (
+        <Typography variant="body1" gutterBottom>
+          Ваш партнёр: {partnerName}
+        </Typography>
+      )}
       <Typography variant="body1" gutterBottom>
-        (Имя партнёра, продолжить)
+        Игра запускается...
       </Typography>
     </Box>
   );

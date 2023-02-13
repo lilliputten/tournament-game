@@ -122,7 +122,6 @@ const gameWaitingSlice = createSlice({
         String(fetchCheckWaitingThunk.rejected),
         (state: TGameWaitingState, action: TFetchCheckWaitingPayloadAction) => {
           const { error, meta } = action;
-          // TODO: Process case when partner not found!
           // eslint-disable-next-line no-console
           console.error('[features/GameWaiting/reducer:fetchCheckWaitingThunk.rejected]', {
             error,
@@ -134,7 +133,7 @@ const gameWaitingSlice = createSlice({
           }
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
-          // XXX: To stop cycle? (Stops in `GameWaiting/expose-control-node`)
+          // NOTE: Cycle stops in `GameWaiting/expose-control-node`
         },
       )
       // sendStopWaiting...

@@ -1,5 +1,5 @@
 /** @module expose-control-node
- *  @desc Bare component to cintrol GameParams events on the top level of react nodes
+ *  @desc Bare component to control GameParams events on the top level of react nodes
  *  @since 2023.01.29, 21:22
  *  @changed 2023.01.30, 00:35
  */
