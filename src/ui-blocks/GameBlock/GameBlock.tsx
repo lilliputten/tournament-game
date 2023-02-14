@@ -4,15 +4,16 @@
  */
 
 import React from 'react';
-import { useStore } from 'react-redux';
+// import { useStore } from 'react-redux';
 import { useRouter } from 'next/router';
 import Box from '@mui/material/Box';
 import classnames from 'classnames';
 
 // import config from '@/config';
 // import { TRootState } from '@/core/app/app-root-state';
+import { loadQuestionsThunk } from '@/features/Questions/services';
 import {
-  cancelAllActiveRequests,
+  // cancelAllActiveRequests,
   useAppDispatch,
   useGameParamsGameMode,
   useGameParamsToken,
@@ -76,6 +77,13 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
     partnerToken,
     gameToken,
   });
+
+  // Effect: Questions...
+  React.useEffect(() => {
+    if (isParamsReady) {
+      dispatch(loadQuestionsThunk());
+    }
+  }, [isParamsReady, dispatch]);
 
   // Effect: Start game...
   React.useEffect(() => {

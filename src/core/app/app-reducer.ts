@@ -1,6 +1,6 @@
 /** @module app-reducer
  *  @since 2023.01.28, 21:01
- *  @changed 2023.02.13, 20:38
+ *  @changed 2023.02.15, 02:56
  */
 
 import { combineReducers } from 'redux';
@@ -16,8 +16,12 @@ export * from '@/features/GameWaiting/expose-hooks';
 import { reducer as gameSession } from '@/features/GameSession/reducer';
 export * from '@/features/GameSession/expose-hooks';
 
+import { reducer as questions } from '@/features/Questions/reducer';
+export * from '@/features/Questions/expose-hooks';
+
 export const rootReducer: TRootReducer = combineReducers({
   gameParams,
   gameWaiting,
   gameSession,
+  questions,
 });
