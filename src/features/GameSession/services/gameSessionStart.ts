@@ -7,6 +7,7 @@ import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
+import { TGameMode } from '@/core';
 
 export type TGameSessionStartStatus = string;
 
@@ -19,12 +20,13 @@ interface TResponseData {
 
   // Params...
   gameToken?: string;
+  gameMode?: TGameMode;
   partnerName?: string;
   partnerToken?: string;
 }
 export type TGameSessionStartResult = Pick<
   TResponseData,
-  'status' | 'reason' | 'gameToken' | 'partnerName' | 'partnerToken'
+  'status' | 'reason' | 'gameToken' | 'gameMode' | 'partnerName' | 'partnerToken'
 >;
 
 export type TGameSessionStartPayloadAction = PayloadAction<
@@ -55,7 +57,8 @@ export async function gameSessionStart(): Promise<TGameSessionStartResult> {
        * status : "playing"
        * success : true
        */
-      const { success, status, error, reason, gameToken, partnerName, partnerToken } = data;
+      const { success, status, error, reason, gameToken, gameMode, partnerName, partnerToken } =
+        data;
       // Check possible errors...
       if (!success || error) {
         throw new Error(error || unknownErrorText);
@@ -66,11 +69,12 @@ export async function gameSessionStart(): Promise<TGameSessionStartResult> {
         reason,
         url,
         gameToken,
+        gameMode,
         partnerName,
         partnerToken,
       });
       // TODO: ...
-      return { status, reason, gameToken, partnerName, partnerToken };
+      return { status, reason, gameToken, gameMode, partnerName, partnerToken };
     })
     .catch((error) => {
       const errorMessage = requestErrorText + ': ' + error.message;

@@ -17,12 +17,13 @@ import {
   useGameParamsGameMode,
   useGameParamsToken,
   useGameParamsUserName,
-  useGameSessionPartnerName,
   useGameWaitingIsFailed,
   useGameWaitingIsLoading,
   useGameWaitingIsStarted,
   useGameWaitingIsWaiting,
   useGameWaitingIsWaitingCycle,
+  // useGameSessionPartnerName,
+  useGameWaitingPartnerName,
 } from '@/core';
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
 import { actions as gameWaitingActions } from '@/features/GameWaiting/reducer';
@@ -38,6 +39,8 @@ import {
 } from './WaitingBlockContent';
 
 import styles from './WaitingBlock.module.scss';
+
+const startGameDelaySec = 3;
 
 export interface TWaitingBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
@@ -63,28 +66,41 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   const isStarted = useGameWaitingIsStarted();
   const isFailed = useGameWaitingIsFailed();
 
-  console.log('[WaitingBlock]: DEBUG', {
-    gameMode,
-  });
-
-  // const partnerName = useGameSessionPartnerName();
-
-  // const isLoading = true;
-  // const isFailed = false;
+  // TODO: To use partnerName from waiting state!
+  const partnerName = useGameWaitingPartnerName();
 
   const isReady = !!userName && !!token;
+
+  console.log('[WaitingBlock]: DEBUG', {
+    gameMode,
+    partnerName,
+  });
 
   const goToStartPage = React.useCallback(() => {
     router.push('/');
   }, [router]);
 
+  const goToGamePage = React.useCallback(() => {
+    router.push('/game');
+  }, [router]);
+
   // Effect: Start game...
   React.useEffect(() => {
     if (isReady && isStarted) {
-      // Go to game page...
-      router.push('/game');
+      const isMultiGame = gameMode === 'multi';
+      console.log('[WaitingBlock]', {
+        gameMode,
+        isMultiGame,
+      });
+      if (isMultiGame) {
+        // Go to game page after delay...
+        setTimeout(goToGamePage, startGameDelaySec * 1000);
+      } else {
+        // Go to game page immmediately...
+        goToGamePage();
+      }
     }
-  }, [isReady, isStarted, router]);
+  }, [goToGamePage, isReady, isStarted, gameMode]);
 
   // Effect: Start waiting...
   React.useEffect(() => {
@@ -126,8 +142,8 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
       return <Empty reason="Not ready" />;
     } else if (isStarted) {
       // All is ok: start game (redirect should be executed, see Effect: Start game)...
-      return <Empty reason="Ready" />;
-      // return <GameReady partnerName={partnerName} gameMode={gameMode} />;
+      // return <Empty reason="Ready" />;
+      return <GameReady partnerName={partnerName} gameMode={gameMode} />;
     } else if (isFailed) {
       // All is ok but server returned 'partner not found' status...
       return <WaitingFailed onSingleClick={handlePlaySingle} goToStartPage={goToStartPage} />;
@@ -155,7 +171,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
     isStarted,
     isWaiting,
     isWaitingCycle,
-    // partnerName,
+    partnerName,
     wasCancelled,
   ]);
 

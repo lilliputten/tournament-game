@@ -28,3 +28,13 @@ export const useGameWaitingIsStarted = (): ReturnType<typeof selectors.selectIsS
   selectors.selectIsStarted(useGameWaitingState());
 export const useGameWaitingIsFailed = (): ReturnType<typeof selectors.selectIsFailed> =>
   selectors.selectIsFailed(useGameWaitingState());
+
+// Game...
+export const useGameWaitingGameMode = (): ReturnType<typeof selectors.selectGameMode> =>
+  selectors.selectGameMode(useGameWaitingState());
+export const useGameWaitingGameToken = (): ReturnType<typeof selectors.selectGameToken> =>
+  selectors.selectGameToken(useGameWaitingState());
+export const useGameWaitingPartnerName = (): ReturnType<typeof selectors.selectPartnerName> =>
+  selectors.selectPartnerName(useGameWaitingState());
+export const useGameWaitingPartnerToken = (): ReturnType<typeof selectors.selectPartnerToken> =>
+  selectors.selectPartnerToken(useGameWaitingState());

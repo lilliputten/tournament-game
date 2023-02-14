@@ -1,6 +1,6 @@
 /** @module reducer
  *  @since 2023.02.13, 20:21
- *  @changed 2023.02.14, 17:37
+ *  @changed 2023.02.15, 01:34
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -62,17 +62,19 @@ const gameSessionSlice = createSlice({
       .addCase(
         String(gameSessionStartThunk.fulfilled),
         (state: TGameSessionState, action: TGameSessionStartPayloadAction) => {
-          const { status, reason, gameToken, partnerName, partnerToken } = action.payload;
+          const { status, reason, gameToken, gameMode, partnerName, partnerToken } = action.payload;
           console.log('[features/GameSession/reducer:gameSessionStartThunk.fulfilled]', {
             status,
             reason,
             action,
             gameToken,
+            gameMode,
             partnerName,
             partnerToken,
           });
           // Game params...
           state.gameToken = gameToken;
+          state.gameMode = gameMode;
           state.partnerName = partnerName;
           state.partnerToken = partnerToken;
           // Game state...

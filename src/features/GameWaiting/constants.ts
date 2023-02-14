@@ -8,11 +8,19 @@ import { TGameWaitingState } from './types';
 
 // Default state
 export const defaultState: TGameWaitingState = {
+  // States...
   isWaiting: false,
   isWaitingCycle: false,
   isStarted: false,
   isFailed: false,
 
+  // Game...
+  gameMode: undefined,
+  gameToken: undefined,
+  partnerName: undefined,
+  partnerToken: undefined,
+
+  // Loading...
   loadingCount: 0,
   isLoading: false,
   error: undefined,

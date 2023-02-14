@@ -9,6 +9,7 @@ import config from '@/config';
 import { TGameSessionState } from '@/features/GameSession';
 
 import styles from './GameBlockContent.module.scss';
+import { TGameParamsState } from '@/features/GameParams';
 
 export interface TGameBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
@@ -28,20 +29,30 @@ export function Empty({ reason }: { reason?: string }) {
   );
 }
 
-export function GameReady({ partnerName }: Pick<TGameSessionState, 'partnerName'>) {
+export function GameInfo({
+  partnerName,
+  gameMode,
+}: Pick<TGameSessionState, 'partnerName'> & Pick<TGameParamsState, 'gameMode'>) {
   return (
     <Box className={classnames(styles.container, styles.GameReady)}>
       <Typography variant="h5" gutterBottom>
-        Игра готова
+        Информция об игре (GameBlock)
       </Typography>
+      {gameMode && (
+        <Typography variant="body1" gutterBottom>
+          Режим игры: {gameMode}
+        </Typography>
+      )}
       {partnerName && (
         <Typography variant="body1" gutterBottom>
           Ваш партнёр: {partnerName}
         </Typography>
       )}
+      {/*
       <Typography variant="body1" gutterBottom>
         Игра запускается...
       </Typography>
+      */}
     </Box>
   );
 }

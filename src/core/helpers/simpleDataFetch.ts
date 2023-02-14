@@ -1,6 +1,6 @@
 /** @module simpleDataFetch
  *  @since 2023.02.10, 19:59
- *  @changed 2023.02.10, 20:05
+ *  @changed 2023.02.14, 23:19
  */
 
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
@@ -95,6 +95,14 @@ export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
       // eslint-disable-next-line no-console
       const { response } = error;
       const data = response?.data;
+      // Add server error (if present) to error message...
+      if (typeof data === 'string') {
+        const match = data.match(/\b(reason|error): (.*?)(\n|$)/);
+        const matchText = match && match[2];
+        if (matchText) {
+          error.message += ' (Server error: ' + matchText + ')';
+        }
+      }
       const statusText = response?.statusText;
       // eslint-disable-next-line no-console
       console.error('[simpleDataFetch]: request catch', {

@@ -11,16 +11,29 @@ import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
 import { TFetchCheckWaitingStatus } from '@/core/types';
 import { TGameParamsState } from '@/features/GameParams/types';
 import { defaultGameMode } from '@/core/types';
+import { TGameWaitingState } from '../types';
 
 interface TResponseData {
   reason?: string;
   status?: TFetchCheckWaitingStatus;
   success: boolean | string;
   error?: string;
+
+  // Game?
+  gameMode?: TGameParamsState['gameMode'];
+  gameToken?: TGameWaitingState['gameToken'];
+  partnerName?: TGameParamsState['userName'];
+  partnerToken?: TGameParamsState['token'];
 }
 export interface TFetchStartWaitingResult {
   reason?: string;
   status?: TFetchCheckWaitingStatus;
+
+  // Game?
+  gameMode?: TResponseData['gameMode'];
+  gameToken?: TResponseData['gameToken'];
+  partnerName?: TResponseData['partnerName'];
+  partnerToken?: TResponseData['partnerToken'];
 }
 
 export interface TFetchStartWaitingParams {
@@ -30,7 +43,7 @@ export interface TFetchStartWaitingParams {
 
 export interface TFetchStartWaitingQuery {
   name: Required<TGameParamsState['userName']>;
-  mode: Required<TGameParamsState['gameMode']>;
+  gameMode: Required<TGameParamsState['gameMode']>;
 }
 
 export type TFetchStartWaitingPayloadAction = PayloadAction<
@@ -49,7 +62,7 @@ export async function fetchStartWaiting(
   const method = 'POST';
   const url = config.api.apiUrlPrefix + '/waitingStart';
   const { userName, gameMode } = params;
-  const queryData: TFetchStartWaitingQuery = { name: userName, mode: gameMode };
+  const queryData: TFetchStartWaitingQuery = { name: userName, gameMode };
   console.log('[fetchStartWaiting]: request start', {
     params,
     queryData,
@@ -58,19 +71,46 @@ export async function fetchStartWaiting(
   });
   return simpleDataFetch<TResponseData>({ url, method, data: queryData })
     .then((data): TFetchStartWaitingResult => {
-      const { success, error, reason, status } = data;
+      const {
+        // Base...
+        success,
+        error,
+        reason,
+        status,
+        // Game...
+        gameMode,
+        gameToken,
+        partnerName,
+        partnerToken,
+      } = data;
       // Check possible errors...
       if (!success || error) {
         throw new Error(error || unknownErrorText);
       }
       console.log('[fetchStartWaiting]: request done', data, {
+        // Status...
         reason,
         status,
         success,
+        // Game...
+        gameMode,
+        gameToken,
+        partnerName,
+        partnerToken,
+        // Base
         params,
         url,
       });
-      return { reason, status };
+      return {
+        // Status...
+        reason,
+        status,
+        // Game...
+        gameMode,
+        gameToken,
+        partnerName,
+        partnerToken,
+      };
     })
     .catch((error) => {
       const errorMessage = requestErrorText + ': ' + error.message;

@@ -9,7 +9,7 @@ import React from 'react';
 import { useAppDispatch } from '@/core/app/app-store';
 import { intervalPolling } from '@/core';
 import { useGameWaitingIsWaitingCycle } from './expose-hooks';
-import { fetchCheckWaitingThunk } from './services';
+import { fetchCheckWaitingThunk, TFetchCheckWaitingPayloadAction } from './services';
 import { gameWaitingPollingTimeout } from './constants';
 
 export default function ExposeControlNode(): null {
@@ -20,7 +20,13 @@ export default function ExposeControlNode(): null {
       console.log('[GameWaiting/expose-control-node]: start waiting');
       const waitingCyclePolling = intervalPolling(async () => {
         // console.log('[GameWaiting/expose-control-node]: waiting iteration');
-        return dispatch(fetchCheckWaitingThunk());
+        return dispatch(fetchCheckWaitingThunk()) /*.then(
+          (action: TFetchCheckWaitingPayloadAction) => {
+            console.log('[[GameWaiting/expose-control-node]: iteration]', { action });
+            debugger;
+            return action;
+          },
+        )*/;
       }, gameWaitingPollingTimeout);
       waitingCyclePolling.polling();
       return () => {

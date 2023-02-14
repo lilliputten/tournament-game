@@ -3,6 +3,7 @@
  *  @changed 2023.02.13, 20:21
  */
 
+import { TGameMode } from '@/core';
 import { AnyAction, Reducer } from 'redux';
 
 export interface TGameSessionState {
@@ -10,6 +11,7 @@ export interface TGameSessionState {
   isFinished: boolean; // Is game finished
 
   gameToken?: string;
+  gameMode?: TGameMode;
   partnerToken?: string;
   partnerName?: string;
 

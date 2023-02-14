@@ -24,12 +24,10 @@ import {
   useGameWaitingIsStarted,
   useGameSessionIsPlaying,
 } from '@/core';
-import { actions as gameParamsActions } from '@/features/GameParams/reducer';
-// import { actions as gameSessionActions } from '@/features/GameSession/reducer';
 import { gameSessionStartThunk } from '@/features/GameSession/services';
 import {
   Empty,
-  GameReady,
+  GameInfo,
   // ...
 } from './GameBlockContent';
 
@@ -102,14 +100,16 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
       // Don't render nothing and go to the start page if environment isn't ready yet...
       return <Empty reason="Not ready" />;
     } else if (isPlaying) {
-      return <Empty reason="Playing" />;
+      // return <Empty reason="Playing" />;
+      return <GameInfo partnerName={partnerName} gameMode={gameMode} />;
     } else if (isStarted) {
       // All is ok: start game (TODO)...
-      return <GameReady partnerName={partnerName} />;
+      return <GameInfo partnerName={partnerName} gameMode={gameMode} />;
     }
   }, [
     isStarted,
     partnerName,
+    gameMode,
     isGameReady,
     isPlaying,
     // isLoading,

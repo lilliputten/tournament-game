@@ -39,7 +39,7 @@ export function WaitingStart({
   return (
     <Box className={classnames(styles.container, styles.WaitingStart)}>
       <Typography variant="h5" gutterBottom>
-        Старт игры
+        Запуск игры на сервере
       </Typography>
       <Stack className={styles.actions} spacing={2} direction="row" justifyContent="center">
         {isWaiting && !!cancelWaiting && (
@@ -152,25 +152,22 @@ export function WasCancelled({ goToStartPage }: { goToStartPage?: TCb }) {
 interface TGameReadyParams {
   partnerName?: TGameSessionState['partnerName'];
   gameMode?: TGameParamsState['gameMode'];
+  startGameDelaySec?: number;
 }
-export function GameReady({ partnerName, gameMode }: TGameReadyParams) {
+export function GameReady({ partnerName, gameMode, startGameDelaySec }: TGameReadyParams) {
   return (
     <Box className={classnames(styles.container, styles.GameReady)}>
       <Typography variant="h5" gutterBottom>
-        Игра готова
+        Ура! Соперник нашелся
       </Typography>
-      {partnerName && (
-        <Typography variant="body1" gutterBottom>
-          Ваш партнёр: {partnerName}
-        </Typography>
-      )}
-      {gameMode && (
-        <Typography variant="body1" gutterBottom>
-          Режим игры: {gameMode}
-        </Typography>
-      )}
       <Typography variant="body1" gutterBottom>
-        Запуск...
+        Турнир
+        {gameMode && config.build.isDev && ' (в режиме ' + gameMode + ')'}
+        {partnerName && ' с игроком ' + partnerName}
+        {startGameDelaySec
+          ? ' начнется через ' + startGameDelaySec + '  секунды'
+          : ' сейчас начнётся'}
+        ...
       </Typography>
     </Box>
   );

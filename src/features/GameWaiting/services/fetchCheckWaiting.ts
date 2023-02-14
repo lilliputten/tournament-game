@@ -7,7 +7,7 @@ import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
-import { TFetchCheckWaitingStatus } from '@/core/types';
+import { TFetchCheckWaitingStatus, TGameMode } from '@/core/types';
 
 interface TResponseData {
   // Data fields from server response as on 2023.02.13, 17:56
@@ -29,6 +29,7 @@ interface TResponseData {
   // Game info...
   gameRecordId?: number; // Technical parameter, debugging only (2)
   gameToken?: string; // ('230213-175444-095-7818545')
+  gameMode?: TGameMode;
 
   // Your own info (echoed)...
   Token?: string; // Your token ('230211-165455-365-5694359')
@@ -42,7 +43,7 @@ interface TResponseData {
 export type TFetchCheckWaitingResult = Pick<
   TResponseData,
   'status' | 'reason' | 'partnerToken' | 'partnerName' | 'gameToken'
->;
+> & { gameMode?: TGameMode };
 
 export type TFetchCheckWaitingPayloadAction = PayloadAction<
   TFetchCheckWaitingResult,
@@ -63,7 +64,7 @@ export async function fetchCheckWaiting(): Promise<TFetchCheckWaitingResult> {
   });
   return simpleDataFetch<TResponseData>({ url, method })
     .then((data) => {
-      const { success, status, error, reason } = data;
+      const { success, status, error, reason, gameMode } = data;
       // Check possible errors...
       if (!success || error) {
         throw new Error(error || unknownErrorText);
@@ -75,18 +76,20 @@ export async function fetchCheckWaiting(): Promise<TFetchCheckWaitingResult> {
           partnerToken,
           partnerName,
           gameToken,
+          gameMode,
           status,
           reason,
         });
-        return { status, reason, partnerToken, partnerName, gameToken };
+        return { status, reason, partnerToken, partnerName, gameToken, gameMode };
       }
       console.log('[fetchCheckWaiting]: request done', data, {
+        gameMode,
         success,
         status,
         reason,
         url,
       });
-      return { status, reason };
+      return { status, reason, gameMode };
     })
     .catch((error) => {
       const errorMessage = requestErrorText + ': ' + error.message;

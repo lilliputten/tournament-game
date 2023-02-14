@@ -61,11 +61,33 @@ const gameWaitingSlice = createSlice({
       .addCase(
         String(fetchStartWaitingThunk.fulfilled),
         (state: TGameWaitingState, action: TFetchStartWaitingPayloadAction) => {
-          const { reason, status } = action.payload;
-          console.log('[features/GameWaiting/reducer:fetchStartWaitingThunk.fulfilled]: success', {
+          const {
+            // Base...
             reason,
             status,
+            // Game...
+            gameMode,
+            gameToken,
+            partnerName,
+            partnerToken,
+          } = action.payload;
+          console.log('[features/GameWaiting/reducer:fetchStartWaitingThunk.fulfilled]: success', {
+            // Base...
+            reason,
+            status,
+            // Game...
+            gameMode,
+            gameToken,
+            partnerName,
+            partnerToken,
+            // Payload...
+            payload: action.payload,
           });
+          // Update game status (for info only)...
+          state.gameMode = gameMode;
+          state.gameToken = gameToken;
+          state.partnerName = partnerName;
+          state.partnerToken = partnerToken;
           // Set next status...
           // state.isWaitingCycle = true; // Start wating cycle
           if (status === 'waiting') {
@@ -133,11 +155,25 @@ const gameWaitingSlice = createSlice({
       .addCase(
         String(fetchCheckWaitingThunk.fulfilled),
         (state: TGameWaitingState, action: TFetchCheckWaitingPayloadAction) => {
-          const { status, reason } = action.payload;
-          console.log('[features/GameWaiting/reducer:fetchCheckWaitingThunk.fulfilled]', {
+          const {
+            // Base...
             status,
             reason,
-            action,
+            // Game...
+            gameMode,
+            partnerName,
+            partnerToken,
+          } = action.payload;
+          console.log('[features/GameWaiting/reducer:fetchCheckWaitingThunk.fulfilled]', {
+            // Base...
+            status,
+            reason,
+            // Game...
+            gameMode,
+            partnerName,
+            partnerToken,
+            // Payload...
+            payload: action.payload,
           });
           if (status !== 'waiting') {
             // prettier-ignore
@@ -190,6 +226,14 @@ export const selectors = {
     state.isWaitingCycle,
   selectIsStarted: (state: TGameWaitingState): TGameWaitingState['isStarted'] => state.isStarted,
   selectIsFailed: (state: TGameWaitingState): TGameWaitingState['isFailed'] => state.isFailed,
+
+  // Game...
+  selectGameMode: (state: TGameWaitingState): TGameWaitingState['gameMode'] => state.gameMode,
+  selectGameToken: (state: TGameWaitingState): TGameWaitingState['gameToken'] => state.gameToken,
+  selectPartnerName: (state: TGameWaitingState): TGameWaitingState['partnerName'] =>
+    state.partnerName,
+  selectPartnerToken: (state: TGameWaitingState): TGameWaitingState['partnerToken'] =>
+    state.partnerToken,
 };
 
 // Actions (TODO, SAMPLE)...

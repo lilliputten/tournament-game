@@ -29,10 +29,11 @@ export function Empty({ reason }: { reason?: string }) {
 }
 
 export function GameReady({ partnerName }: Pick<TGameSessionState, 'partnerName'>) {
+  // TODO: Is it used?
   return (
     <Box className={classnames(styles.container, styles.GameReady)}>
       <Typography variant="h5" gutterBottom>
-        Игра готова
+        Игра готова (GamePlaying)
       </Typography>
       {partnerName && (
         <Typography variant="body1" gutterBottom>
