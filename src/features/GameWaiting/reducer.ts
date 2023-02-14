@@ -88,6 +88,32 @@ const gameWaitingSlice = createSlice({
           state.isWaitingCycle = false;
         },
       )
+      // sendStopWaiting...
+      .addCase(String(sendStopWaitingThunk.pending), (state: TGameWaitingState) => {
+        state.loadingCount++;
+        state.isLoading = true;
+      })
+      .addCase(String(sendStopWaitingThunk.fulfilled), (state: TGameWaitingState) => {
+        state.loadingCount--;
+        state.isLoading = !!state.loadingCount;
+      })
+      .addCase(
+        String(sendStopWaitingThunk.rejected),
+        (state: TGameWaitingState, action: TSendStopWaitingPayloadAction) => {
+          const { error, meta } = action;
+          // eslint-disable-next-line no-console
+          console.error('[features/GameWaiting/reducer:sendStopWaitingThunk.rejected]', {
+            error,
+            meta,
+          });
+          // debugger; // eslint-disable-line no-debugger
+          if (error.name !== 'CanceledError') {
+            state.error = error;
+          }
+          state.loadingCount--;
+          state.isLoading = !!state.loadingCount;
+        },
+      )
       // fetchCheckWaiting...
       .addCase(String(fetchCheckWaitingThunk.pending), (state: TGameWaitingState) => {
         state.loadingCount++;
@@ -134,32 +160,6 @@ const gameWaitingSlice = createSlice({
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
           // NOTE: Cycle stops in `GameWaiting/expose-control-node`
-        },
-      )
-      // sendStopWaiting...
-      .addCase(String(sendStopWaitingThunk.pending), (state: TGameWaitingState) => {
-        state.loadingCount++;
-        state.isLoading = true;
-      })
-      .addCase(String(sendStopWaitingThunk.fulfilled), (state: TGameWaitingState) => {
-        state.loadingCount--;
-        state.isLoading = !!state.loadingCount;
-      })
-      .addCase(
-        String(sendStopWaitingThunk.rejected),
-        (state: TGameWaitingState, action: TSendStopWaitingPayloadAction) => {
-          const { error, meta } = action;
-          // eslint-disable-next-line no-console
-          console.error('[features/GameWaiting/reducer:sendStopWaitingThunk.rejected]', {
-            error,
-            meta,
-          });
-          // debugger; // eslint-disable-line no-debugger
-          if (error.name !== 'CanceledError') {
-            state.error = error;
-          }
-          state.loadingCount--;
-          state.isLoading = !!state.loadingCount;
         },
       );
   },

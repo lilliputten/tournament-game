@@ -8,9 +8,9 @@ import classnames from 'classnames';
 import config from '@/config';
 import { TGameSessionState } from '@/features/GameSession';
 
-import styles from './WaitingBlockContent.module.scss';
+import styles from './GamePlayingContent.module.scss';
 
-export interface TWaitingBlockProps extends JSX.IntrinsicAttributes {
+export interface TGamePlayingProps extends JSX.IntrinsicAttributes {
   className?: string;
 }
 
@@ -21,7 +21,7 @@ export function Empty({ reason }: { reason?: string }) {
     <Box data-reason={reason || null} className={classnames(styles.container, styles.Empty)}>
       {config.build.isDev && reason && (
         <Typography variant="body1" gutterBottom>
-          WatingBlock Empty: {reason}
+          Empty: {reason}
         </Typography>
       )}
     </Box>

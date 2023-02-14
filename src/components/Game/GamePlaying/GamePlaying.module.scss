@@ -1,0 +1,16 @@
+/** @module GamePlaying.module.scss
+ *  @since 2023.02.14, 14:52
+ *  @changed 2023.02.14, 14:52
+ */
+
+$sectionsMargin: 10px;
+
+.container {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  > * {
+    margin: $sectionsMargin auto;
+  }
+}

@@ -14,7 +14,7 @@ AuthGroupFile /home/g/goldenjeru/.security/.htgroups
 # Allow/disallow rules...
 AuthName tournament-game
 AuthType Basic
-# Require valid-user # NOTE: Not for production mode! Use these restrictions only for demos.
+Require valid-user # NOTE: Not for production mode! Use these restrictions only for demos.
 # Require group admin
 
 # Remove .html extensions...

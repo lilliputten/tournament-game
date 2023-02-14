@@ -69,7 +69,6 @@ export async function gameSessionStart(): Promise<TGameSessionStartResult> {
         partnerName,
         partnerToken,
       });
-      debugger;
       // TODO: ...
       return { status, reason, gameToken, partnerName, partnerToken };
     })

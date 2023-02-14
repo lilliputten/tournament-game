@@ -9,7 +9,7 @@ import React from 'react';
 import { useAppDispatch } from '@/core/app/app-store';
 import { intervalPolling } from '@/core';
 import { useGameSessionIsPlaying } from './expose-hooks';
-import { gameSessionCheckThunk, TGameSessionCheckPayloadAction } from './services';
+import { gameSessionCheckThunk } from './services';
 import { gameSessionCheckPollingTimeout } from './constants';
 import { actions as gameSessionActions } from '@/features/GameSession/reducer';
 
@@ -20,23 +20,8 @@ export default function ExposeControlNode(): null {
     if (isPlaying) {
       console.log('[GameSession/expose-control-node]: start game');
       const playingPolling = intervalPolling(async () => {
-        console.log('[GameSession/expose-control-node]: game iteration');
-        return (
-          dispatch(gameSessionCheckThunk())
-            // TODO: Process iteratiion result?
-            .then((action: TGameSessionCheckPayloadAction) => {
-              const { payload } = action;
-              const { status, reason } = payload;
-              // eslint-disable-next-line prettier/prettier
-              console.log('[GameSession/expose-control-node]: game iteration result', {
-                status,
-                payload,
-                reason,
-              });
-              // TODO: To do smth on each game session check step?
-              return action;
-            })
-        );
+        // console.log('[GameSession/expose-control-node]: game iteration');
+        return dispatch(gameSessionCheckThunk());
       }, gameSessionCheckPollingTimeout);
       playingPolling.polling();
       return () => {

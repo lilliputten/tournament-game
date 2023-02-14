@@ -1,6 +1,6 @@
 /** @module reducer
  *  @since 2023.02.13, 20:21
- *  @changed 2023.02.13, 23:19
+ *  @changed 2023.02.14, 17:37
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -71,7 +71,6 @@ const gameSessionSlice = createSlice({
             partnerName,
             partnerToken,
           });
-          debugger;
           // Game params...
           state.gameToken = gameToken;
           state.partnerName = partnerName;

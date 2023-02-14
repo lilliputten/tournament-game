@@ -26,7 +26,7 @@ import {
 } from '@/core';
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
 import { actions as gameWaitingActions } from '@/features/GameWaiting/reducer';
-import { fetchStartWaitingAction } from '@/features/GameWaiting/services';
+import { fetchStartWaitingAction, sendStopWaitingThunk } from '@/features/GameWaiting/services';
 import {
   Empty,
   WaitingMulti,
@@ -38,7 +38,6 @@ import {
 } from './WaitingBlockContent';
 
 import styles from './WaitingBlock.module.scss';
-import { sendStopWaitingThunk } from '@/features/GameWaiting/services/sendStopWaiting';
 
 export interface TWaitingBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
@@ -75,13 +74,19 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
     router.push('/');
   }, [router]);
 
-  // DEBUG: fetchWaiting
+  // Effect: Start game...
   React.useEffect(() => {
-    // console.log('[WaitingBlock]: DEBUG: fetchWaiting', { token, userName, gameMode });
-    if (isReady && token && userName /* && gameMode === 'multi' */) {
-      fetchStartWaitingAction(appRootStore); // DEBUG
+    if (isReady && isStarted) {
+      router.push('/game');
     }
-  }, [token, isReady, userName, appRootStore]);
+  }, [isReady, isStarted, router]);
+
+  // Effect: Start waiting...
+  React.useEffect(() => {
+    if (isReady /* && gameMode === 'multi' */) {
+      fetchStartWaitingAction(appRootStore);
+    }
+  }, [isReady, appRootStore]);
 
   React.useEffect(() => {
     // Go to the start page if environment isn't ready yet
@@ -103,7 +108,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   const [wasCancelled, setCancelled] = React.useState(false);
 
   const cancelWaiting = React.useCallback(() => {
-    console.log('[WaitingBlock]: DEBUG: cancelWaiting');
+    console.log('[WaitingBlock]: cancelWaiting');
     cancelAllActiveRequests();
     dispatch(sendStopWaitingThunk());
     dispatch(gameWaitingActions.resetData());
