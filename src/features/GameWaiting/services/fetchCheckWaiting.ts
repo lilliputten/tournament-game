@@ -7,8 +7,7 @@ import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
-
-export type TFetchCheckWaitingStatus = 'waiting' | 'finished' | 'failed';
+import { TFetchCheckWaitingStatus } from '@/core/types';
 
 interface TResponseData {
   // Data fields from server response as on 2023.02.13, 17:56
@@ -16,7 +15,7 @@ interface TResponseData {
   // Operation result...
   error?: string; // Error text (if occured)
   reason?: string; // ('Partner found, game started')
-  status?: TFetchCheckWaitingStatus; // ('finished')
+  status?: TFetchCheckWaitingStatus; // ('waitingFinished')
   success: boolean; // true
 
   // Waiting from date/time...
@@ -69,7 +68,7 @@ export async function fetchCheckWaiting(): Promise<TFetchCheckWaitingResult> {
       if (!success || error) {
         throw new Error(error || unknownErrorText);
       }
-      if (status === 'finished') {
+      if (status === 'waitingFinished') {
         // Success!
         const { partnerToken, partnerName, gameToken } = data;
         console.log('[fetchCheckWaiting]: request done: finished', data, {

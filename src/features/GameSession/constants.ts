@@ -22,5 +22,5 @@ export const defaultState: TGameSessionState = {
 
 // Delay for requesting game status
 export const gameSessionCheckPollingTimeout = buildConfig.isDev
-  ? 3000 // DEBUG
+  ? 10000 // DEBUG
   : 5000;

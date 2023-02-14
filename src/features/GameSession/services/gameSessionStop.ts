@@ -45,7 +45,7 @@ export async function gameSessionStop(): Promise<TGameSessionStopResult> {
       if (!success || error) {
         throw new Error(error || unknownErrorText);
       }
-      if (status === 'finished') {
+      if (status === 'waitingFinished') {
         // Success!
         console.log('[gameSessionStop]: request done: finished', data, {
           status,

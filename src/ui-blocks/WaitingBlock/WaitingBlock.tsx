@@ -63,7 +63,11 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   const isStarted = useGameWaitingIsStarted();
   const isFailed = useGameWaitingIsFailed();
 
-  const partnerName = useGameSessionPartnerName();
+  console.log('[WaitingBlock]: DEBUG', {
+    gameMode,
+  });
+
+  // const partnerName = useGameSessionPartnerName();
 
   // const isLoading = true;
   // const isFailed = false;
@@ -77,6 +81,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   // Effect: Start game...
   React.useEffect(() => {
     if (isReady && isStarted) {
+      // Go to game page...
       router.push('/game');
     }
   }, [isReady, isStarted, router]);
@@ -120,8 +125,9 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
       // Don't render nothing and go to the start page if environment isn't ready yet...
       return <Empty reason="Not ready" />;
     } else if (isStarted) {
-      // All is ok: start game (TODO)...
-      return <GameReady partnerName={partnerName} />;
+      // All is ok: start game (redirect should be executed, see Effect: Start game)...
+      return <Empty reason="Ready" />;
+      // return <GameReady partnerName={partnerName} gameMode={gameMode} />;
     } else if (isFailed) {
       // All is ok but server returned 'partner not found' status...
       return <WaitingFailed onSingleClick={handlePlaySingle} goToStartPage={goToStartPage} />;
@@ -149,7 +155,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
     isStarted,
     isWaiting,
     isWaitingCycle,
-    partnerName,
+    // partnerName,
     wasCancelled,
   ]);
 

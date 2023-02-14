@@ -60,12 +60,23 @@ const gameWaitingSlice = createSlice({
       )
       .addCase(
         String(fetchStartWaitingThunk.fulfilled),
-        (state: TGameWaitingState, _action: TFetchStartWaitingPayloadAction) => {
-          // console.log('[features/GameWaiting/reducer:fetchStartWaitingThunk.fulfilled]: success', action.payload);
+        (state: TGameWaitingState, action: TFetchStartWaitingPayloadAction) => {
+          const { reason, status } = action.payload;
+          console.log('[features/GameWaiting/reducer:fetchStartWaitingThunk.fulfilled]: success', {
+            reason,
+            status,
+          });
+          // Set next status...
+          // state.isWaitingCycle = true; // Start wating cycle
+          if (status === 'waiting') {
+            state.isWaitingCycle = true; // Start wating cycle
+          } else if (status === 'waitingFinished') {
+            state.isStarted = true;
+          }
+          // Request...
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
           state.error = undefined;
-          state.isWaitingCycle = true; // Start wating cycle///
         },
       )
       .addCase(
@@ -134,7 +145,7 @@ const gameWaitingSlice = createSlice({
             // Stop waiting loop...
             state.isWaiting = false;
             state.isWaitingCycle = false;
-            if (status === 'finished') {
+            if (status === 'waitingFinished') {
               state.isStarted = true;
             } else if (status === 'failed') {
               state.isFailed = true;

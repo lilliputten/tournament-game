@@ -9,6 +9,7 @@ import config from '@/config';
 import { TGameSessionState } from '@/features/GameSession';
 
 import styles from './WaitingBlockContent.module.scss';
+import { TGameParamsState } from '@/features/GameParams';
 
 export interface TWaitingBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
@@ -87,7 +88,7 @@ export function WaitingSingle({
   return (
     <Box className={classnames(styles.container, styles.WaitingSingle)}>
       <Typography variant="h5" gutterBottom>
-        Запуск игры
+        Запуск одиночной игры
       </Typography>
       <Stack className={styles.actions} spacing={2} direction="row" justifyContent="center">
         {isWaiting && !!cancelWaiting && (
@@ -148,7 +149,11 @@ export function WasCancelled({ goToStartPage }: { goToStartPage?: TCb }) {
   );
 }
 
-export function GameReady({ partnerName }: Pick<TGameSessionState, 'partnerName'>) {
+interface TGameReadyParams {
+  partnerName?: TGameSessionState['partnerName'];
+  gameMode?: TGameParamsState['gameMode'];
+}
+export function GameReady({ partnerName, gameMode }: TGameReadyParams) {
   return (
     <Box className={classnames(styles.container, styles.GameReady)}>
       <Typography variant="h5" gutterBottom>
@@ -159,8 +164,13 @@ export function GameReady({ partnerName }: Pick<TGameSessionState, 'partnerName'
           Ваш партнёр: {partnerName}
         </Typography>
       )}
+      {gameMode && (
+        <Typography variant="body1" gutterBottom>
+          Режим игры: {gameMode}
+        </Typography>
+      )}
       <Typography variant="body1" gutterBottom>
-        Игра запускается...
+        Запуск...
       </Typography>
     </Box>
   );

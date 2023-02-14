@@ -8,13 +8,11 @@ import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
 
-export type TGameSessionCheckStatus = 'waiting' | 'finished' | 'failed';
-
 interface TResponseData {
   // Operation result...
   error?: string; // Error text (if occured)
   reason?: string; // ('Partner found, game started')
-  status?: string; // ('finished')
+  status?: string; // ('waitingFinished')
   success: boolean; // true
 
   // TODO: Other params...
@@ -45,7 +43,7 @@ export async function gameSessionCheck(): Promise<TGameSessionCheckResult> {
       if (!success || error) {
         throw new Error(error || unknownErrorText);
       }
-      if (status === 'finished') {
+      if (status === 'waitingFinished') {
         // Success!
         console.log('[gameSessionCheck]: request done: finished', data, {
           status,

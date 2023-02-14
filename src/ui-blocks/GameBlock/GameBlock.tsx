@@ -64,7 +64,7 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
   const gameToken = useGameSessionGameToken();
 
   const isParamsReady = !!(token && userName && isStarted);
-  const isGameReady = !!(isParamsReady && gameToken && partnerToken && partnerName);
+  const isGameReady = !!(isParamsReady && gameToken && (gameMode !== 'multi' || partnerToken));
 
   console.log('[GameBlock]: DEBUG', {
     isParamsReady,

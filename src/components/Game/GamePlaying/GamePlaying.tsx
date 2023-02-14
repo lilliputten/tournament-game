@@ -25,17 +25,9 @@ import {
   useGameSessionIsPlaying,
 } from '@/core';
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
-import { actions as gameSessionActions } from '@/features/GameSession/reducer';
+// import { actions as gameSessionActions } from '@/features/GameSession/reducer';
 import { gameSessionStartThunk } from '@/features/GameSession/services';
-import {
-  Empty,
-  WaitingMulti,
-  WaitingSingle,
-  WaitingFailed,
-  WasCancelled,
-  GameReady,
-  WaitingStart,
-} from './GamePlayingContent';
+import { Empty, GameReady } from './GamePlayingContent';
 
 import styles from './GamePlaying.module.scss';
 

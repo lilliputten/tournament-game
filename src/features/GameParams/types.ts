@@ -1,16 +1,16 @@
 /** @module types
  *  @since 2023.01.28, 19:17
- *  @changed 2023.02.10, 18:26
+ *  @changed 2023.02.14, 18:29
  */
 
 import { AnyAction, Reducer } from 'redux';
 
-export type TGameMode = 'single' | 'multi';
+import { TGameMode } from '@/core/types';
 
 export interface TGameParamsState {
   token?: string;
   userName?: string;
-  gameMode?: TGameMode;
+  gameMode: TGameMode;
 
   // State...
   isLoading: boolean;
