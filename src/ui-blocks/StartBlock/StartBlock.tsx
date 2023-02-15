@@ -76,12 +76,12 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
 
   return (
     <Box className={classnames(className, styles.container)}>
-      <Typography variant="h5" gutterBottom className={classnames(styles.title)}>
+      <Typography variant="h5" className={classnames(styles.title)}>
         Турнир по теме «Что проверить в договорах»
       </Typography>
       {!isLoading && (
         <>
-          <Typography variant="body1" gutterBottom className={classnames(styles.question)}>
+          <Typography variant="body1" className={classnames(styles.question)}>
             Как вы хотите сыграть?
           </Typography>
           <ButtonGroup

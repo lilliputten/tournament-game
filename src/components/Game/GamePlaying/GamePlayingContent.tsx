@@ -7,6 +7,8 @@ import classnames from 'classnames';
 
 import config from '@/config';
 import { TGameSessionState } from '@/features/GameSession';
+import { TGameParamsState } from '@/features/GameParams';
+import { TQuestions } from '@/core/types';
 
 import styles from './GamePlayingContent.module.scss';
 
@@ -20,29 +22,33 @@ export function Empty({ reason }: { reason?: string }) {
   return (
     <Box data-reason={reason || null} className={classnames(styles.container, styles.Empty)}>
       {config.build.isDev && reason && (
-        <Typography variant="body1" gutterBottom>
-          GamePlaying Empty: {reason}
-        </Typography>
+        <Typography variant="body1">GamePlaying Empty: {reason}</Typography>
       )}
     </Box>
   );
 }
 
-export function GameReady({ partnerName }: Pick<TGameSessionState, 'partnerName'>) {
-  // TODO: Is it used?
+export function GameInfo({
+  partnerName,
+  partnerToken,
+  questions,
+  gameMode,
+}: Pick<TGameSessionState, 'partnerName' | 'partnerToken'> &
+  Pick<TGameParamsState, 'gameMode'> & { questions?: TQuestions }) {
   return (
     <Box className={classnames(styles.container, styles.GameReady)}>
-      <Typography variant="h5" gutterBottom>
-        Игра готова (GamePlaying)
-      </Typography>
+      <Typography variant="h5">Информция об игре (GamePlaying)</Typography>
+      {gameMode && <Typography variant="body1">Режим игры: {gameMode}</Typography>}
       {partnerName && (
-        <Typography variant="body1" gutterBottom>
-          Ваш партнёр: {partnerName}
+        <Typography variant="body1">
+          Ваш партнёр: {partnerName} ({partnerToken})
         </Typography>
       )}
-      <Typography variant="body1" gutterBottom>
-        Игра запускается...
-      </Typography>
+      {questions && (
+        <Typography variant="body1">
+          Вопросы: {questions.map(({ question }) => question).join(' | ')}
+        </Typography>
+      )}
     </Box>
   );
 }

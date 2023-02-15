@@ -12,6 +12,8 @@ export interface TGameParamsState {
   userName?: string;
   gameMode: TGameMode;
 
+  hasStarted: boolean;
+
   // State...
   isLoading: boolean;
   error?: Error;

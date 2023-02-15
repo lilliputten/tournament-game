@@ -23,6 +23,7 @@ export default function ExposeControlNode(): null {
     if (needReset) {
       dispatch(actions.resetData());
     }
+    // TODO: Call fetch appInfo from StartPage too
     fetchAppInfoAction(appRootStore);
   }, [dispatch, appRootStore]);
 

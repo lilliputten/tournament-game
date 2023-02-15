@@ -1,6 +1,6 @@
 /** @module reducer
  *  @since 2023.01.28, 19:17
- *  @changed 2023.02.11, 21:36
+ *  @changed 2023.02.15, 21:06
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -46,6 +46,7 @@ const gameParamsSlice = createSlice({
         String(fetchAppInfoThunk.pending),
         (state: TGameParamsState, _action: TFetchAppInfoPayloadAction) => {
           state.isLoading = true;
+          state.hasStarted = true;
           state.error = undefined;
         },
       )

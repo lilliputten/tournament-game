@@ -98,7 +98,7 @@ export function withGamePlayingWrapperFabric<P extends JSX.IntrinsicAttributes>(
             </Box>
           )}
           {displayContent && (
-            <div className={styles.contentContainer}>
+            <Box className={styles.contentContainer}>
               <Component
                 {...props}
                 error={error}
@@ -107,7 +107,7 @@ export function withGamePlayingWrapperFabric<P extends JSX.IntrinsicAttributes>(
                 gameSessionIsPlaying={gameSessionIsPlaying}
                 // gameSessionIsFailed={gameSessionIsFailed}
               />
-            </div>
+            </Box>
           )}
           {/* Show small loader at the end of article items if some data has loaded */}
           <LoaderSplash

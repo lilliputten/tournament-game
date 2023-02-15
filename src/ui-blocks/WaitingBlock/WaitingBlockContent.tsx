@@ -21,9 +21,7 @@ export function Empty({ reason }: { reason?: string }) {
   return (
     <Box data-reason={reason || null} className={classnames(styles.container, styles.Empty)}>
       {config.build.isDev && reason && (
-        <Typography variant="body1" gutterBottom>
-          WatingBlock Empty: {reason}
-        </Typography>
+        <Typography variant="body1">WatingBlock Empty: {reason}</Typography>
       )}
     </Box>
   );
@@ -38,9 +36,7 @@ export function WaitingStart({
 }) {
   return (
     <Box className={classnames(styles.container, styles.WaitingStart)}>
-      <Typography variant="h5" gutterBottom>
-        Запуск игры на сервере
-      </Typography>
+      <Typography variant="h5">Запуск игры на сервере</Typography>
       <Stack className={styles.actions} spacing={2} direction="row" justifyContent="center">
         {isWaiting && !!cancelWaiting && (
           <Button className="FixMuiButton" onClick={cancelWaiting} variant="contained">
@@ -61,12 +57,8 @@ export function WaitingMulti({
 }) {
   return (
     <Box className={classnames(styles.container, styles.WaitingMulti)}>
-      <Typography variant="h5" gutterBottom>
-        Ищем соперника
-      </Typography>
-      <Typography variant="body1" gutterBottom>
-        Это может занять несколько минут.
-      </Typography>
+      <Typography variant="h5">Ищем соперника</Typography>
+      <Typography variant="body1">Это может занять несколько минут.</Typography>
       <Stack className={styles.actions} spacing={2} direction="row" justifyContent="center">
         {isWaiting && !!cancelWaiting && (
           <Button className="FixMuiButton" onClick={cancelWaiting} variant="contained">
@@ -87,9 +79,7 @@ export function WaitingSingle({
 }) {
   return (
     <Box className={classnames(styles.container, styles.WaitingSingle)}>
-      <Typography variant="h5" gutterBottom>
-        Запуск одиночной игры
-      </Typography>
+      <Typography variant="h5">Запуск одиночной игры</Typography>
       <Stack className={styles.actions} spacing={2} direction="row" justifyContent="center">
         {isWaiting && !!cancelWaiting && (
           <Button className="FixMuiButton" onClick={cancelWaiting} variant="contained">
@@ -110,10 +100,8 @@ export function WaitingFailed({
 }) {
   return (
     <Box className={classnames(styles.container, styles.WaitingFailed)}>
-      <Typography variant="h5" gutterBottom>
-        Похоже, сейчас нет подходщих соперников
-      </Typography>
-      <Typography variant="body1" gutterBottom>
+      <Typography variant="h5">Похоже, сейчас нет подходщих соперников</Typography>
+      <Typography variant="body1">
         Вы можете сыграть самостоятельно и подняться в рейтинге
       </Typography>
       <Stack className={styles.actions} spacing={2} direction="row" justifyContent="center">
@@ -135,9 +123,7 @@ export function WaitingFailed({
 export function WasCancelled({ goToStartPage }: { goToStartPage?: TCb }) {
   return (
     <Box className={classnames(styles.container, styles.WasCancelled)}>
-      <Typography variant="h5" gutterBottom>
-        Старт игры был отменён
-      </Typography>
+      <Typography variant="h5">Старт игры был отменён</Typography>
       <Stack className={styles.actions} spacing={2} direction="row" justifyContent="center">
         {!!goToStartPage && (
           <Button className="FixMuiButton" onClick={goToStartPage} variant="contained">
@@ -157,10 +143,8 @@ interface TGameReadyParams {
 export function GameReady({ partnerName, gameMode, startGameDelaySec }: TGameReadyParams) {
   return (
     <Box className={classnames(styles.container, styles.GameReady)}>
-      <Typography variant="h5" gutterBottom>
-        Ура! Соперник нашелся
-      </Typography>
-      <Typography variant="body1" gutterBottom>
+      <Typography variant="h5">Ура! Соперник нашелся</Typography>
+      <Typography variant="body1">
         Турнир
         {gameMode && config.build.isDev && ' (в режиме ' + gameMode + ')'}
         {partnerName && ' с игроком ' + partnerName}

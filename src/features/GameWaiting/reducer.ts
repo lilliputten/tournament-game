@@ -1,6 +1,6 @@
 /** @module reducer
  *  @since 2023.02.11, 17:02
- *  @changed 2023.02.15, 16:59
+ *  @changed 2023.02.15, 20:59
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -84,7 +84,7 @@ const gameWaitingSlice = createSlice({
            *   payload: action.payload,
            * });
            */
-          // Update game status (for info only)...
+          // Update game status (for information only)...
           state.gameMode = gameMode;
           state.gameToken = gameToken;
           state.partnerName = partnerName;
@@ -130,6 +130,7 @@ const gameWaitingSlice = createSlice({
       .addCase(String(sendStopWaitingThunk.fulfilled), (state: TGameWaitingState) => {
         state.loadingCount--;
         state.isLoading = !!state.loadingCount;
+        state.error = undefined;
       })
       .addCase(
         String(sendStopWaitingThunk.rejected),
@@ -161,18 +162,20 @@ const gameWaitingSlice = createSlice({
             status,
             // reason,
             // // Game...
-            // gameMode,
-            // partnerName,
-            // partnerToken,
+            gameMode,
+            gameToken,
+            partnerName,
+            partnerToken,
           } = action.payload;
           /* console.log('[features/GameWaiting/reducer:fetchCheckWaitingThunk.fulfilled]', {
            *   // Base...
            *   status,
            *   // reason,
            *   // // Game...
-           *   // gameMode,
-           *   // partnerName,
-           *   // partnerToken,
+           *   gameMode,
+           *   gameToken,
+           *   partnerName,
+           *   partnerToken,
            *   // Payload...
            *   payload: action.payload,
            * });
@@ -182,6 +185,11 @@ const gameWaitingSlice = createSlice({
              * // prettier-ignore
              * console.log('[features/GameWaiting/reducer:fetchCheckWaitingThunk.fulfilled]: not waiting');
              */
+            // Update game status (for information only)...
+            state.gameMode = gameMode;
+            state.gameToken = gameToken;
+            state.partnerName = partnerName;
+            state.partnerToken = partnerToken;
             // Stop waiting loop...
             state.isWaiting = false;
             state.isWaitingCycle = false;
@@ -193,6 +201,7 @@ const gameWaitingSlice = createSlice({
           }
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
+          state.error = undefined;
         },
       )
       .addCase(

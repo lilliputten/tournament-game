@@ -12,6 +12,8 @@ export const defaultState: TGameParamsState = {
   token: undefined,
   gameMode: defaultGameMode,
 
+  hasStarted: false,
+
   isLoading: false,
   error: undefined,
 };

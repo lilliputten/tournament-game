@@ -19,6 +19,9 @@ export const useGameParamsIsLoading = (): ReturnType<typeof selectors.selectLoad
 export const useGameParamsError = (): ReturnType<typeof selectors.selectError> =>
   selectors.selectError(useGameParamsState());
 
+export const useGameParamsHasStarted = (): ReturnType<typeof selectors.selectLoading> =>
+  selectors.selectLoading(useGameParamsState());
+
 // Custom hooks...
 export const useGameParamsToken = (): ReturnType<typeof selectors.selectToken> =>
   selectors.selectToken(useGameParamsState());

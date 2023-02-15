@@ -1,0 +1,33 @@
+/** @module GameLayout.module.scss
+ *  @since 2023.02.15, 19:54
+ *  @changed 2023.02.15, 19:54
+ */
+
+$boxesSpace: 20px;
+
+.container,
+.box,
+.partnersBox,
+.gameBox,
+.DEBUG {
+  /*!KEEP*/
+  // border: 1px solid red;
+}
+
+.container {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: $boxesSpace;
+  @media (min-width: $breakpointsMdPx) {
+    flex-direction: row;
+    .partnersBox {
+      width: 30%;
+    }
+    .gameBox {
+      flex: 1;
+    }
+  }
+}

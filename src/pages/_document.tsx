@@ -26,7 +26,7 @@ export default function Document(): JSX.Element {
   // @see https://developers.facebook.com/docs/sharing/webmasters
   // @see https://developers.facebook.com/tools/debug/
   return (
-    <Html lang="en">
+    <Html lang="ru">
       <Head>
         <noscript dangerouslySetInnerHTML={{ __html: `<!-- @build ${buildTag} -->` }} />
         {/*

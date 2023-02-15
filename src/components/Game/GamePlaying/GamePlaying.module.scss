@@ -6,11 +6,12 @@
 $sectionsMargin: 10px;
 
 .container {
+  width: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   text-align: center;
-  > * {
-    margin: $sectionsMargin auto;
-  }
+  // > * {
+  //   margin: $sectionsMargin auto;
+  // }
 }

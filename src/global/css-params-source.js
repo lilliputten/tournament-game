@@ -110,7 +110,7 @@ const cssConfig = {
 
   // Theme colors...
 
-  bodyBgColor: theme.bodyBgColor || '#fff',
+  bodyBgColor: theme.bodyBgColor || '#f5f5f5',
 
   /* // UNUSED: Generic theming colors...
    * themeColors: {

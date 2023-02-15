@@ -1,4 +1,5 @@
 /** @module GameBlock
+ *  @desc This component can manage different game screens (main game screen is GamePlaying).
  *  @since 2023.02.14, 14:52
  *  @changed 2023.02.15, 16:56
  */
@@ -14,7 +15,7 @@ import {
   useGameParamsGameMode,
   useGameParamsToken,
   useGameParamsUserName,
-  useGameSessionPartnerName,
+  // useGameSessionPartnerName,
   useGameSessionPartnerToken,
   useGameSessionGameToken,
   useGameWaitingIsGameStarted,
@@ -24,11 +25,11 @@ import {
 import { gameSessionStartThunk } from '@/features/GameSession/services';
 import {
   Empty,
-  GameInfo,
-  // ...
+  // GameInfo,
 } from './GameBlockContent';
 
 import styles from './GameBlock.module.scss';
+import { GamePlaying } from '@/components/Game/GamePlaying';
 
 export interface TGameBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
@@ -54,7 +55,7 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
 
   const isPlaying = useGameSessionIsPlaying();
 
-  const partnerName = useGameSessionPartnerName();
+  // const partnerName = useGameSessionPartnerName();
   const partnerToken = useGameSessionPartnerToken();
   const gameToken = useGameSessionGameToken();
 
@@ -78,9 +79,7 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
 
   // Effect: Start game...
   React.useEffect(() => {
-    if (isParamsReady && !isGameReady /* && gameMode === 'multi' */) {
-      /* console.log('[GameBlock]: Effect: Start game', { isParamsReady, isGameReady });
-       */
+    if (isParamsReady && !isGameReady) {
       dispatch(gameSessionStartThunk());
       // TODO: To use handler on game end?
     }
@@ -90,8 +89,6 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
   React.useEffect(() => {
     // Go to the start page if environment isn't ready yet
     if (!isParamsReady) {
-      /* console.log('[GameBlock]: Effect: Params not ready -> go to waiting');
-       */
       router.push('/waiting');
     }
   }, [router, isParamsReady]);
@@ -101,13 +98,20 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
       // Don't render nothing and go to the start page if environment isn't ready yet...
       return <Empty reason="Not ready" />;
     } else if (isPlaying) {
-      // TODO: Use `GamePlay`
-      return <GameInfo partnerName={partnerName} gameMode={gameMode} />;
+      return <GamePlaying />;
+      // return <GameInfo partnerName={partnerName} gameMode={gameMode} />;
+    } else {
+      return <Empty reason="Unknown" />;
     }
-  }, [partnerName, gameMode, isGameReady, isPlaying]);
+  }, [
+    // partnerName,
+    // gameMode,
+    isGameReady,
+    isPlaying,
+  ]);
 
   return (
-    <Box className={classnames(className, styles.container)} my={2}>
+    <Box className={classnames(className, styles.container)} my={2} flexDirection="row">
       {content}
     </Box>
   );

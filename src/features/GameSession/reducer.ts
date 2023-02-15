@@ -91,6 +91,7 @@ const gameSessionSlice = createSlice({
           // Basic state...
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
+          state.error = undefined;
         },
       )
       .addCase(
@@ -132,6 +133,7 @@ const gameSessionSlice = createSlice({
            */
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
+          state.error = undefined;
         },
       )
       .addCase(
@@ -169,6 +171,7 @@ const gameSessionSlice = createSlice({
            */
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
+          state.error = undefined;
         },
       )
       .addCase(
