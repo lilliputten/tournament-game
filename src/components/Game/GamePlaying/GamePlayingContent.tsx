@@ -19,9 +19,7 @@ export type TCb = () => void;
 export function Empty({ reason }: { reason?: string }) {
   return (
     <Box data-reason={reason || null} className={classnames(styles.container, styles.Empty)}>
-      {config.build.isDev && reason && (
-        <Typography variant="body1">GamePlaying Empty: {reason}</Typography>
-      )}
+      {config.build.isDev && reason && <Typography>GamePlaying Empty: {reason}</Typography>}
     </Box>
   );
 }
@@ -37,16 +35,14 @@ export function GameInfo({
   return (
     <Box className={classnames(styles.container, styles.GameReady)}>
       <Typography variant="h5">Информция об игре (GamePlaying)</Typography>
-      {gameMode && <Typography variant="body1">Режим игры: {gameMode}</Typography>}
+      {gameMode && <Typography>Режим игры: {gameMode}</Typography>}
       {partnerName && (
-        <Typography variant="body1">
+        <Typography>
           Ваш партнёр: {partnerName} ({partnerToken})
         </Typography>
       )}
       {questions && (
-        <Typography variant="body1">
-          Вопросы: {questions.map(({ question }) => question).join(' | ')}
-        </Typography>
+        <Typography>Вопросы: {questions.map(({ question }) => question).join(' | ')}</Typography>
       )}
     </Box>
   );

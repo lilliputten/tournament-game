@@ -20,9 +20,7 @@ export type TCb = () => void;
 export function Empty({ reason }: { reason?: string }) {
   return (
     <Box data-reason={reason || null} className={classnames(styles.container, styles.Empty)}>
-      {config.build.isDev && reason && (
-        <Typography variant="body1">WatingBlock Empty: {reason}</Typography>
-      )}
+      {config.build.isDev && reason && <Typography>WatingBlock Empty: {reason}</Typography>}
     </Box>
   );
 }
@@ -58,7 +56,7 @@ export function WaitingMulti({
   return (
     <Box className={classnames(styles.container, styles.WaitingMulti)}>
       <Typography variant="h5">Ищем соперника</Typography>
-      <Typography variant="body1">Это может занять несколько минут.</Typography>
+      <Typography>Это может занять несколько минут.</Typography>
       <Stack className={styles.actions} spacing={2} direction="row" justifyContent="center">
         {isWaiting && !!cancelWaiting && (
           <Button className="FixMuiButton" onClick={cancelWaiting} variant="contained">
@@ -101,9 +99,7 @@ export function WaitingFailed({
   return (
     <Box className={classnames(styles.container, styles.WaitingFailed)}>
       <Typography variant="h5">Похоже, сейчас нет подходщих соперников</Typography>
-      <Typography variant="body1">
-        Вы можете сыграть самостоятельно и подняться в рейтинге
-      </Typography>
+      <Typography>Вы можете сыграть самостоятельно и подняться в рейтинге</Typography>
       <Stack className={styles.actions} spacing={2} direction="row" justifyContent="center">
         {!!onSingleClick && (
           <Button className="FixMuiButton" onClick={onSingleClick} variant="contained">
@@ -144,7 +140,7 @@ export function GameReady({ partnerName, gameMode, startGameDelaySec }: TGameRea
   return (
     <Box className={classnames(styles.container, styles.GameReady)}>
       <Typography variant="h5">Ура! Соперник нашелся</Typography>
-      <Typography variant="body1">
+      <Typography>
         Турнир
         {gameMode && config.build.isDev && ' (в режиме ' + gameMode + ')'}
         {partnerName && ' с игроком ' + partnerName}

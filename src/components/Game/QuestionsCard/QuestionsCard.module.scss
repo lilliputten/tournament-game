@@ -1,0 +1,78 @@
+/** @module QuestionsCard.module.scss
+ *  @since 2023.02.15, 19:54
+ *  @changed 2023.02.16, 02:30
+ */
+
+.container,
+.infoRow,
+.progressRow,
+.questionRow,
+.answersRow,
+.actionsRow,
+.DEBUG {
+  /*!KEEP*/
+}
+
+.container {
+}
+
+.progressRow {
+  background: #bfbfbf;
+  position: relative;
+  overflow: hidden;
+  &,
+  .progressBar {
+    height: 1px;
+  }
+  .progressBar {
+    background: $primaryColor;
+    transition: width $transitionTimeMs;
+  }
+}
+
+$shadeColor: color.adjust(#000, $alpha: -0.9);
+$borderColor: $shadeColor;
+
+.answersRow {
+  background: #fff;
+  border: 1px solid $borderColor;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.answer {
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 5px 16px;
+  & + & {
+    border-top: 1px solid $borderColor;
+  }
+}
+.answerCorrect {
+  background: $gameGreenColor;
+}
+.answerWrong {
+  background: $gameRedColor;
+}
+.answerText {
+  // margin: 5px 16px;
+  box-sizing: border-box;
+}
+.answerActive {
+  cursor: pointer;
+  &:after {
+    transition: opacity $transitionTimeMs;
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+    background: $shadeColor;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    content: '';
+  }
+  &:hover:after {
+    opacity: 1;
+  }
+}

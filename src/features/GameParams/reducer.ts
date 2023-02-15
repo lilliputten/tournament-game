@@ -46,7 +46,7 @@ const gameParamsSlice = createSlice({
         String(fetchAppInfoThunk.pending),
         (state: TGameParamsState, _action: TFetchAppInfoPayloadAction) => {
           state.isLoading = true;
-          state.hasStarted = true;
+          // state.hasStarted = true;
           state.error = undefined;
         },
       )
@@ -62,6 +62,7 @@ const gameParamsSlice = createSlice({
            */
           state.token = token;
           state.isLoading = false;
+          state.hasStarted = true;
           state.error = undefined;
         },
       )
@@ -79,6 +80,7 @@ const gameParamsSlice = createSlice({
             state.error = error;
           }
           state.isLoading = false;
+          state.hasStarted = true;
         },
       );
   },
@@ -93,6 +95,7 @@ export const selectors = {
   selectError: (state: TGameParamsState): TGameParamsState['error'] => state.error,
 
   // Custom selectors...
+  selectHasStarted: (state: TGameParamsState): TGameParamsState['hasStarted'] => state.hasStarted,
   selectToken: (state: TGameParamsState): TGameParamsState['token'] => state.token,
   selectUserName: (state: TGameParamsState): TGameParamsState['userName'] => state.userName,
   selectGameMode: (state: TGameParamsState): TGameParamsState['gameMode'] => state.gameMode,

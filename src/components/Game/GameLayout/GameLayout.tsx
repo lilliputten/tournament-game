@@ -10,7 +10,7 @@ import classnames from 'classnames';
 import { Stack } from '@mui/material';
 
 import { useGameParamsGameMode } from '@/core';
-import { Partner } from '@/components/Game';
+import { Partner, QuestionsCard } from '@/components/Game';
 
 import styles from './GameLayout.module.scss';
 
@@ -36,7 +36,7 @@ export function GameLayout(props: TGameLayoutProps): JSX.Element | null {
         <Partner self />
       </Stack>
       <Box className={classnames(styles.gameBox)}>
-        <Typography variant="body1">GameLayout: Game</Typography>
+        <QuestionsCard className={classnames(styles.gameBox)} />
       </Box>
     </Box>
   );

@@ -17,8 +17,10 @@ import {
   // useRootStore,
   // useGameParamsToken,
   useAppDispatch,
+  useGameParamsHasStarted,
   // useGameParamsGameMode,
   useGameParamsIsLoading,
+  useGameParamsToken,
   useGameParamsUserName,
 } from '@/core';
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
@@ -31,7 +33,7 @@ export interface TStartBlockProps extends TWithGameParamsWrapperProps {
   className?: string;
 }
 
-export function StartBlock(props: TStartBlockProps): JSX.Element {
+export function StartBlock(props: TStartBlockProps) {
   const { className } = props;
   /* // @see:
    * - [Школа/ сервисы – Figma](https://www.figma.com/file/C1ylOhuxpqwMitM11JHE8Y/%D0%A8%D0%BA%D0%BE%D0%BB%D0%B0%2F-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D1%8B?node-id=2323%3A1061&t=vjG6YjAtpOyUFoIc-0)
@@ -43,6 +45,8 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
   const router = useRouter();
 
   const isLoading = useGameParamsIsLoading();
+  const hasStarted = useGameParamsHasStarted();
+  const token = useGameParamsToken();
   const userName = useGameParamsUserName();
   // const gameMode = useGameParamsGameMode();
 
@@ -74,16 +78,18 @@ export function StartBlock(props: TStartBlockProps): JSX.Element {
     openUserNameDialog(true);
   }, [dispatch]);
 
+  if (!token) {
+    return null;
+  }
+
   return (
     <Box className={classnames(className, styles.container)}>
       <Typography variant="h5" className={classnames(styles.title)}>
         Турнир по теме «Что проверить в договорах»
       </Typography>
-      {!isLoading && (
+      {!isLoading && hasStarted && token && (
         <>
-          <Typography variant="body1" className={classnames(styles.question)}>
-            Как вы хотите сыграть?
-          </Typography>
+          <Typography className={classnames(styles.question)}>Как вы хотите сыграть?</Typography>
           <ButtonGroup
             className={classnames(styles.actions)}
             variant="outlined"

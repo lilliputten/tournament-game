@@ -3,6 +3,7 @@ export interface TAnswer {
   correct?: boolean;
 }
 export interface TQuestion {
+  id: string;
   question: string;
   answers: TAnswer[];
 }

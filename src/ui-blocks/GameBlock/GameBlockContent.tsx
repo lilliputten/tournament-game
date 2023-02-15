@@ -20,9 +20,7 @@ export type TCb = () => void;
 export function Empty({ reason }: { reason?: string }) {
   return (
     <Box data-reason={reason || null} className={classnames(styles.container, styles.Empty)}>
-      {config.build.isDev && reason && (
-        <Typography variant="body1">GameBlock Empty: {reason}</Typography>
-      )}
+      {config.build.isDev && reason && <Typography>GameBlock Empty: {reason}</Typography>}
     </Box>
   );
 }
@@ -34,10 +32,10 @@ export function GameInfo({
   return (
     <Box className={classnames(styles.container, styles.GameReady)}>
       <Typography variant="h5">Информция об игре (GameBlock)</Typography>
-      {gameMode && <Typography variant="body1">Режим игры: {gameMode}</Typography>}
-      {partnerName && <Typography variant="body1">Ваш партнёр: {partnerName}</Typography>}
+      {gameMode && <Typography>Режим игры: {gameMode}</Typography>}
+      {partnerName && <Typography>Ваш партнёр: {partnerName}</Typography>}
       {/*
-      <Typography variant="body1">
+      <Typography>
         Игра запускается...
       </Typography>
       */}
