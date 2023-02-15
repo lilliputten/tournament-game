@@ -1,6 +1,6 @@
 /** @module GamePlaying
  *  @since 2023.02.14, 14:52
- *  @changed 2023.02.15, 19:43
+ *  @changed 2023.02.15, 21:30
  */
 
 import React from 'react';
@@ -8,13 +8,12 @@ import { useRouter } from 'next/router';
 import Box from '@mui/material/Box';
 import classnames from 'classnames';
 
-// import config from '@/config';
 import {
-  useAppDispatch,
+  // useAppDispatch,
   useGameParamsGameMode,
   useGameParamsToken,
   useGameParamsUserName,
-  useGameSessionPartnerName,
+  // useGameSessionPartnerName,
   useGameSessionPartnerToken,
   useGameSessionGameToken,
   useGameWaitingIsGameStarted,
@@ -24,7 +23,7 @@ import {
 // import { actions as gameParamsActions } from '@/features/GameParams/reducer';
 // import { actions as gameSessionActions } from '@/features/GameSession/reducer';
 // import { gameSessionStartThunk } from '@/features/GameSession/services';
-import { Empty,  GameInfo } from './GamePlayingContent';
+import { Empty } from './GamePlayingContent';
 
 import styles from './GamePlaying.module.scss';
 import { GameLayout } from '../GameLayout/GameLayout';
@@ -41,7 +40,7 @@ export function GamePlaying(props: TGamePlayingProps): JSX.Element | null {
    */
 
   // const appRootStore = useStore<TRootState>();
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const router = useRouter();
 
   const token = useGameParamsToken();
@@ -51,11 +50,11 @@ export function GamePlaying(props: TGamePlayingProps): JSX.Element | null {
   // Has game started in GameWaiting?
   const hasGameStarted = useGameWaitingIsGameStarted();
 
-  const isStarted = useGameWaitingIsGameStarted();
+  // const isStarted = useGameWaitingIsGameStarted();
 
   const isPlaying = useGameSessionIsPlaying();
 
-  const partnerName = useGameSessionPartnerName();
+  // const partnerName = useGameSessionPartnerName();
   const partnerToken = useGameSessionPartnerToken();
   const gameToken = useGameSessionGameToken();
 
@@ -69,19 +68,6 @@ export function GamePlaying(props: TGamePlayingProps): JSX.Element | null {
     hasQuestions &&
     (gameMode !== 'multi' || partnerToken)
   );
-
-  console.log('[GamePlaying]: DEBUG', {
-    isParamsReady,
-    isGameReady,
-    token,
-    userName,
-    gameMode,
-    // isLoading,
-    isPlaying,
-    partnerName,
-    partnerToken,
-    gameToken,
-  });
 
   // Effect: Game not ready?
   React.useEffect(() => {
@@ -97,28 +83,10 @@ export function GamePlaying(props: TGamePlayingProps): JSX.Element | null {
       return <Empty reason="Not ready" />;
     } else if (isPlaying) {
       return <GameLayout />;
-      /* // DEBUG
-       * return (
-       *   <GameInfo
-       *     gameMode={gameMode}
-       *     partnerName={partnerName}
-       *     partnerToken={partnerToken}
-       *     questions={questions}
-       *   />
-       * );
-       */
     } else {
       return <Empty reason="Unknown" />;
     }
-  }, [
-    // gameMode,
-    // partnerName,
-    // partnerToken,
-    // questions,
-    isGameReady,
-    // isLoading,
-    isPlaying,
-  ]);
+  }, [isGameReady, isPlaying]);
 
   return <Box className={classnames(className, styles.container)}>{content}</Box>;
 }

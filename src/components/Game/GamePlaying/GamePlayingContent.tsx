@@ -1,8 +1,6 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-// import Button from '@mui/material/Button';
-// import { Stack } from '@mui/system';
 import classnames from 'classnames';
 
 import config from '@/config';
@@ -28,6 +26,7 @@ export function Empty({ reason }: { reason?: string }) {
   );
 }
 
+// DBEUG
 export function GameInfo({
   partnerName,
   partnerToken,

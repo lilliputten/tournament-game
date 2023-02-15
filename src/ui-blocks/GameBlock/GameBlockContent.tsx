@@ -21,9 +21,7 @@ export function Empty({ reason }: { reason?: string }) {
   return (
     <Box data-reason={reason || null} className={classnames(styles.container, styles.Empty)}>
       {config.build.isDev && reason && (
-        <Typography variant="body1">
-          GameBlock Empty: {reason}
-        </Typography>
+        <Typography variant="body1">GameBlock Empty: {reason}</Typography>
       )}
     </Box>
   );
@@ -35,19 +33,9 @@ export function GameInfo({
 }: Pick<TGameSessionState, 'partnerName'> & Pick<TGameParamsState, 'gameMode'>) {
   return (
     <Box className={classnames(styles.container, styles.GameReady)}>
-      <Typography variant="h5">
-        Информция об игре (GameBlock)
-      </Typography>
-      {gameMode && (
-        <Typography variant="body1">
-          Режим игры: {gameMode}
-        </Typography>
-      )}
-      {partnerName && (
-        <Typography variant="body1">
-          Ваш партнёр: {partnerName}
-        </Typography>
-      )}
+      <Typography variant="h5">Информция об игре (GameBlock)</Typography>
+      {gameMode && <Typography variant="body1">Режим игры: {gameMode}</Typography>}
+      {partnerName && <Typography variant="body1">Ваш партнёр: {partnerName}</Typography>}
       {/*
       <Typography variant="body1">
         Игра запускается...

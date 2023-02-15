@@ -1,0 +1,32 @@
+/** @module Partner.module.scss
+ *  @since 2023.02.15, 19:54
+ *  @changed 2023.02.15, 19:54
+ */
+
+.container,
+.self,
+.other,
+.question,
+.questionsBox,
+.DEBUG {
+  /*!KEEP*/
+  // border: 1px solid red;
+}
+
+.container {
+  padding: 12px;
+  background: #fff;
+  border: 1px solid $primaryColor;
+  border-radius: 8px;
+}
+
+.questionsBox {
+}
+
+.question {
+  $questionColor: #e4e4e4;
+  $itemSizePx: 32px;
+  background: $questionColor;
+  width: $itemSizePx;
+  height: $itemSizePx;
+}

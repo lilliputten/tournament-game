@@ -1,7 +1,7 @@
 /** @module strings
  *  @description Strings utilities
  *  @since 2023.01.26, 20:43
- *  @changed 2023.02.12, 02:27
+ *  @changed 2023.02.15, 22:55
  */
 
 import { AxiosError } from 'axios';
@@ -127,7 +127,7 @@ export const html2string = (html: string): string => {
  * }
  */
 
-export function padNumber(num: number, size: number): string {
+export function padNumber(num: number | string, size: number): string {
   return String(num).padStart(size, '0');
 }
 
@@ -136,7 +136,7 @@ export function padNumber(num: number, size: number): string {
  * @param {String} [periodChar=' ']
  * @return {String}
  */
-export function periodizeNumber(num: number, periodChar: string): string {
+export function periodizeNumber(num: number | string, periodChar: string): string {
   periodChar = periodChar || ' ';
   let numStr = String(num);
   // If long number...
@@ -203,4 +203,26 @@ export function errorToString(error: Error | AxiosError): string {
     .filter(Boolean)
     .join(': ')
     .replace(/^Error:\s*/, '');
+}
+
+export function stringToInt32(string: string): number {
+  let hash = 0;
+  if (string.length == 0) return hash;
+  for (let i = 0; i < string.length; i++) {
+    const char = string.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  return hash;
+}
+
+export function intToHex(number: number): string {
+  if (number < 0) {
+    number = 0xffffffff + number + 1;
+  }
+  return number.toString(16).toUpperCase();
+}
+
+export function stringToHash(string: string): string {
+  return intToHex(stringToInt32(string)).padStart(8, '0');
 }

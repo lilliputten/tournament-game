@@ -1,7 +1,7 @@
 /** @module config.css-source
  *  @description Global styles config
  *  @since 2023.01.26, 23:35
- *  @changed 2023.01.26, 23:35
+ *  @changed 2023.02.15, 22:10
  */
 
 const cssProcessRoutines = require('./css-params-process/css-process-routines');
@@ -76,6 +76,11 @@ const defaultFont =
 
 // module.exports = { // Common-used css variables...
 const cssConfig = {
+  // Game (tournament)...
+
+  gameRedColor: '#f1361d',
+  gameGreenColor: '#aec948',
+
   // Common-used css variables...
 
   primaryColor, // Extends from themeColors

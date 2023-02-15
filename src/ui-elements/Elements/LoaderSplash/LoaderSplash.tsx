@@ -1,6 +1,6 @@
 /** @module LoaderSplash
  *  @since 2023.01.27, 21:26
- *  @changed 2023.01.27, 21:26
+ *  @changed 2023.02.15, 22:08
  */
 
 import React from 'react';
@@ -10,7 +10,7 @@ import { Spinner, TSpinnerSize, TSpinnerColor } from '../Spinner';
 
 import styles from './LoaderSplash.module.scss';
 
-type TBackground = true | 'white' | 'gray' | 'neutral' | 'primary';
+type TBackground = true | 'page' | 'white' | 'gray' | 'neutral' | 'primary';
 type TMode = 'cover';
 
 interface TLoaderSplashProps {

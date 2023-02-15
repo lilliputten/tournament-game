@@ -4,6 +4,6 @@ export interface TAnswer {
 }
 export interface TQuestion {
   question: string;
-  qnswers: TAnswer[];
+  answers: TAnswer[];
 }
 export type TQuestions = TQuestion[];
