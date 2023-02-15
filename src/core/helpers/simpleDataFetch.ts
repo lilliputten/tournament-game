@@ -73,10 +73,11 @@ export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
     headers: { ...apiConfig.defaultDataRequestHeaders, ...params.headers },
     cancelToken: source.token,
   };
-  console.log('[simpleDataFetch]: request start', {
-    requestParams,
-    params,
-  });
+  /* console.log('[simpleDataFetch]: request start', {
+   *   requestParams,
+   *   params,
+   * });
+   */
   // Start request
   const axiosRequest = axios<T & TResponseError>(requestParams);
   // Add axios request to active requests list
@@ -85,11 +86,12 @@ export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
   return axiosRequest
     .then((res): AxiosResponse<T & TResponseError> | Promise<AxiosResponse<T & TResponseError>> => {
       if (useDelayedRequest) {
-        console.log('[simpleDataFetch]: delaying result', {
-          res,
-          requestDelay,
-          requestParams,
-        });
+        /* console.log('[simpleDataFetch]: delaying result', {
+         *   res,
+         *   requestDelay,
+         *   requestParams,
+         * });
+         */
         return new Promise<AxiosResponse<T & TResponseError>>((resolve) => {
           setTimeout(resolve, requestDelay, res);
         });
@@ -98,11 +100,12 @@ export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
     })
     .then((res) => {
       const { data } = res;
-      console.log('[simpleDataFetch]: result', {
-        res,
-        data,
-        requestParams,
-      });
+      /* console.log('[simpleDataFetch]: result', {
+       *   res,
+       *   data,
+       *   requestParams,
+       * });
+       */
       // Check error...
       if (typeof data === 'string') {
         throw new Error('Server error (via text): ' + data);

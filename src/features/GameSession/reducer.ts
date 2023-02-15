@@ -62,16 +62,24 @@ const gameSessionSlice = createSlice({
       .addCase(
         String(gameSessionStartThunk.fulfilled),
         (state: TGameSessionState, action: TGameSessionStartPayloadAction) => {
-          const { status, reason, gameToken, gameMode, partnerName, partnerToken } = action.payload;
-          console.log('[features/GameSession/reducer:gameSessionStartThunk.fulfilled]', {
-            status,
-            reason,
-            action,
+          const {
+            // status,
+            // reason,
             gameToken,
             gameMode,
             partnerName,
             partnerToken,
-          });
+          } = action.payload;
+          /* console.log('[features/GameSession/reducer:gameSessionStartThunk.fulfilled]', {
+           *   status,
+           *   reason,
+           *   action,
+           *   gameToken,
+           *   gameMode,
+           *   partnerName,
+           *   partnerToken,
+           * });
+           */
           // Game params...
           state.gameToken = gameToken;
           state.gameMode = gameMode;
@@ -114,14 +122,14 @@ const gameSessionSlice = createSlice({
       })
       .addCase(
         String(gameSessionCheckThunk.fulfilled),
-        (state: TGameSessionState, action: TGameSessionCheckPayloadAction) => {
-          const { status, reason } = action.payload;
-          console.log('[features/GameSession/reducer:gameSessionCheckThunk.fulfilled]', {
-            status,
-            reason,
-            action,
-          });
-          // TODO?
+        (state: TGameSessionState, _action: TGameSessionCheckPayloadAction) => {
+          // const { status, reason } = action.payload;
+          /* console.log('[features/GameSession/reducer:gameSessionCheckThunk.fulfilled]', {
+           *   status,
+           *   reason,
+           *   action,
+           * });
+           */
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
         },
@@ -151,14 +159,14 @@ const gameSessionSlice = createSlice({
       })
       .addCase(
         String(gameSessionStopThunk.fulfilled),
-        (state: TGameSessionState, action: TGameSessionStopPayloadAction) => {
-          const { status, reason } = action.payload;
-          console.log('[features/GameSession/reducer:gameSessionStopThunk.fulfilled]', {
-            status,
-            reason,
-            action,
-          });
-          // TODO?
+        (state: TGameSessionState, _action: TGameSessionStopPayloadAction) => {
+          // const { status, reason } = action.payload;
+          /* console.log('[features/GameSession/reducer:gameSessionStopThunk.fulfilled]', {
+           *   status,
+           *   reason,
+           *   action,
+           * });
+           */
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
         },

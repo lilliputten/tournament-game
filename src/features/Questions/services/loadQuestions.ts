@@ -34,10 +34,11 @@ const unknownErrorText = 'Операция завершена с неопред�
 export async function loadQuestions(): Promise<TLoadQuestionsResult> {
   const method = 'GET';
   const url = config.api.apiUrlPrefix + '/loadQuestions';
-  console.log('[loadQuestions]: request start', {
-    method,
-    url,
-  });
+  /* console.log('[loadQuestions]: request start', {
+   *   method,
+   *   url,
+   * });
+   */
   return simpleDataFetch<TResponseData>({ url, method })
     .then((data) => {
       const { success, error, reason, questions } = data;
@@ -45,13 +46,13 @@ export async function loadQuestions(): Promise<TLoadQuestionsResult> {
       if (!success || error) {
         throw new Error(error || unknownErrorText);
       }
-      console.log('[loadQuestions]: request done', data, {
-        success,
-        reason,
-        url,
-        questions,
-      });
-      // TODO: ...
+      /* console.log('[loadQuestions]: request done', data, {
+       *   success,
+       *   reason,
+       *   url,
+       *   questions,
+       * });
+       */
       return { reason, questions };
     })
     .catch((error) => {

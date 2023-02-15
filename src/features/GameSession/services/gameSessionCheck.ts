@@ -32,10 +32,11 @@ const unknownErrorText = 'Операция завершена с неопред�
 export async function gameSessionCheck(): Promise<TGameSessionCheckResult> {
   const method = 'POST';
   const url = config.api.apiUrlPrefix + '/gameSessionCheck';
-  console.log('[gameSessionCheck]: request start', {
-    method,
-    url,
-  });
+  /* console.log('[gameSessionCheck]: request start', {
+   *   method,
+   *   url,
+   * });
+   */
   return simpleDataFetch<TResponseData>({ url, method })
     .then((data) => {
       const { success, status, error, reason } = data;
@@ -45,18 +46,20 @@ export async function gameSessionCheck(): Promise<TGameSessionCheckResult> {
       }
       if (status === 'waitingFinished') {
         // Success!
-        console.log('[gameSessionCheck]: request done: finished', data, {
-          status,
-          reason,
-        });
+        /* console.log('[gameSessionCheck]: request done: finished', data, {
+         *   status,
+         *   reason,
+         * });
+         */
         return { status, reason };
       }
-      console.log('[gameSessionCheck]: request done', data, {
-        success,
-        status,
-        reason,
-        url,
-      });
+      /* console.log('[gameSessionCheck]: request done', data, {
+       *   success,
+       *   status,
+       *   reason,
+       *   url,
+       * });
+       */
       return { status, reason };
     })
     .catch((error) => {

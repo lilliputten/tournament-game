@@ -58,10 +58,11 @@ const unknownErrorText = 'Операция завершена с неопред�
 export async function fetchCheckWaiting(): Promise<TFetchCheckWaitingResult> {
   const method = 'POST';
   const url = config.api.apiUrlPrefix + '/waitingCheck';
-  console.log('[fetchCheckWaiting]: request start', {
-    method,
-    url,
-  });
+  /* console.log('[fetchCheckWaiting]: request start', {
+   *   method,
+   *   url,
+   * });
+   */
   return simpleDataFetch<TResponseData>({ url, method })
     .then((data) => {
       const { success, status, error, reason, gameMode } = data;
@@ -72,23 +73,25 @@ export async function fetchCheckWaiting(): Promise<TFetchCheckWaitingResult> {
       if (status === 'waitingFinished') {
         // Success!
         const { partnerToken, partnerName, gameToken } = data;
-        console.log('[fetchCheckWaiting]: request done: finished', data, {
-          partnerToken,
-          partnerName,
-          gameToken,
-          gameMode,
-          status,
-          reason,
-        });
+        /* console.log('[fetchCheckWaiting]: request done: finished', data, {
+         *   partnerToken,
+         *   partnerName,
+         *   gameToken,
+         *   gameMode,
+         *   status,
+         *   reason,
+         * });
+         */
         return { status, reason, partnerToken, partnerName, gameToken, gameMode };
       }
-      console.log('[fetchCheckWaiting]: request done', data, {
-        gameMode,
-        success,
-        status,
-        reason,
-        url,
-      });
+      /* console.log('[fetchCheckWaiting]: request done', data, {
+       *   gameMode,
+       *   success,
+       *   status,
+       *   reason,
+       *   url,
+       * });
+       */
       return { status, reason, gameMode };
     })
     .catch((error) => {

@@ -18,14 +18,14 @@ export default function ExposeControlNode(): null {
   const isPlaying = useGameSessionIsPlaying();
   React.useEffect(() => {
     if (isPlaying) {
-      console.log('[GameSession/expose-control-node]: start game');
+      // console.log('[GameSession/expose-control-node]: start game');
       const playingPolling = intervalPolling(async () => {
         // console.log('[GameSession/expose-control-node]: game iteration');
         return dispatch(gameSessionCheckThunk());
       }, gameSessionCheckPollingTimeout);
       playingPolling.polling();
       return () => {
-        console.log('[GameSession/expose-control-node]: stop game');
+        // console.log('[GameSession/expose-control-node]: stop game');
         playingPolling.close();
         // TODO: Reset game data?
         dispatch(gameSessionActions.resetData());

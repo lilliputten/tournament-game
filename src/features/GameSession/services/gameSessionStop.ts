@@ -34,10 +34,11 @@ const unknownErrorText = 'Операция завершена с неопред�
 export async function gameSessionStop(): Promise<TGameSessionStopResult> {
   const method = 'POST';
   const url = config.api.apiUrlPrefix + '/gameSessionStop';
-  console.log('[gameSessionStop]: request start', {
-    method,
-    url,
-  });
+  /* console.log('[gameSessionStop]: request start', {
+   *   method,
+   *   url,
+   * });
+   */
   return simpleDataFetch<TResponseData>({ url, method })
     .then((data) => {
       const { success, status, error, reason } = data;
@@ -47,19 +48,20 @@ export async function gameSessionStop(): Promise<TGameSessionStopResult> {
       }
       if (status === 'waitingFinished') {
         // Success!
-        console.log('[gameSessionStop]: request done: finished', data, {
-          status,
-          reason,
-        });
+        /* console.log('[gameSessionStop]: request done: finished', data, {
+         *   status,
+         *   reason,
+         * });
+         */
         return { status, reason };
       }
-      console.log('[gameSessionStop]: request done', data, {
-        success,
-        status,
-        reason,
-        url,
-      });
-      // TODO: ...
+      /* console.log('[gameSessionStop]: request done', data, {
+       *   success,
+       *   status,
+       *   reason,
+       *   url,
+       * });
+       */
       return { status, reason };
     })
     .catch((error) => {

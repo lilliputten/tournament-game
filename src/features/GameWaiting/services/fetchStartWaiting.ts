@@ -63,12 +63,13 @@ export async function fetchStartWaiting(
   const url = config.api.apiUrlPrefix + '/waitingStart';
   const { userName, gameMode } = params;
   const queryData: TFetchStartWaitingQuery = { name: userName, gameMode };
-  console.log('[fetchStartWaiting]: request start', {
-    params,
-    queryData,
-    method,
-    url,
-  });
+  /* console.log('[fetchStartWaiting]: request start', {
+   *   params,
+   *   queryData,
+   *   method,
+   *   url,
+   * });
+   */
   return simpleDataFetch<TResponseData>({ url, method, data: queryData })
     .then((data): TFetchStartWaitingResult => {
       const {
@@ -87,20 +88,21 @@ export async function fetchStartWaiting(
       if (!success || error) {
         throw new Error(error || unknownErrorText);
       }
-      console.log('[fetchStartWaiting]: request done', data, {
-        // Status...
-        reason,
-        status,
-        success,
-        // Game...
-        gameMode,
-        gameToken,
-        partnerName,
-        partnerToken,
-        // Base
-        params,
-        url,
-      });
+      /* console.log('[fetchStartWaiting]: request done', data, {
+       *   // Status...
+       *   reason,
+       *   status,
+       *   success,
+       *   // Game...
+       *   gameMode,
+       *   gameToken,
+       *   partnerName,
+       *   partnerToken,
+       *   // Base
+       *   params,
+       *   url,
+       * });
+       */
       return {
         // Status...
         reason,

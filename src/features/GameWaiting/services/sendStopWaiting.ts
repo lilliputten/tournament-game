@@ -40,10 +40,11 @@ export async function sendStopWaiting(/* params: TSendStopWaitingParams */): Pro
       if (!success || error) {
         throw new Error(error || unknownErrorText);
       }
-      console.log('[sendStopWaiting]: request done', data, {
-        success,
-        url,
-      });
+      /* console.log('[sendStopWaiting]: request done', data, {
+       *   success,
+       *   url,
+       * });
+       */
     })
     .catch((error) => {
       const errorMessage = requestErrorText + ': ' + error.message;
