@@ -19,10 +19,9 @@ import {
   useGameParamsUserName,
   useGameWaitingIsFailed,
   useGameWaitingIsLoading,
-  useGameWaitingIsStarted,
+  useGameWaitingIsGameStarted,
   useGameWaitingIsWaiting,
   useGameWaitingIsWaitingCycle,
-  // useGameSessionPartnerName,
   useGameWaitingPartnerName,
 } from '@/core';
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
@@ -63,18 +62,13 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   const isLoading = useGameWaitingIsLoading();
   const isWaiting = useGameWaitingIsWaiting();
   const isWaitingCycle = useGameWaitingIsWaitingCycle();
-  const isStarted = useGameWaitingIsStarted();
+  const isStarted = useGameWaitingIsGameStarted();
   const isFailed = useGameWaitingIsFailed();
 
   // TODO: To use partnerName from waiting state!
   const partnerName = useGameWaitingPartnerName();
 
   const isReady = !!userName && !!token;
-
-  console.log('[WaitingBlock]: DEBUG', {
-    gameMode,
-    partnerName,
-  });
 
   const goToStartPage = React.useCallback(() => {
     router.push('/');
@@ -88,10 +82,6 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   React.useEffect(() => {
     if (isReady && isStarted) {
       const isMultiGame = gameMode === 'multi';
-      console.log('[WaitingBlock]', {
-        gameMode,
-        isMultiGame,
-      });
       if (isMultiGame) {
         // Go to game page after delay...
         setTimeout(goToGamePage, startGameDelaySec * 1000);
@@ -129,7 +119,7 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
   const [wasCancelled, setCancelled] = React.useState(false);
 
   const cancelWaiting = React.useCallback(() => {
-    console.log('[WaitingBlock]: cancelWaiting');
+    // console.log('[WaitingBlock]: cancelWaiting');
     cancelAllActiveRequests();
     dispatch(sendStopWaitingThunk());
     dispatch(gameWaitingActions.resetData());
@@ -143,7 +133,14 @@ export function WaitingBlock(props: TWaitingBlockProps): JSX.Element | null {
     } else if (isStarted) {
       // All is ok: start game (redirect should be executed, see Effect: Start game)...
       // return <Empty reason="Ready" />;
-      return <GameReady partnerName={partnerName} gameMode={gameMode} />;
+      return (
+        <GameReady
+          partnerName={partnerName}
+          gameMode={gameMode}
+          // NOTE: It's silly to display unchaning delay value.
+          // startGameDelaySec={startGameDelaySec}
+        />
+      );
     } else if (isFailed) {
       // All is ok but server returned 'partner not found' status...
       return <WaitingFailed onSingleClick={handlePlaySingle} goToStartPage={goToStartPage} />;

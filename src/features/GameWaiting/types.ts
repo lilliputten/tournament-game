@@ -10,7 +10,7 @@ export interface TGameWaitingState {
   // States...
   isWaiting: boolean; // Waiting for partner match and game start
   isWaitingCycle: boolean; // Waiting cycle started
-  isStarted: boolean; // Is game started
+  isGameStarted: boolean; // Is game started
   isFailed: boolean; // Is game start failed (partner not found)
 
   // Game...

@@ -192,7 +192,7 @@ export const selectors = {
   selectIsLoading: (state: TGameSessionState): TGameSessionState['isLoading'] => state.isLoading,
   selectError: (state: TGameSessionState): TGameSessionState['error'] => state.error,
 
-  // Custom selectors (TODO, SAMPLE)...
+  // Custom selectors...
   selectGameToken: (state: TGameSessionState): TGameSessionState['gameToken'] => state.gameToken,
   selectPartnerToken: (state: TGameSessionState): TGameSessionState['partnerToken'] =>
     state.partnerToken,
@@ -202,7 +202,7 @@ export const selectors = {
   selectIsFinished: (state: TGameSessionState): TGameSessionState['isFinished'] => state.isFinished,
 };
 
-// Actions (TODO, SAMPLE)...
+// Actions...
 export const actions = gameSessionSlice.actions;
 
 // Core reducer...

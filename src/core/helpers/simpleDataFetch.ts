@@ -1,10 +1,11 @@
 /** @module simpleDataFetch
  *  @since 2023.02.10, 19:59
- *  @changed 2023.02.14, 23:19
+ *  @changed 2023.02.15, 16:25
  */
 
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
+import * as buildConfig from '@/config/build';
 import * as apiConfig from '@/config/api';
 
 interface TResponseError {
@@ -24,6 +25,9 @@ let source = axios.CancelToken.source();
 
 // All active requests list
 const activeRequests: Promise<AxiosResponse>[] = [];
+
+const useDelayedRequest = buildConfig.isDev;
+const requestDelay = 2000;
 
 export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
   // const url = apiUrlPrefix + '/start';
@@ -69,24 +73,41 @@ export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
     headers: { ...apiConfig.defaultDataRequestHeaders, ...params.headers },
     cancelToken: source.token,
   };
-  /* console.log('[simpleDataFetch]: request start', {
-   *   requestParams,
-   *   params,
-   * });
-   */
+  console.log('[simpleDataFetch]: request start', {
+    requestParams,
+    params,
+  });
   // Start request
   const axiosRequest = axios<T & TResponseError>(requestParams);
   // Add axios request to active requests list
   activeRequests.push(axiosRequest);
   // Return operation promise...
   return axiosRequest
+    .then((res): AxiosResponse<T & TResponseError> | Promise<AxiosResponse<T & TResponseError>> => {
+      if (useDelayedRequest) {
+        console.log('[simpleDataFetch]: delaying result', {
+          res,
+          requestDelay,
+          requestParams,
+        });
+        return new Promise<AxiosResponse<T & TResponseError>>((resolve) => {
+          setTimeout(resolve, requestDelay, res);
+        });
+      }
+      return res;
+    })
     .then((res) => {
       const { data } = res;
+      console.log('[simpleDataFetch]: result', {
+        res,
+        data,
+        requestParams,
+      });
       // Check error...
       if (typeof data === 'string') {
-        throw new Error('Server error (text): ' + data);
+        throw new Error('Server error (via text): ' + data);
       } else if (data.error) {
-        throw new Error('Server error (property): ' + data.error);
+        throw new Error('Server error (via property): ' + data.error);
       }
       // Return data...
       return data;

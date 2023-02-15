@@ -9,7 +9,7 @@ import { TQuestionsState } from './types';
 import { selectors } from './reducer';
 
 // Questions reducers...
-export const selectQuestionsState = (state: TRootState): TQuestionsState => state.gameSession;
+export const selectQuestionsState = (state: TRootState): TQuestionsState => state.questions;
 export const useQuestionsState = (): TQuestionsState =>
   useTypedSelector((state) => selectQuestionsState(state));
 

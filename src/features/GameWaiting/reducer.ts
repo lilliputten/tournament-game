@@ -1,6 +1,6 @@
 /** @module reducer
  *  @since 2023.02.11, 17:02
- *  @changed 2023.02.13, 01:02
+ *  @changed 2023.02.15, 16:59
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -27,7 +27,7 @@ const gameWaitingSlice = createSlice({
     resetData: (state) => {
       state.error = undefined;
       state.isLoading = false;
-      state.isStarted = false;
+      state.isGameStarted = false;
       state.isWaiting = false;
       state.isWaitingCycle = false;
     },
@@ -37,8 +37,8 @@ const gameWaitingSlice = createSlice({
     setIsWaitingCycle: (state, action: PayloadAction<TGameWaitingState['isWaitingCycle']>) => {
       state.isWaitingCycle = action.payload;
     },
-    setIsStarted: (state, action: PayloadAction<TGameWaitingState['isStarted']>) => {
-      state.isStarted = action.payload;
+    setIsGameStarted: (state, action: PayloadAction<TGameWaitingState['isGameStarted']>) => {
+      state.isGameStarted = action.payload;
     },
     setIsFailed: (state, action: PayloadAction<TGameWaitingState['isFailed']>) => {
       state.isFailed = action.payload;
@@ -53,7 +53,7 @@ const gameWaitingSlice = createSlice({
           state.error = undefined;
           state.loadingCount++;
           state.isLoading = true;
-          state.isStarted = false;
+          state.isGameStarted = false;
           state.isWaiting = true;
           state.isWaitingCycle = false;
         },
@@ -63,7 +63,7 @@ const gameWaitingSlice = createSlice({
         (state: TGameWaitingState, action: TFetchStartWaitingPayloadAction) => {
           const {
             // Base...
-            reason,
+            // reason,
             status,
             // Game...
             gameMode,
@@ -71,18 +71,19 @@ const gameWaitingSlice = createSlice({
             partnerName,
             partnerToken,
           } = action.payload;
-          console.log('[features/GameWaiting/reducer:fetchStartWaitingThunk.fulfilled]: success', {
-            // Base...
-            reason,
-            status,
-            // Game...
-            gameMode,
-            gameToken,
-            partnerName,
-            partnerToken,
-            // Payload...
-            payload: action.payload,
-          });
+          /* console.log('[features/GameWaiting/reducer:fetchStartWaitingThunk.fulfilled]: success', {
+           *   // Base...
+           *   // reason,
+           *   status,
+           *   // Game...
+           *   gameMode,
+           *   gameToken,
+           *   partnerName,
+           *   partnerToken,
+           *   // Payload...
+           *   payload: action.payload,
+           * });
+           */
           // Update game status (for info only)...
           state.gameMode = gameMode;
           state.gameToken = gameToken;
@@ -93,7 +94,7 @@ const gameWaitingSlice = createSlice({
           if (status === 'waiting') {
             state.isWaitingCycle = true; // Start wating cycle
           } else if (status === 'waitingFinished') {
-            state.isStarted = true;
+            state.isGameStarted = true;
           }
           // Request...
           state.loadingCount--;
@@ -116,7 +117,7 @@ const gameWaitingSlice = createSlice({
           }
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
-          state.isStarted = false;
+          state.isGameStarted = false;
           state.isWaiting = false;
           state.isWaitingCycle = false;
         },
@@ -158,31 +159,34 @@ const gameWaitingSlice = createSlice({
           const {
             // Base...
             status,
-            reason,
-            // Game...
-            gameMode,
-            partnerName,
-            partnerToken,
+            // reason,
+            // // Game...
+            // gameMode,
+            // partnerName,
+            // partnerToken,
           } = action.payload;
-          console.log('[features/GameWaiting/reducer:fetchCheckWaitingThunk.fulfilled]', {
-            // Base...
-            status,
-            reason,
-            // Game...
-            gameMode,
-            partnerName,
-            partnerToken,
-            // Payload...
-            payload: action.payload,
-          });
+          /* console.log('[features/GameWaiting/reducer:fetchCheckWaitingThunk.fulfilled]', {
+           *   // Base...
+           *   status,
+           *   // reason,
+           *   // // Game...
+           *   // gameMode,
+           *   // partnerName,
+           *   // partnerToken,
+           *   // Payload...
+           *   payload: action.payload,
+           * });
+           */
           if (status !== 'waiting') {
-            // prettier-ignore
-            console.log('[features/GameWaiting/reducer:fetchCheckWaitingThunk.fulfilled]: not waiting');
+            /* // DEBUG
+             * // prettier-ignore
+             * console.log('[features/GameWaiting/reducer:fetchCheckWaitingThunk.fulfilled]: not waiting');
+             */
             // Stop waiting loop...
             state.isWaiting = false;
             state.isWaitingCycle = false;
             if (status === 'waitingFinished') {
-              state.isStarted = true;
+              state.isGameStarted = true;
             } else if (status === 'failed') {
               state.isFailed = true;
             }
@@ -220,11 +224,12 @@ export const selectors = {
   selectLoading: (state: TGameWaitingState): TGameWaitingState['isLoading'] => state.isLoading,
   selectError: (state: TGameWaitingState): TGameWaitingState['error'] => state.error,
 
-  // Custom selectors (TODO, SAMPLE)...
+  // Custom selectors...
   selectIsWaiting: (state: TGameWaitingState): TGameWaitingState['isWaiting'] => state.isWaiting,
   selectIsWaitingCycle: (state: TGameWaitingState): TGameWaitingState['isWaitingCycle'] =>
     state.isWaitingCycle,
-  selectIsStarted: (state: TGameWaitingState): TGameWaitingState['isStarted'] => state.isStarted,
+  selectIsGameStarted: (state: TGameWaitingState): TGameWaitingState['isGameStarted'] =>
+    state.isGameStarted,
   selectIsFailed: (state: TGameWaitingState): TGameWaitingState['isFailed'] => state.isFailed,
 
   // Game...
@@ -236,7 +241,7 @@ export const selectors = {
     state.partnerToken,
 };
 
-// Actions (TODO, SAMPLE)...
+// Actions...
 export const actions = gameWaitingSlice.actions;
 
 // Core reducer...

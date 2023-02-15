@@ -11,7 +11,7 @@ export const defaultState: TGameWaitingState = {
   // States...
   isWaiting: false,
   isWaitingCycle: false,
-  isStarted: false,
+  isGameStarted: false,
   isFailed: false,
 
   // Game...

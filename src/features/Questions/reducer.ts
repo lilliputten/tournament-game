@@ -1,9 +1,9 @@
 /** @module reducer
  *  @since 2023.02.15, 02:53
- *  @changed 2023.02.15, 02:53
+ *  @changed 2023.02.15, 16:38
  */
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 import { TQuestionsState } from './types';
 import { defaultState } from './constants';
@@ -35,12 +35,16 @@ const questionsSlice = createSlice({
       .addCase(
         String(loadQuestionsThunk.fulfilled),
         (state: TQuestionsState, action: TLoadQuestionsPayloadAction) => {
-          const { reason, questions } = action.payload;
-          console.log('[features/Questions/reducer:loadQuestionsThunk.fulfilled]', {
-            reason,
-            action,
+          const {
+            // reason,
             questions,
-          });
+          } = action.payload;
+          /* console.log('[features/Questions/reducer:loadQuestionsThunk.fulfilled]', {
+           *   // reason,
+           *   action,
+           *   questions,
+           * });
+           */
           // Questions params...
           state.questions = questions;
           // Basic state...
@@ -77,11 +81,11 @@ export const selectors = {
   selectIsLoading: (state: TQuestionsState): TQuestionsState['isLoading'] => state.isLoading,
   selectError: (state: TQuestionsState): TQuestionsState['error'] => state.error,
 
-  // Custom selectors (TODO, SAMPLE)...
+  // Custom selectors...
   selectQuestions: (state: TQuestionsState): TQuestionsState['questions'] => state.questions,
 };
 
-// Actions (TODO, SAMPLE)...
+// Actions...
 export const actions = questionsSlice.actions;
 
 // Core reducer...

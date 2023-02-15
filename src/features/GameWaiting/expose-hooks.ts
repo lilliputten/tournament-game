@@ -24,8 +24,8 @@ export const useGameWaitingIsWaiting = (): ReturnType<typeof selectors.selectIsW
   selectors.selectIsWaiting(useGameWaitingState());
 export const useGameWaitingIsWaitingCycle = (): ReturnType<typeof selectors.selectIsWaitingCycle> =>
   selectors.selectIsWaitingCycle(useGameWaitingState());
-export const useGameWaitingIsStarted = (): ReturnType<typeof selectors.selectIsStarted> =>
-  selectors.selectIsStarted(useGameWaitingState());
+export const useGameWaitingIsGameStarted = (): ReturnType<typeof selectors.selectIsGameStarted> =>
+  selectors.selectIsGameStarted(useGameWaitingState());
 export const useGameWaitingIsFailed = (): ReturnType<typeof selectors.selectIsFailed> =>
   selectors.selectIsFailed(useGameWaitingState());
 

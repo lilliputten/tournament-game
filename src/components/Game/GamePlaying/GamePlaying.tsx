@@ -21,7 +21,7 @@ import {
   useGameSessionIsLoading,
   useGameSessionPartnerToken,
   useGameSessionGameToken,
-  useGameWaitingIsStarted,
+  useGameWaitingIsGameStarted,
   useGameSessionIsPlaying,
 } from '@/core';
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
@@ -50,7 +50,7 @@ export function GamePlaying(props: TGamePlayingProps): JSX.Element | null {
   const userName = useGameParamsUserName();
   const gameMode = useGameParamsGameMode();
 
-  const isStarted = useGameWaitingIsStarted();
+  const isStarted = useGameWaitingIsGameStarted();
 
   const isLoading = useGameSessionIsLoading();
   const isPlaying = useGameSessionIsPlaying();

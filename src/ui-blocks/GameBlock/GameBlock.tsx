@@ -1,29 +1,25 @@
 /** @module GameBlock
  *  @since 2023.02.14, 14:52
- *  @changed 2023.02.14, 17:34
+ *  @changed 2023.02.15, 16:56
  */
 
 import React from 'react';
-// import { useStore } from 'react-redux';
 import { useRouter } from 'next/router';
 import Box from '@mui/material/Box';
 import classnames from 'classnames';
 
-// import config from '@/config';
-// import { TRootState } from '@/core/app/app-root-state';
 import { loadQuestionsThunk } from '@/features/Questions/services';
 import {
-  // cancelAllActiveRequests,
   useAppDispatch,
   useGameParamsGameMode,
   useGameParamsToken,
   useGameParamsUserName,
   useGameSessionPartnerName,
-  useGameSessionIsLoading,
   useGameSessionPartnerToken,
   useGameSessionGameToken,
-  useGameWaitingIsStarted,
+  useGameWaitingIsGameStarted,
   useGameSessionIsPlaying,
+  useQuestions,
 } from '@/core';
 import { gameSessionStartThunk } from '@/features/GameSession/services';
 import {
@@ -53,30 +49,25 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
   const userName = useGameParamsUserName();
   const gameMode = useGameParamsGameMode();
 
-  const isStarted = useGameWaitingIsStarted();
+  // Has game started in GameWaiting?
+  const hasGameStarted = useGameWaitingIsGameStarted();
 
-  const isLoading = useGameSessionIsLoading();
   const isPlaying = useGameSessionIsPlaying();
 
   const partnerName = useGameSessionPartnerName();
   const partnerToken = useGameSessionPartnerToken();
   const gameToken = useGameSessionGameToken();
 
-  const isParamsReady = !!(token && userName && isStarted);
-  const isGameReady = !!(isParamsReady && gameToken && (gameMode !== 'multi' || partnerToken));
+  const questions = useQuestions();
+  const hasQuestions = !!questions;
 
-  console.log('[GameBlock]: DEBUG', {
-    isParamsReady,
-    isGameReady,
-    token,
-    userName,
-    gameMode,
-    isLoading,
-    isPlaying,
-    partnerName,
-    partnerToken,
-    gameToken,
-  });
+  const isParamsReady = !!(token && userName && hasGameStarted);
+  const isGameReady = !!(
+    isParamsReady &&
+    gameToken &&
+    hasQuestions &&
+    (gameMode !== 'multi' || partnerToken)
+  );
 
   // Effect: Questions...
   React.useEffect(() => {
@@ -88,9 +79,10 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
   // Effect: Start game...
   React.useEffect(() => {
     if (isParamsReady && !isGameReady /* && gameMode === 'multi' */) {
-      console.log('[GameBlock]: Effect: Start game', { isParamsReady, isGameReady });
+      /* console.log('[GameBlock]: Effect: Start game', { isParamsReady, isGameReady });
+       */
       dispatch(gameSessionStartThunk());
-      // TODO: Handler on game end?
+      // TODO: To use handler on game end?
     }
   }, [isParamsReady, isGameReady, dispatch]);
 
@@ -98,7 +90,8 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
   React.useEffect(() => {
     // Go to the start page if environment isn't ready yet
     if (!isParamsReady) {
-      console.log('[GameBlock]: Effect: Params not ready -> go to waiting');
+      /* console.log('[GameBlock]: Effect: Params not ready -> go to waiting');
+       */
       router.push('/waiting');
     }
   }, [router, isParamsReady]);
@@ -108,21 +101,10 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
       // Don't render nothing and go to the start page if environment isn't ready yet...
       return <Empty reason="Not ready" />;
     } else if (isPlaying) {
-      // return <Empty reason="Playing" />;
-      return <GameInfo partnerName={partnerName} gameMode={gameMode} />;
-    } else if (isStarted) {
-      // All is ok: start game (TODO)...
+      // TODO: Use `GamePlay`
       return <GameInfo partnerName={partnerName} gameMode={gameMode} />;
     }
-  }, [
-    isStarted,
-    partnerName,
-    gameMode,
-    isGameReady,
-    isPlaying,
-    // isLoading,
-    // cancelWaiting,
-  ]);
+  }, [partnerName, gameMode, isGameReady, isPlaying]);
 
   return (
     <Box className={classnames(className, styles.container)} my={2}>
