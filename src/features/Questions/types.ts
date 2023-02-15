@@ -5,7 +5,7 @@
 
 import { AnyAction, Reducer } from 'redux';
 
-import { TQuestions } from '@/core';
+import { TQuestions } from '@/core/types';
 
 export interface TQuestionsState {
   questions?: TQuestions;

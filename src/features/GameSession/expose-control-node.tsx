@@ -7,7 +7,7 @@
 import React from 'react';
 
 import { useAppDispatch } from '@/core/app/app-store';
-import { intervalPolling } from '@/core';
+import { intervalPolling } from '@/core/helpers';
 import { useGameSessionIsPlaying } from './expose-hooks';
 import { gameSessionCheckThunk } from './services';
 import { gameSessionCheckPollingTimeout } from './constants';

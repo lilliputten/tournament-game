@@ -7,7 +7,7 @@
 import React from 'react';
 
 import { useAppDispatch } from '@/core/app/app-store';
-import { intervalPolling } from '@/core';
+import { intervalPolling } from '@/core/helpers';
 import { useGameWaitingIsWaitingCycle } from './expose-hooks';
 import { fetchCheckWaitingThunk } from './services';
 import { gameWaitingPollingTimeout } from './constants';

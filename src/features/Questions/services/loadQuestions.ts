@@ -7,7 +7,7 @@ import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
-import { TQuestions } from '@/core';
+import { TQuestions } from '@/core/types';
 
 export type TLoadQuestionsStatus = string;
 

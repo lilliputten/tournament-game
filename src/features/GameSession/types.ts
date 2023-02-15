@@ -3,7 +3,7 @@
  *  @changed 2023.02.13, 20:21
  */
 
-import { TGameMode } from '@/core';
+import { TGameMode } from '@/core/types';
 import { AnyAction, Reducer } from 'redux';
 
 export interface TGameSessionState {

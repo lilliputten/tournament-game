@@ -7,7 +7,7 @@ import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
-import { TGameMode } from '@/core';
+import { TGameMode } from '@/core/types';
 
 export type TGameSessionStartStatus = string;
 
