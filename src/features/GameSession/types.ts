@@ -7,16 +7,23 @@ import { TGameMode } from '@/core/types';
 import { AnyAction, Reducer } from 'redux';
 
 export interface TGameSessionState {
+  // Game status...
   isPlaying: boolean; // Is game playing right now
   isFinished: boolean; // Is game finished
 
+  // Game params...
   gameToken?: string;
   gameMode?: TGameMode;
   partnerToken?: string;
   partnerName?: string;
 
-  // State...
+  currentQuestionIdx: number;
+  currentAnswerIdx?: number;
+  currentAnswerIsCorrect?: boolean;
+
+  // Generic tate...
   loadingCount: number;
+  isSessionChecking: boolean;
   isLoading: boolean;
   error?: Error;
 }

@@ -14,6 +14,8 @@ import {
   gameSessionCheckThunk,
   gameSessionStartThunk,
   gameSessionStopThunk,
+  gameSessionSendAnswerThunk,
+  TGameSessionSendAnswerPayloadAction,
 } from './services';
 
 const initialState: TGameSessionState = {
@@ -32,26 +34,24 @@ const gameSessionSlice = createSlice({
       state.isFinished = false;
       // Game params...
       state.gameToken = undefined;
+      state.gameMode = undefined;
       state.partnerToken = undefined;
       state.partnerName = undefined;
+      state.currentQuestionIdx = 0;
+      state.currentAnswerIdx = undefined;
+      state.currentAnswerIsCorrect = undefined;
     },
-    setIsPlaying: (state, action: PayloadAction<TGameSessionState['isPlaying']>) => {
-      state.isPlaying = action.payload;
+    setCurrentAnswerIdx: (state, action: PayloadAction<TGameSessionState['currentAnswerIdx']>) => {
+      state.currentAnswerIdx = action.payload;
+      state.currentAnswerIsCorrect = undefined;
     },
-    setIsFinished: (state, action: PayloadAction<TGameSessionState['isFinished']>) => {
-      state.isFinished = action.payload;
-    },
-    setGameToken: (state, action: PayloadAction<TGameSessionState['gameToken']>) => {
-      state.gameToken = action.payload;
-    },
-    setPartnerToken: (state, action: PayloadAction<TGameSessionState['partnerToken']>) => {
-      state.partnerToken = action.payload;
-    },
-    setPartnerName: (state, action: PayloadAction<TGameSessionState['partnerName']>) => {
-      state.partnerName = action.payload;
+    goToNextAnswer: (state) => {
+      // Check answer in answers?
+      state.currentAnswerIdx = state.currentAnswerIdx == undefined ? 0 : state.currentAnswerIdx + 1;
+      state.currentAnswerIsCorrect = undefined;
     },
   },
-  // TODO: Thunk reducers...
+  // Thunk reducers...
   extraReducers: (builder) => {
     builder
       // gameSessionStart...
@@ -118,21 +118,25 @@ const gameSessionSlice = createSlice({
       )
       // gameSessionCheck...
       .addCase(String(gameSessionCheckThunk.pending), (state: TGameSessionState) => {
-        state.loadingCount++;
-        state.isLoading = true;
+        // state.loadingCount++;
+        state.isSessionChecking = true;
       })
       .addCase(
         String(gameSessionCheckThunk.fulfilled),
-        (state: TGameSessionState, _action: TGameSessionCheckPayloadAction) => {
-          // const { status, reason } = action.payload;
-          /* console.log('[features/GameSession/reducer:gameSessionCheckThunk.fulfilled]', {
-           *   status,
-           *   reason,
-           *   action,
-           * });
-           */
-          state.loadingCount--;
-          state.isLoading = !!state.loadingCount;
+        (state: TGameSessionState, action: TGameSessionCheckPayloadAction) => {
+          const { status, reason, currentQuestionIdx = 0 } = action.payload;
+          console.log('[features/GameSession/reducer:gameSessionCheckThunk.fulfilled]', {
+            status,
+            reason,
+            action,
+            // Game...
+            currentQuestionIdx,
+          });
+          // debugger;
+          // Update game...
+          state.currentQuestionIdx = currentQuestionIdx;
+          // Update game status...
+          state.isSessionChecking = false;
           state.error = undefined;
         },
       )
@@ -149,8 +153,7 @@ const gameSessionSlice = createSlice({
           if (error.name !== 'CanceledError') {
             state.error = error;
           }
-          state.loadingCount--;
-          state.isLoading = !!state.loadingCount;
+          state.isSessionChecking = false;
           // NOTE: Cycle stops in `GameSession/expose-control-node`)
         },
       )
@@ -191,6 +194,46 @@ const gameSessionSlice = createSlice({
           state.isLoading = !!state.loadingCount;
           // NOTE: Cycle stops in `GameSession/expose-control-node`)
         },
+      )
+      // gameSessionSendAnswer...
+      .addCase(String(gameSessionSendAnswerThunk.pending), (state: TGameSessionState) => {
+        state.loadingCount++;
+        state.isLoading = true;
+      })
+      .addCase(
+        String(gameSessionSendAnswerThunk.fulfilled),
+        (state: TGameSessionState, action: TGameSessionSendAnswerPayloadAction) => {
+          const { status, reason, isCorrect } = action.payload;
+          console.log('[features/GameSession/reducer:gameSessionSendAnswerThunk.fulfilled]', {
+            isCorrect,
+            status,
+            reason,
+            action,
+          });
+          state.currentAnswerIsCorrect = isCorrect;
+          // Basic params...
+          state.loadingCount--;
+          state.isLoading = !!state.loadingCount;
+          state.error = undefined;
+        },
+      )
+      .addCase(
+        String(gameSessionSendAnswerThunk.rejected),
+        (state: TGameSessionState, action: TGameSessionSendAnswerPayloadAction) => {
+          const { error, meta } = action;
+          // eslint-disable-next-line no-console
+          console.error('[features/GameSession/reducer:gameSessionSendAnswerThunk.rejected]', {
+            error,
+            meta,
+          });
+          debugger; // eslint-disable-line no-debugger
+          if (error.name !== 'CanceledError') {
+            state.error = error;
+          }
+          state.loadingCount--;
+          state.isLoading = !!state.loadingCount;
+          // NOTE: Cycle stops in `GameSession/expose-control-node`)
+        },
       );
   },
 });
@@ -200,15 +243,28 @@ const gameSessionSlice = createSlice({
 // Export selecors...
 export const selectors = {
   // Basic (common) selectors...
+  selectIsSessionChecking: (state: TGameSessionState): TGameSessionState['isSessionChecking'] =>
+    state.isSessionChecking,
   selectIsLoading: (state: TGameSessionState): TGameSessionState['isLoading'] => state.isLoading,
   selectError: (state: TGameSessionState): TGameSessionState['error'] => state.error,
 
   // Custom selectors...
   selectGameToken: (state: TGameSessionState): TGameSessionState['gameToken'] => state.gameToken,
+  selectGameMode: (state: TGameSessionState): TGameSessionState['gameMode'] => state.gameMode,
   selectPartnerToken: (state: TGameSessionState): TGameSessionState['partnerToken'] =>
     state.partnerToken,
   selectPartnerName: (state: TGameSessionState): TGameSessionState['partnerName'] =>
     state.partnerName,
+
+  selectCurrentQuestionIdx: (state: TGameSessionState): TGameSessionState['currentQuestionIdx'] =>
+    state.currentQuestionIdx,
+  selectCurrentAnswerIdx: (state: TGameSessionState): TGameSessionState['currentAnswerIdx'] =>
+    state.currentAnswerIdx,
+  selectCurrentAnswerIsCorrect: (
+    state: TGameSessionState,
+  ): TGameSessionState['currentAnswerIsCorrect'] => state.currentAnswerIsCorrect,
+
+  // Basic...
   selectIsPlaying: (state: TGameSessionState): TGameSessionState['isPlaying'] => state.isPlaying,
   selectIsFinished: (state: TGameSessionState): TGameSessionState['isFinished'] => state.isFinished,
 };

@@ -1,6 +1,7 @@
 export interface TAnswer {
+  id: string;
   text: string;
-  correct?: boolean;
+  // correct?: boolean;
 }
 export interface TQuestion {
   id: string;

@@ -28,40 +28,32 @@ export type TGameSessionStopPayloadAction = PayloadAction<
   Error
 >;
 
+const urlMethod = '/gameSessionStop';
 const requestErrorText = 'Ошибка запроса завершения игры';
 const unknownErrorText = 'Операция завершена с неопределённой ошибкой';
 
 export async function gameSessionStop(): Promise<TGameSessionStopResult> {
   const method = 'POST';
-  const url = config.api.apiUrlPrefix + '/gameSessionStop';
-  /* console.log('[gameSessionStop]: request start', {
-   *   method,
-   *   url,
-   * });
-   */
+  const url = config.api.apiUrlPrefix + urlMethod;
+  console.log('[gameSessionStop]: request start', {
+    method,
+    url,
+    urlMethod,
+  });
   return simpleDataFetch<TResponseData>({ url, method })
     .then((data) => {
       const { success, status, error, reason } = data;
       // Check possible errors...
       if (!success || error) {
-        throw new Error(error || unknownErrorText);
+        throw new Error(error || reason || unknownErrorText);
       }
-      if (status === 'waitingFinished') {
-        // Success!
-        /* console.log('[gameSessionStop]: request done: finished', data, {
-         *   status,
-         *   reason,
-         * });
-         */
-        return { status, reason };
-      }
-      /* console.log('[gameSessionStop]: request done', data, {
-       *   success,
-       *   status,
-       *   reason,
-       *   url,
-       * });
-       */
+      console.log('[gameSessionStop]: request done', data, {
+        success,
+        status,
+        reason,
+        url,
+        urlMethod,
+      });
       return { status, reason };
     })
     .catch((error) => {

@@ -4,12 +4,9 @@
  */
 
 import React from 'react';
-// import Box from '@mui/material/Box';
-// import Typography from '@mui/material/Typography';
 import { Box, Stack, Typography } from '@mui/material';
 import classnames from 'classnames';
 
-import { stringToHash } from '@/utils';
 import { useYourData, usePartnerData } from './usePartnerData';
 import { TQuestions, useQuestions } from '@/core';
 
@@ -65,7 +62,7 @@ export function Partner(props: TPartnerProps): JSX.Element | null {
     }
     return questions.map((q, idx) => {
       const { id } = q;
-      const key = id || 'Q-' + idx; // + '-' + stringToHash(String(q.question || '')));
+      const key = id || 'Q-' + idx;
       // TODO: Correct & wrong styles
       return <Box key={key} id={key} className={classnames(styles.question)} />;
     });

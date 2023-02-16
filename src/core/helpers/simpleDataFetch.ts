@@ -27,7 +27,7 @@ let source = axios.CancelToken.source();
 const activeRequests: Promise<AxiosResponse>[] = [];
 
 const useDelayedRequest = buildConfig.isDev;
-const requestDelay = 2000;
+const requestDelay = 1000;
 
 export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
   // const url = apiUrlPrefix + '/start';

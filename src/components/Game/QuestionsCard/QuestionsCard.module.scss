@@ -38,6 +38,12 @@ $borderColor: $shadeColor;
   border: 1px solid $borderColor;
   border-radius: 8px;
   overflow: hidden;
+  transition: opacity $transitionTimeMs;
+}
+.answersLoading {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
 }
 .answer {
   position: relative;
@@ -48,15 +54,22 @@ $borderColor: $shadeColor;
     border-top: 1px solid $borderColor;
   }
 }
+.answerText {
+  // margin: 5px 16px;
+  box-sizing: border-box;
+}
 .answerCorrect {
   background: $gameGreenColor;
 }
 .answerWrong {
   background: $gameRedColor;
 }
-.answerText {
-  // margin: 5px 16px;
-  box-sizing: border-box;
+.answerChecked {
+  background: $primaryColor;
+  color: #fff;
+}
+.answerLoading {
+  background: color.adjust(#000, $alpha: -0.8);
 }
 .answerActive {
   cursor: pointer;

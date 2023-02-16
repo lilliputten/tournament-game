@@ -62,7 +62,7 @@ export async function gameSessionStart(): Promise<TGameSessionStartResult> {
         data;
       // Check possible errors...
       if (!success || error) {
-        throw new Error(error || unknownErrorText);
+        throw new Error(error || reason || unknownErrorText);
       }
       /* console.log('[gameSessionStart]: request done', data, {
        *   success,

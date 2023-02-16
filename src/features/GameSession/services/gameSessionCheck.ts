@@ -15,9 +15,13 @@ interface TResponseData {
   status?: string; // ('waitingFinished')
   success: boolean; // true
 
-  // TODO: Other params...
+  // Game params...
+  currentQuestionIdx?: number;
 }
-export type TGameSessionCheckResult = Pick<TResponseData, 'status' | 'reason'>;
+export type TGameSessionCheckResult = Pick<
+  TResponseData,
+  'status' | 'reason' | 'currentQuestionIdx'
+>;
 
 export type TGameSessionCheckPayloadAction = PayloadAction<
   TGameSessionCheckResult,
@@ -42,7 +46,7 @@ export async function gameSessionCheck(): Promise<TGameSessionCheckResult> {
       const { success, status, error, reason } = data;
       // Check possible errors...
       if (!success || error) {
-        throw new Error(error || unknownErrorText);
+        throw new Error(error || reason || unknownErrorText);
       }
       if (status === 'waitingFinished') {
         // Success!

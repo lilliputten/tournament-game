@@ -14,6 +14,9 @@ export const useGameSessionState = (): TGameSessionState =>
   useTypedSelector((state) => selectGameSessionState(state));
 
 // Basic (common) hooks...
+export const useGameSessionIsSessionChecking = (): ReturnType<
+  typeof selectors.selectIsSessionChecking
+> => selectors.selectIsSessionChecking(useGameSessionState());
 export const useGameSessionIsLoading = (): ReturnType<typeof selectors.selectIsLoading> =>
   selectors.selectIsLoading(useGameSessionState());
 export const useGameSessionError = (): ReturnType<typeof selectors.selectError> =>
@@ -30,3 +33,13 @@ export const useGameSessionPartnerToken = (): ReturnType<typeof selectors.select
   selectors.selectPartnerToken(useGameSessionState());
 export const useGameSessionPartnerName = (): ReturnType<typeof selectors.selectPartnerName> =>
   selectors.selectPartnerName(useGameSessionState());
+
+export const useGameSessionCurrentQuestionIdx = (): ReturnType<
+  typeof selectors.selectCurrentQuestionIdx
+> => selectors.selectCurrentQuestionIdx(useGameSessionState());
+export const useGameSessionCurrentAnswerIdx = (): ReturnType<
+  typeof selectors.selectCurrentAnswerIdx
+> => selectors.selectCurrentAnswerIdx(useGameSessionState());
+export const useGameSessionCurrentAnswerIsCorrect = (): ReturnType<
+  typeof selectors.selectCurrentAnswerIsCorrect
+> => selectors.selectCurrentAnswerIsCorrect(useGameSessionState());

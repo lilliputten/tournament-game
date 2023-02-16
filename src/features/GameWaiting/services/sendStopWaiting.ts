@@ -11,6 +11,7 @@ import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
 interface TResponseData {
   success: boolean | string;
   error?: string;
+  reason?: string;
 }
 export type TSendStopWaitingResult = void;
 export type TSendStopWaitingParams = void;
@@ -35,10 +36,10 @@ export async function sendStopWaiting(/* params: TSendStopWaitingParams */): Pro
    */
   return simpleDataFetch<TResponseData>({ url, method })
     .then((data) => {
-      const { success, error } = data;
+      const { success, error, reason } = data;
       // Check possible errors...
       if (!success || error) {
-        throw new Error(error || unknownErrorText);
+        throw new Error(error || reason || unknownErrorText);
       }
       /* console.log('[sendStopWaiting]: request done', data, {
        *   success,

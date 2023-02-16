@@ -68,7 +68,7 @@ export async function fetchCheckWaiting(): Promise<TFetchCheckWaitingResult> {
       const { success, status, error, reason, gameMode } = data;
       // Check possible errors...
       if (!success || error) {
-        throw new Error(error || unknownErrorText);
+        throw new Error(error || reason || unknownErrorText);
       }
       if (status === 'waitingFinished') {
         // Success!

@@ -17,6 +17,7 @@ import {
   useGameSessionIsFinished,
   useQuestionsIsLoading,
   useQuestionsError,
+  useGameSessionIsSessionChecking,
   // useGameSessionIsFailed,
 } from '@/core/app/app-reducer';
 import { errorToString } from '@/utils';
@@ -47,6 +48,7 @@ export function withGamePlayingWrapperFabric<P extends JSX.IntrinsicAttributes>(
   ) {
     return function GamePlayingWrapper(props: P) {
       // GameParams...
+      const gameSessionIsChecking = useGameSessionIsSessionChecking();
       const gameParamsIsLoading = useGameParamsIsLoading();
       const gameParamsError = useGameParamsError();
       // GameSession
@@ -56,7 +58,8 @@ export function withGamePlayingWrapperFabric<P extends JSX.IntrinsicAttributes>(
       const questionsIsLoading = useQuestionsIsLoading();
       const questionsError = useQuestionsError();
       // Composed...
-      const isLoading = gameParamsIsLoading || gameSessionIsLoading || questionsIsLoading;
+      const isLoading =
+        gameSessionIsChecking || gameParamsIsLoading || gameSessionIsLoading || questionsIsLoading;
       const error = gameSessionError || gameParamsError || questionsError;
       const gameSessionIsFinished = useGameSessionIsFinished();
       const gameSessionIsPlaying = useGameSessionIsPlaying();

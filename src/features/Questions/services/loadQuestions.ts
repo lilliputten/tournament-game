@@ -44,7 +44,7 @@ export async function loadQuestions(): Promise<TLoadQuestionsResult> {
       const { success, error, reason, questions } = data;
       // Check possible errors...
       if (!success || error) {
-        throw new Error(error || unknownErrorText);
+        throw new Error(error || reason || unknownErrorText);
       }
       /* console.log('[loadQuestions]: request done', data, {
        *   success,
