@@ -4,7 +4,7 @@
  *  @changed 2023.01.30, 00:35
  */
 
-import { useEffect } from 'react';
+import React from 'react';
 
 import { useAppDispatch } from '@/core/app/app-store';
 import { useRootStore } from '@/core/app/app-root-state';
@@ -15,9 +15,8 @@ import { actions } from './reducer';
 export default function ExposeControlNode(): null {
   const dispatch = useAppDispatch();
   const appRootStore = useRootStore();
-
   // Effect: Update data on essential parameters change
-  useEffect(() => {
+  React.useEffect(() => {
     const needReset = false;
     // Call actions...
     if (needReset) {
@@ -26,6 +25,5 @@ export default function ExposeControlNode(): null {
     // TODO: Call fetch appInfo from StartPage too
     fetchAppInfoAction(appRootStore);
   }, [dispatch, appRootStore]);
-
   return null;
 }

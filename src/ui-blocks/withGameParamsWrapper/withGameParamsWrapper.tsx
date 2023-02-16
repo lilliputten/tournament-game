@@ -1,16 +1,17 @@
 /** @module withGameParamsWrapper
  *  @desc Wrapping any component (with GameParamsWrapper)
  *  @since 2023.02.10, 20:24
- *  @changed 2023.02.10, 20:24
+ *  @changed 2023.02.17, 00:43
  */
 
 import React from 'react';
+import { Typography } from '@mui/material';
 import classnames from 'classnames';
 
-import { useGameParamsIsLoading, useGameParamsError } from '@/core/app/app-reducer';
+import { toast } from '@/ui-elements';
 import { errorToString } from '@/utils';
+import { useGameParamsIsLoading, useGameParamsError } from '@/core/app/app-reducer';
 import { LoaderSplash } from '@/ui-elements';
-import { Typography } from '@mui/material';
 
 import styles from './GameParamsWrapper.module.scss';
 
@@ -35,6 +36,10 @@ export function withGameParamsWrapperFabric<P extends JSX.IntrinsicAttributes>(
     return function GameParamsWrapper(props: P) {
       const isLoading = useGameParamsIsLoading();
       const error = useGameParamsError();
+      // Effect: Show error toast
+      React.useEffect(() => {
+        error && toast.error(errorToString(error));
+      }, [error]);
       return (
         <div className={classnames(wrapperClassName, styles.container)}>
           {/* Show error */}

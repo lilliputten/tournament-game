@@ -17,27 +17,6 @@ export interface TPartnerProps extends JSX.IntrinsicAttributes {
   self?: boolean;
 }
 
-/* // DEBUG
- * const demoQuestions: TQuestions = [
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- *   { answers: [{ text: 'Answer text 1' }], question: 'Question 1' },
- * ];
- */
-
 export function Partner(props: TPartnerProps): JSX.Element | null {
   const { className, self } = props;
   // Data receiver hook: for self record or remote partner
@@ -46,7 +25,6 @@ export function Partner(props: TPartnerProps): JSX.Element | null {
   const { name } = data;
   const selfId = self ? 'self' : 'other';
   const questions: TQuestions | undefined = useQuestions();
-  // const questions = demoQuestions; // DEBUG
   /* console.log('[Partner]', {
    *   questions,
    *   // token,

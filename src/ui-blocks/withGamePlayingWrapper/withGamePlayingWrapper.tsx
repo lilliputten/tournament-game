@@ -1,7 +1,7 @@
 /** @module withGamePlayingWrapper
  *  @desc Wrapping any component (with GamePlayingWrapper)
  *  @since 2023.02.15, 15:55
- *  @changed 2023.02.14, 17:34
+ *  @changed 2023.02.17, 00:43
  */
 
 import React from 'react';
@@ -18,10 +18,9 @@ import {
   useQuestionsIsLoading,
   useQuestionsError,
   useGameSessionIsSessionChecking,
-  // useGameSessionIsFailed,
 } from '@/core/app/app-reducer';
 import { errorToString } from '@/utils';
-import { LoaderSplash } from '@/ui-elements';
+import { LoaderSplash, toast } from '@/ui-elements';
 import { Box, Button, Stack, Typography } from '@mui/material';
 
 import styles from './GamePlayingWrapper.module.scss';
@@ -61,18 +60,13 @@ export function withGamePlayingWrapperFabric<P extends JSX.IntrinsicAttributes>(
       const isLoading =
         gameSessionIsChecking || gameParamsIsLoading || gameSessionIsLoading || questionsIsLoading;
       const error = gameSessionError || gameParamsError || questionsError;
+      // Effect: Show error toast
+      React.useEffect(() => {
+        error && toast.error(errorToString(error));
+      }, [error]);
       const gameSessionIsFinished = useGameSessionIsFinished();
       const gameSessionIsPlaying = useGameSessionIsPlaying();
-      // const gameSessionIsFailed = useGameSessionIsFailed();
       const displayContent = !gameParamsIsLoading; // && !isLoading && !error;
-      /* console.log('[withGamePlayingWrapper:GamePlayingWrapper]', {
-       *   gameParamsIsLoading,
-       *   gameParamsError,
-       *   isLoading,
-       *   error,
-       *   displayContent,
-       * });
-       */
       const router = useRouter();
       const goToStartPage = React.useCallback(() => {
         router.push('/');

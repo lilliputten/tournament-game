@@ -1,7 +1,7 @@
 /** @module withGameWaitingWrapper
  *  @desc Wrapping any component (with GameWaitingWrapper)
  *  @since 2023.02.10, 20:24
- *  @changed 2023.02.10, 20:24
+ *  @changed 2023.02.17, 00:43
  */
 
 import React from 'react';
@@ -18,7 +18,7 @@ import {
   useGameWaitingIsFailed,
 } from '@/core/app/app-reducer';
 import { errorToString } from '@/utils';
-import { LoaderSplash } from '@/ui-elements';
+import { LoaderSplash, toast } from '@/ui-elements';
 import { Box, Button, Stack, Typography } from '@mui/material';
 
 import styles from './GameWaitingWrapper.module.scss';
@@ -49,18 +49,14 @@ export function withGameWaitingWrapperFabric<P extends JSX.IntrinsicAttributes>(
       const gameParamsError = useGameParamsError();
       const isLoading = useGameWaitingIsLoading();
       const error = useGameWaitingError() || gameParamsError;
+      // Effect: Show error toast
+      React.useEffect(() => {
+        error && toast.error(errorToString(error));
+      }, [error]);
       const isWaiting = useGameWaitingIsWaiting();
       const isStarted = useGameWaitingIsGameStarted();
       const isFailed = useGameWaitingIsFailed();
-      const displayContent = !isGameParamsLoading; // && !isLoading && !error;
-      /* console.log('[withGameWaitingWrapper:GameWaitingWrapper]', {
-       *   isGameParamsLoading,
-       *   gameParamsError,
-       *   isLoading,
-       *   error,
-       *   displayContent,
-       * });
-       */
+      const displayContent = !isGameParamsLoading;
       const router = useRouter();
       const goToStartPage = React.useCallback(() => {
         router.push('/');

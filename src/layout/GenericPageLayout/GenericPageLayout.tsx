@@ -7,6 +7,7 @@
 import * as React from 'react';
 import classnames from 'classnames';
 
+import { WithToastsWrapper } from '@/ui-elements/Elements/Toasts/Toasts';
 import { TReactContent } from '@/utils/react-types';
 import { THtmlHeaderProps } from '@/layout/HtmlHeader/HtmlHeader';
 import HtmlHeader from '@/layout/HtmlHeader';
@@ -27,7 +28,9 @@ export default function GenericPageLayout(props: TGenericPageLayoutProps): JSX.E
     <div className={classnames(className, styles.container)}>
       <HtmlHeader {...restProps} />
       <PageContent className={styles.content}>
-        {children}
+        <WithToastsWrapper>
+          {children}
+        </WithToastsWrapper>
       </PageContent>
     </div>
   );
