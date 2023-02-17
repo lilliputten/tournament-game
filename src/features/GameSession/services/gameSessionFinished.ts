@@ -7,6 +7,7 @@ import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
+import { TPartnersInfo } from '@/core';
 
 export type TGameSessionFinishedStatus = string;
 
@@ -17,10 +18,33 @@ interface TResponseData {
   status?: TGameSessionFinishedStatus;
   success: boolean; // true
 
-  // Other params...
+  // Game params...
   gameStatus?: string;
+  gameMode?: string;
+
+  finishedStatus?: string; // none, all (?)
+  finishedTimestamp?: number;
+  finishedTimestr?: string;
+  partnersInfo?: TPartnersInfo;
+  startedTimestamp?: number;
+  startedTimestr?: string;
+
+  // 'gameStatus' | 'gameMode' | 'finishedStatus' | 'finishedTimestamp' | 'finishedTimestr' | 'partnersInfo' | 'startedTimestamp' | 'startedTimestr'
+  // gameStatus, gameMode, finishedStatus, finishedTimestamp, finishedTimestr, partnersInfo, startedTimestamp, startedTimestr
 }
-export type TGameSessionFinishedResult = Pick<TResponseData, 'status' | 'reason' | 'gameStatus'>;
+export type TGameSessionFinishedResult = Pick<
+  TResponseData,
+  | 'status'
+  | 'reason'
+  | 'gameStatus'
+  | 'gameMode'
+  | 'finishedStatus'
+  | 'finishedTimestamp'
+  | 'finishedTimestr'
+  | 'partnersInfo'
+  | 'startedTimestamp'
+  | 'startedTimestr'
+>;
 
 export type TGameSessionFinishedPayloadAction = PayloadAction<
   TGameSessionFinishedResult,
@@ -33,6 +57,44 @@ const urlMethod = '/gameSessionFinished';
 const requestErrorText = 'Ошибка запроса завершения прохождения игры';
 const unknownErrorText = 'Операция завершена с неопределённой ошибкой';
 
+/* Sample result data:
+{
+  Token: '230217-165128-468-8647510',
+  finishedByPartner: '230211-165455-365-5694359',
+  finishedStatus: 'none',
+  finishedTimestamp: 1676627496769,
+  finishedTimestr: '2023.02.17 16:51:36',
+  gameMode: 'single',
+  gameStatus: 'finished',
+  gameToken: '230217-165128-468-8647510',
+  lastAnswerTimestamp: 1676627494933,
+  lastAnswerTimestr: '2023.02.17 16:51:34',
+  lastAnsweredBy: '230211-165455-365-5694359',
+  lastCheckTimestamp: 1676627491313,
+  lastCheckTimestr: '2023.02.17 16:51:31',
+  lastCheckedBy: '230211-165455-365-5694359',
+  partners: [
+    '230211-165455-365-5694359'
+  ],
+  partnersInfo: {
+    '230211-165455-365-5694359': {
+      name: 'aaa',
+      questionAnswers: {
+        Test: 'wrong'
+      },
+      status: 'finished'
+    }
+  },
+  reason: 'Game finished',
+  startedTimestamp: 1676627488468,
+  startedTimestr: '2023.02.17 16:51:28',
+  status: 'gameFinished',
+  success: true,
+  timestamp: 1676627496769,
+  timestr: '2023.02.17 16:51:36'
+}
+*/
+
 export async function gameSessionFinished(): Promise<TGameSessionFinishedResult> {
   const method = 'POST';
   const url = config.api.apiUrlPrefix + urlMethod;
@@ -43,7 +105,20 @@ export async function gameSessionFinished(): Promise<TGameSessionFinishedResult>
   });
   return simpleDataFetch<TResponseData>({ url, method })
     .then((data) => {
-      const { success, status, error, reason, gameStatus } = data;
+      const {
+        success,
+        status,
+        error,
+        reason,
+        gameStatus,
+        gameMode,
+        finishedStatus,
+        finishedTimestamp,
+        finishedTimestr,
+        partnersInfo,
+        startedTimestamp,
+        startedTimestr,
+      } = data;
       // Check possible errors...
       if (!success || error) {
         throw new Error(error || reason || unknownErrorText);
@@ -56,7 +131,18 @@ export async function gameSessionFinished(): Promise<TGameSessionFinishedResult>
         url,
         urlMethod,
       });
-      return { status, reason, gameStatus };
+      return {
+        status,
+        reason,
+        gameStatus,
+        gameMode,
+        finishedStatus,
+        finishedTimestamp,
+        finishedTimestr,
+        partnersInfo,
+        startedTimestamp,
+        startedTimestr,
+      };
     })
     .catch((error) => {
       const errorMessage = requestErrorText + ': ' + error.message;

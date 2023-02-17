@@ -23,10 +23,10 @@ function NotFoundContent(props: TNotFoundContentProps): JSX.Element {
   return (
     <Box className={classnames(className)} sx={{ textAlign: 'center' }}>
       <Typography m={2}>
-        Page <u>{url}</u> can not be found on this site.
+        Страница <u>{url}</u> не найдена.
       </Typography>
       <Typography m={2}>
-        Try to start from <Link href="/">main page</Link>.
+        Начинте с <Link href="/">главной страницы</Link>.
       </Typography>
     </Box>
   );

@@ -34,22 +34,83 @@ function setCurrentQuestionIdx(
   state.currentAnswerIsCorrect = undefined;
 }
 
+function updateGameStatus(
+  state: TGameSessionState,
+  action: TGameSessionFinishedPayloadAction | TGameSessionCheckPayloadAction,
+  opts: { omitFinishedStatus?: boolean } = {},
+) {
+  const {
+    status,
+    reason,
+    // Game...
+    gameStatus,
+    finishedStatus,
+    finishedTimestamp,
+    finishedTimestr,
+    partnersInfo,
+    startedTimestamp,
+    startedTimestr,
+  } = action.payload;
+  state.gameStatus = gameStatus;
+  if (!opts.omitFinishedStatus) {
+    state.isFinished = gameStatus === 'finished' || gameStatus === 'stopped';
+    state.isPlaying = !state.isFinished;
+  }
+  // partnersInfo...
+  const isNotEmptyPartnersInfo = checkIsNotEmptyPartnersInfo(partnersInfo);
+  const hasUpdatedPartnersInfo = updatePartnersInfo(state, partnersInfo);
+  // Game...
+  state.finishedStatus = finishedStatus;
+  state.finishedTimestamp = finishedTimestamp;
+  state.finishedTimestr = finishedTimestr;
+  state.startedTimestamp = startedTimestamp;
+  state.startedTimestr = startedTimestr;
+  console.log('[GameSession/reducer:updateGameStatus]', {
+    status,
+    reason,
+    action,
+    // Game...
+    gameStatus,
+    finishedStatus,
+    finishedTimestamp,
+    finishedTimestr,
+    partnersInfo,
+    startedTimestamp,
+    startedTimestr,
+    // Test...
+    isNotEmptyPartnersInfo,
+    hasUpdatedPartnersInfo,
+  });
+}
+
+type TResetDataCause = 'onFinish' | undefined;
+
 const gameSessionSlice = createSlice({
   name: 'gameSession',
   initialState,
   reducers: {
-    resetData: (state) => {
+    resetData: (state, action: PayloadAction<TResetDataCause>) => {
+      const cause = action.payload;
       // Generic state...
       state.error = undefined;
       // Game state...
       state.isPlaying = false;
-      state.isFinished = false;
+      if (cause !== 'onFinish') {
+        state.isFinished = false;
+        state.gameStatus = undefined;
+        state.gameToken = undefined;
+        state.gameMode = undefined;
+      }
       // Game params...
-      state.gameStatus = undefined;
-      state.gameToken = undefined;
-      state.gameMode = undefined;
       state.partnerToken = undefined;
       state.partnerName = undefined;
+      state.currentQuestionIdx = 0;
+      state.currentAnswerIdx = undefined;
+      state.currentAnswerIsCorrect = undefined;
+    },
+    resetPlayingState: (state) => {
+      state.error = undefined;
+      state.isPlaying = false;
       state.currentQuestionIdx = 0;
       state.currentAnswerIdx = undefined;
       state.currentAnswerIsCorrect = undefined;
@@ -90,7 +151,7 @@ const gameSessionSlice = createSlice({
             gameStatus,
             gameResumed,
           } = action.payload;
-          console.log('[features/GameSession/reducer:gameSessionStartThunk.fulfilled]', {
+          console.log('[GameSession/reducer:gameSessionStartThunk.fulfilled]', {
             status,
             reason,
             action,
@@ -125,7 +186,7 @@ const gameSessionSlice = createSlice({
         (state: TGameSessionState, action: TGameSessionStartPayloadAction) => {
           const { error, meta } = action;
           // eslint-disable-next-line no-console
-          console.error('[features/GameSession/reducer:gameSessionStartThunk.rejected]', {
+          console.log('[GameSession/reducer:gameSessionStartThunk.rejected]', {
             error,
             meta,
           });
@@ -155,7 +216,7 @@ const gameSessionSlice = createSlice({
             // reason,
             gameStatus,
           } = action.payload;
-          /* console.log('[features/GameSession/reducer:gameSessionStopThunk.fulfilled]', {
+          /* console.log('[GameSession/reducer:gameSessionStopThunk.fulfilled]', {
            *   status,
            *   reason,
            *   action,
@@ -175,13 +236,13 @@ const gameSessionSlice = createSlice({
         String(gameSessionStopThunk.rejected),
         (state: TGameSessionState, action: TGameSessionStopPayloadAction) => {
           const { error, meta } = action;
-          // eslint-disable-next-line no-console
-          console.error('[features/GameSession/reducer:gameSessionStopThunk.rejected]', {
-            error,
-            meta,
-          });
-          debugger; // eslint-disable-line no-debugger
           if (error.name !== 'CanceledError') {
+            // eslint-disable-next-line no-console
+            console.log('[GameSession/reducer:gameSessionStopThunk.rejected]', {
+              error,
+              meta,
+            });
+            debugger; // eslint-disable-line no-debugger
             state.error = error;
           }
           state.loadingCount--;
@@ -197,21 +258,9 @@ const gameSessionSlice = createSlice({
       .addCase(
         String(gameSessionFinishedThunk.fulfilled),
         (state: TGameSessionState, action: TGameSessionFinishedPayloadAction) => {
-          const {
-            // status,
-            // reason,
-            gameStatus,
-          } = action.payload;
-          /* console.log('[features/GameSession/reducer:gameSessionFinishedThunk.fulfilled]', {
-           *   status,
-           *   reason,
-           *   action,
-           * });
-           */
-          state.gameStatus = gameStatus;
-          state.isFinished = gameStatus === 'finished' || gameStatus === 'stopped';
-          // state.isFinished = true; ???
-          state.isPlaying = !state.isFinished;
+          console.log('[GameSession/reducer:gameSessionFinishedThunk.fulfilled]', action.payload);
+          updateGameStatus(state, action);
+          // Update game status...
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
           state.error = undefined;
@@ -222,7 +271,7 @@ const gameSessionSlice = createSlice({
         (state: TGameSessionState, action: TGameSessionFinishedPayloadAction) => {
           const { error, meta } = action;
           // eslint-disable-next-line no-console
-          console.error('[features/GameSession/reducer:gameSessionFinishedThunk.rejected]', {
+          console.log('[GameSession/reducer:gameSessionFinishedThunk.rejected]', {
             error,
             meta,
           });
@@ -245,29 +294,55 @@ const gameSessionSlice = createSlice({
         String(gameSessionCheckThunk.fulfilled),
         (state: TGameSessionState, action: TGameSessionCheckPayloadAction) => {
           const {
+            Token,
             status,
             reason,
-            partnersInfo,
-            gameStatus,
-            // currentQuestionIdx = 0,
-          } = action.payload;
-          const isNotEmptyPartnersInfo = checkIsNotEmptyPartnersInfo(partnersInfo);
-          const hasUpdatedPartnersInfo = updatePartnersInfo(state, partnersInfo);
-          console.log('[features/GameSession/reducer:gameSessionCheckThunk.fulfilled]', {
-            status,
-            reason,
-            action,
             // Game...
             gameStatus,
+            finishedStatus,
+            finishedTimestamp,
+            finishedTimestr,
             partnersInfo,
-            // currentQuestionIdx,
-            // Test...
-            isNotEmptyPartnersInfo,
-            hasUpdatedPartnersInfo,
+            startedTimestamp,
+            startedTimestr,
+          } = action.payload;
+          console.log('[GameSession/reducer:gameSessionCheckThunk.fulfilled]', action.payload, {
+            status,
+            reason,
+            // Game...
+            gameStatus,
+            finishedStatus,
+            finishedTimestamp,
+            finishedTimestr,
+            partnersInfo,
+            startedTimestamp,
+            startedTimestr,
           });
-          state.gameStatus = gameStatus;
-          state.isFinished = gameStatus === 'finished' || gameStatus === 'stopped';
+          if (gameStatus === 'finished') {
+            const partnerStatuses =
+              partnersInfo && Object.values(partnersInfo).map(({ status }) => status);
+            const hasPlayingPartner =
+              partnerStatuses && partnerStatuses.filter((status) => status !== 'finished').length;
+            const yourInfo = Token && partnersInfo && partnersInfo[Token];
+            const youPlaying = yourInfo && yourInfo.status !== 'finished';
+            const youFinished = !youPlaying;
+            const isFinished = youFinished || !hasPlayingPartner;
+            console.log('[GameSession/reducer:gameSessionCheckThunk.fulfilled]: check finished', {
+              isFinished,
+              Token,
+              partnerStatuses,
+              hasPlayingPartner,
+              yourInfo,
+              youPlaying,
+              youFinished,
+            });
+            state.isFinished = isFinished;
+            // TODO: Detect case whan your partner finished the game
+          } else {
+            state.isFinished = gameStatus === 'finished' || gameStatus === 'stopped';
+          }
           state.isPlaying = !state.isFinished;
+          updateGameStatus(state, action, { omitFinishedStatus: true });
           // Update game status...
           state.isSessionChecking = false;
           state.error = undefined;
@@ -278,7 +353,7 @@ const gameSessionSlice = createSlice({
         (state: TGameSessionState, action: TGameSessionCheckPayloadAction) => {
           const { error, meta } = action;
           // eslint-disable-next-line no-console
-          console.error('[features/GameSession/reducer:gameSessionCheckThunk.rejected]', {
+          console.log('[GameSession/reducer:gameSessionCheckThunk.rejected]', {
             error,
             meta,
           });
@@ -315,12 +390,8 @@ const gameSessionSlice = createSlice({
             isNotEmptyPartnersInfo,
             hasUpdatedPartnersInfo,
           });
-          // if (hasUpdatedPartnersInfo) {
-          //   debugger;
-          // }
           // Update state...
           state.currentAnswerIsCorrect = isCorrect;
-          // TODO: Update state from partnersInfo or questionAnswers (as in `gameSessionCheck`)
           // Basic params...
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
@@ -332,7 +403,7 @@ const gameSessionSlice = createSlice({
         (state: TGameSessionState, action: TGameSessionSendAnswerPayloadAction) => {
           const { error, meta } = action;
           // eslint-disable-next-line no-console
-          console.error('[features/GameSession/reducer:gameSessionSendAnswerThunk.rejected]', {
+          console.log('[GameSession/reducer:gameSessionSendAnswerThunk.rejected]', {
             error,
             meta,
           });
@@ -369,6 +440,20 @@ export const selectors = {
   selectGameResumed: (state: TGameSessionState): TGameSessionState['gameResumed'] =>
     state.gameResumed,
 
+  selectPartnersInfo: (state: TGameSessionState): TGameSessionState['partnersInfo'] =>
+    state.partnersInfo,
+
+  selectFinishedStatus: (state: TGameSessionState): TGameSessionState['finishedStatus'] =>
+    state.finishedStatus,
+  selectFinishedTimestamp: (state: TGameSessionState): TGameSessionState['finishedTimestamp'] =>
+    state.finishedTimestamp,
+  selectFinishedTimestr: (state: TGameSessionState): TGameSessionState['finishedTimestr'] =>
+    state.finishedTimestr,
+  selectStartedTimestamp: (state: TGameSessionState): TGameSessionState['startedTimestamp'] =>
+    state.startedTimestamp,
+  selectStartedTimestr: (state: TGameSessionState): TGameSessionState['startedTimestr'] =>
+    state.startedTimestr,
+
   selectCurrentQuestionIdx: (state: TGameSessionState): TGameSessionState['currentQuestionIdx'] =>
     state.currentQuestionIdx,
   selectCurrentAnswerIdx: (state: TGameSessionState): TGameSessionState['currentAnswerIdx'] =>
@@ -378,7 +463,9 @@ export const selectors = {
   ): TGameSessionState['currentAnswerIsCorrect'] => state.currentAnswerIsCorrect,
 
   // Basic...
-  selectIsPlaying: (state: TGameSessionState): TGameSessionState['isPlaying'] => state.isPlaying,
+  selectIsPlaying: (state: TGameSessionState): TGameSessionState['isPlaying'] => {
+    return state.isPlaying;
+  },
   selectIsFinished: (state: TGameSessionState): TGameSessionState['isFinished'] => state.isFinished,
 };
 

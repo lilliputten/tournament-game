@@ -16,6 +16,8 @@
  *   }
  *   error: (err) => { console.log(err) }
  * });
+ *
+ * TODO: Stop polling on window out of focus?
  */
 
 export type SuccessObserver<R> = (value: R) => void;

@@ -1,23 +1,31 @@
 /** @module ResultsBlock
  *  @since 2023.02.17, 05:07
- *  @changed 2023.02.17, 05:07
+ *  @changed 2023.02.17, 18:06
  */
 
 import React from 'react';
-import { useStore } from 'react-redux';
 import { useRouter } from 'next/router';
 import Box from '@mui/material/Box';
 import classnames from 'classnames';
 
 // import config from '@/config';
 import {
+  TPartnersInfo,
+  TQuestionAnswers,
   // useGameParamsGameMode,
   useGameParamsToken,
   useGameParamsUserName,
+  useGameSessionFinishedStatus,
+  useGameSessionFinishedTimestamp,
+  useGameSessionFinishedTimestr,
   useGameSessionGameToken,
+  useGameSessionPartnersInfo,
+  useGameSessionStartedTimestamp,
+  useGameSessionStartedTimestr,
   useGameWaitingIsGameStarted,
+  useQuestions,
 } from '@/core';
-import { Empty, SuccessBlock } from './ResultsBlockContent';
+import { Empty, GameInfo } from './ResultsBlockContent';
 
 import styles from './ResultsBlock.module.scss';
 
@@ -35,12 +43,34 @@ export function ResultsBlock(props: TResultsBlockProps): JSX.Element | null {
   // const dispatch = useAppDispatch();
   const router = useRouter();
 
+  const questions = useQuestions();
+  const hasQuestions = !!questions;
+  const questionsCount = hasQuestions ? questions.length : 0;
+
   const token = useGameParamsToken();
   const userName = useGameParamsUserName();
   // const hasGameStarted = useGameWaitingIsGameStarted();
   const gameToken = useGameSessionGameToken();
-
   // const gameMode = useGameParamsGameMode();
+
+  const partnersInfo: TPartnersInfo | undefined = useGameSessionPartnersInfo();
+
+  // const finishedStatus = useGameSessionFinishedStatus();
+  const finishedTimestamp = useGameSessionFinishedTimestamp();
+  // const finishedTimestr = useGameSessionFinishedTimestr();
+  const startedTimestamp = useGameSessionStartedTimestamp();
+  // const startedTimestr = useGameSessionStartedTimestr();
+
+  /* console.log('[ResultsBlock]: DEBUG', {
+   *   partnersInfo,
+   *   finishedStatus,
+   *   finishedTimestamp,
+   *   finishedTimestr,
+   *   startedTimestamp,
+   *   startedTimestr,
+   *   questions,
+   * });
+   */
 
   // const isParamsReady = !!(token && userName && hasGameStarted);
   const isReady = !!(userName && token && gameToken);
@@ -65,8 +95,27 @@ export function ResultsBlock(props: TResultsBlockProps): JSX.Element | null {
       // Don't render nothing and go to the start page if environment isn't ready yet...
       return <Empty reason="Not ready" />;
     }
-    return <SuccessBlock onClick={showTable} goToStartPage={goToStartPage} />;
-  }, [isReady, goToStartPage, showTable]);
+    return (
+      <GameInfo
+        onClick={showTable}
+        goToStartPage={goToStartPage}
+        finishedTimestamp={finishedTimestamp}
+        startedTimestamp={startedTimestamp}
+        partnersInfo={partnersInfo}
+        token={token}
+        questions={questions}
+      />
+    );
+  }, [
+    isReady,
+    showTable,
+    goToStartPage,
+    finishedTimestamp,
+    startedTimestamp,
+    partnersInfo,
+    token,
+    questions,
+  ]);
 
   return (
     <Box className={classnames(className, styles.container)} my={2}>

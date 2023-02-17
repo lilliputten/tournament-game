@@ -17,8 +17,11 @@ export type TQuestions = TQuestion[];
 export type TAnswerResult = 'correct' | 'wrong';
 
 export type TQuestionAnswers = Record<TQuestionId, TAnswerResult>;
+
+export type TPartnerInfoStatus = 'finished' | 'playing';
 export interface TPartnerInfo {
   name: string;
   questionAnswers?: TQuestionAnswers;
+  status?: TPartnerInfoStatus;
 }
 export type TPartnersInfo = Record<TToken, TPartnerInfo>;

@@ -84,12 +84,14 @@ export function StartBlock(props: TStartBlockProps) {
 
   return (
     <Box className={classnames(className, styles.container)}>
-      <Typography variant="h5" className={classnames(styles.title)}>
+      <Typography variant="h5" className={classnames(styles.title)} gutterBottom>
         Турнир по теме «Что проверить в договорах»
       </Typography>
       {!isLoading && hasStarted && token && (
         <>
-          <Typography className={classnames(styles.question)}>Как вы хотите сыграть?</Typography>
+          <Typography className={classnames(styles.question)} gutterBottom>
+            Как вы хотите сыграть?
+          </Typography>
           <ButtonGroup
             className={classnames(styles.actions)}
             variant="outlined"

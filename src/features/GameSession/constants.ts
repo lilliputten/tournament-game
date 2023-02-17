@@ -9,24 +9,38 @@ import { TGameSessionState } from './types';
 // Default state
 export const defaultState: TGameSessionState = {
   // Game status...
+
   isPlaying: false, // Is game playing
   isFinished: false, // Is game finished
+
+  // Game params...
+
   gameStatus: undefined,
   gameResumed: undefined,
 
-  // Game params...
   gameToken: undefined,
   gameMode: undefined,
   partnerToken: undefined,
   partnerName: undefined,
 
+  // Other game params...
+
+  partnersInfo: undefined,
+
+  finishedStatus: undefined,
+  finishedTimestamp: undefined,
+  finishedTimestr: undefined,
+  startedTimestamp: undefined,
+  startedTimestr: undefined,
+
+  // Questions...
+
   currentQuestionIdx: undefined,
   currentAnswerIdx: undefined,
   currentAnswerIsCorrect: undefined,
 
-  partnersInfo: undefined,
-
   // Generic status...
+
   loadingCount: 0,
   isSessionChecking: false,
   isLoading: false,

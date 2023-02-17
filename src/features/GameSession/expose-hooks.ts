@@ -37,6 +37,25 @@ export const useGameSessionPartnerName = (): ReturnType<typeof selectors.selectP
 export const useGameSessionGameResumed = (): ReturnType<typeof selectors.selectGameResumed> =>
   selectors.selectGameResumed(useGameSessionState());
 
+// Template: export const useGameSession\u& = (): ReturnType<typeof selectors.select\u&> => selectors.select\u&(useGameSessionState());
+
+export const useGameSessionPartnersInfo = (): ReturnType<typeof selectors.selectPartnersInfo> =>
+  selectors.selectPartnersInfo(useGameSessionState());
+
+export const useGameSessionFinishedStatus = (): ReturnType<typeof selectors.selectFinishedStatus> =>
+  selectors.selectFinishedStatus(useGameSessionState());
+export const useGameSessionFinishedTimestamp = (): ReturnType<
+  typeof selectors.selectFinishedTimestamp
+> => selectors.selectFinishedTimestamp(useGameSessionState());
+export const useGameSessionFinishedTimestr = (): ReturnType<
+  typeof selectors.selectFinishedTimestr
+> => selectors.selectFinishedTimestr(useGameSessionState());
+export const useGameSessionStartedTimestamp = (): ReturnType<
+  typeof selectors.selectStartedTimestamp
+> => selectors.selectStartedTimestamp(useGameSessionState());
+export const useGameSessionStartedTimestr = (): ReturnType<typeof selectors.selectStartedTimestr> =>
+  selectors.selectStartedTimestr(useGameSessionState());
+
 export const useGameSessionCurrentQuestionIdx = (): ReturnType<
   typeof selectors.selectCurrentQuestionIdx
 > => selectors.selectCurrentQuestionIdx(useGameSessionState());

@@ -34,7 +34,7 @@ export function WithToastsWrapper(props: TToastsProps) {
         // hideProgressBar
         newestOnTop
         closeOnClick
-        pauseOnFocusLoss
+        // pauseOnFocusLoss
         // draggable
         pauseOnHover
         theme="colored"

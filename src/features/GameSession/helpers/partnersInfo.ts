@@ -3,7 +3,7 @@ import isEqual from 'lodash/isEqual';
 import { TPartnersInfo } from '@/core';
 import { TGameSessionState } from '../types';
 
-export function getPartnersInfoTotalSize(partnersInfo: TPartnersInfo) {
+export function getPartnersInfoTotalSize(partnersInfo?: TPartnersInfo) {
   if (!partnersInfo) {
     return 0;
   }
@@ -13,7 +13,7 @@ export function getPartnersInfoTotalSize(partnersInfo: TPartnersInfo) {
   return questionAnswersSizes?.reduce((sum, n) => sum + n, 0);
 }
 
-export function checkIsNotEmptyPartnersInfo(partnersInfo: TPartnersInfo) {
+export function checkIsNotEmptyPartnersInfo(partnersInfo?: TPartnersInfo) {
   return !!getPartnersInfoTotalSize(partnersInfo);
 }
 
@@ -21,16 +21,11 @@ export function checkPartnersInfoIsEquals(info1?: TPartnersInfo, info2?: TPartne
   return isEqual(info1, info2);
 }
 
-export function updatePartnersInfo(state: TGameSessionState, partnersInfo: TPartnersInfo) {
+export function updatePartnersInfo(state: TGameSessionState, partnersInfo?: TPartnersInfo) {
   const oldPartnersInfo = state.partnersInfo;
   const equals = checkPartnersInfoIsEquals(oldPartnersInfo, partnersInfo);
   if (!equals) {
-    console.log('[partnersInfo:updatePartnersInfo]', {
-      oldPartnersInfo,
-      partnersInfo,
-    });
     state.partnersInfo = partnersInfo;
-    return true;
   }
-  return false;
+  return !equals;
 }

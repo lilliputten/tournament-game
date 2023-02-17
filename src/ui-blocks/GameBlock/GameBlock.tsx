@@ -21,6 +21,7 @@ import {
   useGameWaitingIsGameStarted,
   useGameSessionIsPlaying,
   useQuestions,
+  useGameSessionIsFinished,
 } from '@/core';
 import { gameSessionStartThunk } from '@/features/GameSession/services';
 import {
@@ -54,6 +55,7 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
   const hasGameStarted = useGameWaitingIsGameStarted();
 
   const isPlaying = useGameSessionIsPlaying();
+  const isFinished = useGameSessionIsFinished();
 
   // const partnerName = useGameSessionPartnerName();
   const partnerToken = useGameSessionPartnerToken();
@@ -79,12 +81,13 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
 
   // Effect: Start game...
   React.useEffect(() => {
-    if (isParamsReady && !isGameReady) {
-      debugger;
+    if (isParamsReady && !isGameReady && !isFinished && !isPlaying) {
+      console.log('[GameBlock]: start game?');
+      // TODO: Do not request start game on finish game!
       dispatch(gameSessionStartThunk());
       // TODO: To use handler on game end?
     }
-  }, [isParamsReady, isGameReady, dispatch]);
+  }, [isParamsReady, isGameReady, isFinished, isPlaying, dispatch]);
 
   // Effect: Params not ready?
   React.useEffect(() => {

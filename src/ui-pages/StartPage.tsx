@@ -9,7 +9,7 @@ import { useAppDispatch } from '@/core/app/app-store';
 import { useRootStore } from '@/core/app/app-root-state';
 
 import { fetchAppInfoAction } from '@/features/GameParams/services';
-
+import { actions as gameSessionActions } from '@/features/GameSession/reducer';
 import GenericPageLayout from '@/layout/GenericPageLayout';
 import { PageSectionWrapper } from '@/ui-elements';
 import { subPageTitle } from '@/ui-support/pageUtils';
@@ -25,6 +25,11 @@ export default function IndexPage(): JSX.Element {
 
   const token = useGameParamsToken();
   const hasStarted = useGameParamsHasStarted();
+
+  // Effect: Reset game session data...
+  React.useEffect(() => {
+    dispatch(gameSessionActions.resetData());
+  }, [dispatch]);
 
   // Effect: Update data on essential parameters change
   React.useEffect(() => {
