@@ -136,13 +136,13 @@ interface TGameReadyParams {
   gameMode?: TGameParamsState['gameMode'];
   startGameDelaySec?: number;
 }
-export function GameReady({ partnerName, gameMode, startGameDelaySec }: TGameReadyParams) {
+export function GameReady({ partnerName, startGameDelaySec }: TGameReadyParams) {
   return (
     <Box className={classnames(styles.container, styles.GameReady)}>
       <Typography variant="h5">Ура! Соперник нашелся</Typography>
       <Typography>
         Турнир
-        {gameMode && config.build.isDev && ' (в режиме ' + gameMode + ')'}
+        {/* {gameMode && config.build.isDev && ' (в режиме ' + gameMode + ')'} */}
         {partnerName && ' с игроком ' + partnerName}
         {startGameDelaySec
           ? ' начнется через ' + startGameDelaySec + '  секунды'

@@ -11,6 +11,8 @@ export const defaultState: TGameSessionState = {
   // Game status...
   isPlaying: false, // Is game playing
   isFinished: false, // Is game finished
+  gameStatus: undefined,
+  gameResumed: undefined,
 
   // Game params...
   gameToken: undefined,
@@ -18,9 +20,11 @@ export const defaultState: TGameSessionState = {
   partnerToken: undefined,
   partnerName: undefined,
 
-  currentQuestionIdx: 0,
+  currentQuestionIdx: undefined,
   currentAnswerIdx: undefined,
   currentAnswerIsCorrect: undefined,
+
+  partnersInfo: undefined,
 
   // Generic status...
   loadingCount: 0,
@@ -31,5 +35,5 @@ export const defaultState: TGameSessionState = {
 
 // Delay for requesting game status
 export const gameSessionCheckPollingTimeout = buildConfig.isDev
-  ? 10000 // DEBUG
-  : 10000;
+  ? 15000 // DEBUG
+  : 15000;

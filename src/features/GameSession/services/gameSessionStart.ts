@@ -19,14 +19,24 @@ interface TResponseData {
   success: boolean; // true
 
   // Params...
+  gameStatus?: string;
   gameToken?: string;
   gameMode?: TGameMode;
   partnerName?: string;
   partnerToken?: string;
+
+  gameResumed?: boolean;
 }
 export type TGameSessionStartResult = Pick<
   TResponseData,
-  'status' | 'reason' | 'gameToken' | 'gameMode' | 'partnerName' | 'partnerToken'
+  | 'status'
+  | 'reason'
+  | 'gameToken'
+  | 'gameMode'
+  | 'partnerName'
+  | 'partnerToken'
+  | 'gameStatus'
+  | 'gameResumed'
 >;
 
 export type TGameSessionStartPayloadAction = PayloadAction<
@@ -58,24 +68,44 @@ export async function gameSessionStart(): Promise<TGameSessionStartResult> {
        * status : "playing"
        * success : true
        */
-      const { success, status, error, reason, gameToken, gameMode, partnerName, partnerToken } =
-        data;
+      const {
+        success,
+        status,
+        error,
+        reason,
+        gameToken,
+        gameMode,
+        partnerName,
+        partnerToken,
+        gameStatus,
+        gameResumed,
+      } = data;
       // Check possible errors...
       if (!success || error) {
         throw new Error(error || reason || unknownErrorText);
       }
-      /* console.log('[gameSessionStart]: request done', data, {
-       *   success,
-       *   status,
-       *   reason,
-       *   url,
-       *   gameToken,
-       *   gameMode,
-       *   partnerName,
-       *   partnerToken,
-       * });
-       */
-      return { status, reason, gameToken, gameMode, partnerName, partnerToken };
+      console.log('[gameSessionStart]: request done', data, {
+        success,
+        status,
+        reason,
+        url,
+        gameToken,
+        gameStatus,
+        gameMode,
+        partnerName,
+        partnerToken,
+        gameResumed,
+      });
+      return {
+        status,
+        reason,
+        gameToken,
+        gameMode,
+        partnerName,
+        partnerToken,
+        gameStatus,
+        gameResumed,
+      };
     })
     .catch((error) => {
       const errorMessage = requestErrorText + ': ' + error.message;

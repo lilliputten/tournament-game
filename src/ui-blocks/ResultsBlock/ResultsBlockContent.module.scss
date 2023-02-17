@@ -1,0 +1,25 @@
+$sectionsMargin: 10px;
+
+.container,
+.Empty,
+.WaitingMulti,
+.WaitingSingle,
+.WaitingFailed,
+.WasCancelled,
+.GameReady,
+.WaitingStart,
+.DEBUG {
+  /*!KEEP*/
+}
+
+.Empty {
+  opacity: 0.15;
+}
+
+.error {
+  color: $errorColor;
+}
+
+.actions {
+  margin: $sectionsMargin auto;
+}

@@ -1,4 +1,4 @@
-/** @module gameSessionStop
+/** @module gameSessionFinished
  *  @since 2023.02.13, 21:05
  *  @changed 2023.02.13, 21:05
  */
@@ -8,36 +8,35 @@ import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
 
-export type TGameSessionStopStatus = string;
+export type TGameSessionFinishedStatus = string;
 
 interface TResponseData {
   // Operation result...
   error?: string; // Error text (if occured)
   reason?: string; // ('Partner found, game started')
-  status?: TGameSessionStopStatus;
+  status?: TGameSessionFinishedStatus;
   success: boolean; // true
 
+  // Other params...
   gameStatus?: string;
-
-  // TODO: Other params...
 }
-export type TGameSessionStopResult = Pick<TResponseData, 'status' | 'reason' | 'gameStatus'>;
+export type TGameSessionFinishedResult = Pick<TResponseData, 'status' | 'reason' | 'gameStatus'>;
 
-export type TGameSessionStopPayloadAction = PayloadAction<
-  TGameSessionStopResult,
+export type TGameSessionFinishedPayloadAction = PayloadAction<
+  TGameSessionFinishedResult,
   string,
   unknown,
   Error
 >;
 
-const urlMethod = '/gameSessionStop';
-const requestErrorText = 'Ошибка запроса прекращения игры';
+const urlMethod = '/gameSessionFinished';
+const requestErrorText = 'Ошибка запроса завершения прохождения игры';
 const unknownErrorText = 'Операция завершена с неопределённой ошибкой';
 
-export async function gameSessionStop(): Promise<TGameSessionStopResult> {
+export async function gameSessionFinished(): Promise<TGameSessionFinishedResult> {
   const method = 'POST';
   const url = config.api.apiUrlPrefix + urlMethod;
-  console.log('[gameSessionStop]: request start', {
+  console.log('[gameSessionFinished]: request start', {
     method,
     url,
     urlMethod,
@@ -49,7 +48,7 @@ export async function gameSessionStop(): Promise<TGameSessionStopResult> {
       if (!success || error) {
         throw new Error(error || reason || unknownErrorText);
       }
-      console.log('[gameSessionStop]: request done', data, {
+      console.log('[gameSessionFinished]: request done', data, {
         gameStatus,
         success,
         status,
@@ -63,7 +62,7 @@ export async function gameSessionStop(): Promise<TGameSessionStopResult> {
       const errorMessage = requestErrorText + ': ' + error.message;
       error.message = errorMessage;
       // eslint-disable-next-line no-console
-      console.error('[gameSessionStop]: request catch', {
+      console.error('[gameSessionFinished]: request catch', {
         error,
         method,
         url,
@@ -73,9 +72,9 @@ export async function gameSessionStop(): Promise<TGameSessionStopResult> {
     });
 }
 
-export const gameSessionStopThunk = createAsyncThunk(
-  'articles/gameSessionStopThunk',
-  async (): Promise<TGameSessionStopResult> => {
-    return await gameSessionStop();
+export const gameSessionFinishedThunk = createAsyncThunk(
+  'articles/gameSessionFinishedThunk',
+  async (): Promise<TGameSessionFinishedResult> => {
+    return await gameSessionFinished();
   },
 );

@@ -1,11 +1,24 @@
+import { TToken } from './tokens';
+
+export type TAnswerId = string;
+export type TQuestionId = string;
 export interface TAnswer {
-  id: string;
+  id: TAnswerId;
   text: string;
-  // correct?: boolean;
+  // correct?: boolean; // Only on server
 }
 export interface TQuestion {
-  id: string;
+  id: TQuestionId;
   question: string;
   answers: TAnswer[];
 }
 export type TQuestions = TQuestion[];
+
+export type TAnswerResult = 'correct' | 'wrong';
+
+export type TQuestionAnswers = Record<TQuestionId, TAnswerResult>;
+export interface TPartnerInfo {
+  name: string;
+  questionAnswers?: TQuestionAnswers;
+}
+export type TPartnersInfo = Record<TToken, TPartnerInfo>;

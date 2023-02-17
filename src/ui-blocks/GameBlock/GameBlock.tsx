@@ -80,6 +80,7 @@ export function GameBlock(props: TGameBlockProps): JSX.Element | null {
   // Effect: Start game...
   React.useEffect(() => {
     if (isParamsReady && !isGameReady) {
+      debugger;
       dispatch(gameSessionStartThunk());
       // TODO: To use handler on game end?
     }

@@ -7,6 +7,7 @@ import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
+import { TPartnersInfo, TQuestionAnswers } from '@/core';
 
 interface TResponseData {
   // Operation result...
@@ -16,11 +17,15 @@ interface TResponseData {
   success: boolean; // true
 
   // Game params...
-  currentQuestionIdx?: number;
+  // currentQuestionIdx?: number;
+  // questionAnswers: TQuestionAnswers;
+  partnersInfo: TPartnersInfo;
+
+  gameStatus?: string;
 }
 export type TGameSessionCheckResult = Pick<
   TResponseData,
-  'status' | 'reason' | 'currentQuestionIdx'
+  'status' | 'reason' | 'partnersInfo' | 'gameStatus'
 >;
 
 export type TGameSessionCheckPayloadAction = PayloadAction<
@@ -43,28 +48,20 @@ export async function gameSessionCheck(): Promise<TGameSessionCheckResult> {
    */
   return simpleDataFetch<TResponseData>({ url, method })
     .then((data) => {
-      const { success, status, error, reason } = data;
+      const { success, status, error, reason, partnersInfo, gameStatus } = data;
       // Check possible errors...
       if (!success || error) {
         throw new Error(error || reason || unknownErrorText);
       }
-      if (status === 'waitingFinished') {
-        // Success!
-        /* console.log('[gameSessionCheck]: request done: finished', data, {
-         *   status,
-         *   reason,
-         * });
-         */
-        return { status, reason };
-      }
-      /* console.log('[gameSessionCheck]: request done', data, {
-       *   success,
-       *   status,
-       *   reason,
-       *   url,
-       * });
-       */
-      return { status, reason };
+      console.log('[gameSessionCheck]: request done', data, {
+        gameStatus,
+        partnersInfo,
+        success,
+        status,
+        reason,
+        url,
+      });
+      return { status, reason, partnersInfo, gameStatus };
     })
     .catch((error) => {
       const errorMessage = requestErrorText + ': ' + error.message;

@@ -34,6 +34,9 @@ export const useGameSessionPartnerToken = (): ReturnType<typeof selectors.select
 export const useGameSessionPartnerName = (): ReturnType<typeof selectors.selectPartnerName> =>
   selectors.selectPartnerName(useGameSessionState());
 
+export const useGameSessionGameResumed = (): ReturnType<typeof selectors.selectGameResumed> =>
+  selectors.selectGameResumed(useGameSessionState());
+
 export const useGameSessionCurrentQuestionIdx = (): ReturnType<
   typeof selectors.selectCurrentQuestionIdx
 > => selectors.selectCurrentQuestionIdx(useGameSessionState());

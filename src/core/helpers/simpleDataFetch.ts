@@ -27,7 +27,7 @@ let source = axios.CancelToken.source();
 const activeRequests: Promise<AxiosResponse>[] = [];
 
 const useDelayedRequest = buildConfig.isDev;
-const requestDelay = 1000;
+const requestDelay = 100;
 
 export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
   // const url = apiUrlPrefix + '/start';
@@ -119,6 +119,7 @@ export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
       // eslint-disable-next-line no-console
       const { response } = error;
       const data = response?.data;
+      const origMessage = error.message;
       // Add server error (if present) to error message...
       if (typeof data === 'string') {
         const match = data.match(/\b(reason|error): (.*?)(\n|$)/);
@@ -127,14 +128,19 @@ export function simpleDataFetch<T>(params: TRequestParams): Promise<T> {
           error.message += ' (Server error: ' + matchText + ')';
         }
       }
+      if (error.message.startsWith('timeout ')) {
+        error.message = 'Превышен период ожидания';
+      }
       const statusText = response?.statusText;
       // eslint-disable-next-line no-console
       console.error('[simpleDataFetch]: request catch', {
         data,
         statusText,
         error,
+        message: error.message,
         params,
         requestParams,
+        origMessage,
       });
       // debugger; // eslint-disable-line no-debugger
       throw error;

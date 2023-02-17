@@ -1,6 +1,6 @@
 /** @module QuestionsCard
  *  @since 2023.02.15, 19:54
- *  @changed 2023.02.16, 15:47
+ *  @changed 2023.02.17, 05:02
  */
 
 import React from 'react';
@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import classnames from 'classnames';
 
+import { store } from '@/core/app/app-store';
 import {
   cancelAllActiveRequests,
   // TAnswer,
@@ -15,11 +16,18 @@ import {
   useGameSessionCurrentAnswerIdx,
   useGameSessionCurrentAnswerIsCorrect,
   useGameSessionCurrentQuestionIdx,
+  useGameSessionIsFinished,
   useGameSessionIsLoading,
   useQuestions,
 } from '@/core';
-import { gameSessionSendAnswerThunk, gameSessionStopThunk } from '@/features/GameSession/services';
-import { actions } from '@/features/GameSession/reducer';
+import {
+  gameSessionFinishedThunk,
+  gameSessionSendAnswerThunk,
+  gameSessionStopThunk,
+  saveGameSessionQuestionIdxThunk,
+  TGameSessionQuestionIdxPayloadAction,
+} from '@/features/GameSession/services';
+import { actions as gameSessionActions } from '@/features/GameSession/reducer';
 
 import styles from './QuestionsCard.module.scss';
 
@@ -34,34 +42,46 @@ export function QuestionsCard(props: TQuestionsCardProps) {
   const router = useRouter();
 
   const isLoading = useGameSessionIsLoading();
+  const isFinished = useGameSessionIsFinished();
+
+  // Is game finished?
+  React.useEffect(() => {
+    if (isFinished) {
+      debugger;
+      router.push('/results');
+    }
+  }, [isFinished, router]);
 
   const currentAnswerIsCorrect = useGameSessionCurrentAnswerIsCorrect();
   const currentAnswerIdx = useGameSessionCurrentAnswerIdx();
-  // const [selectedAnswerIdx, setSelectedAnswerIdx] = React.useState<number | undefined>();
   const hasAnswered = currentAnswerIdx != undefined;
 
   const hasChecked = currentAnswerIsCorrect !== undefined;
-  // const [hasChecked, setChecked] = React.useState(false);
 
   // Get data...
   const questions = useQuestions();
   const questionsCount = questions?.length || 0;
-  const currentQuestionIdx = useGameSessionCurrentQuestionIdx();
-  const currentQuestionNo = currentQuestionIdx + 1;
-  const currentQuestion = questions && questions[currentQuestionIdx];
+  const currentQuestionIdx = useGameSessionCurrentQuestionIdx(); // NOTE: Can be undefined!
+  const isReady = currentQuestionIdx != undefined;
+  const questionIdx = currentQuestionIdx || 0;
+  const questionNo = questionIdx + 1;
+  const isLastQuestion = questionNo === questionsCount;
+  const currentQuestion = questions && questions[questionIdx];
   const questionId = currentQuestion?.id;
   const questionText = currentQuestion?.question;
   const answers = currentQuestion?.answers;
   const currentAnswer =
     (hasAnswered && Array.isArray(answers) && answers[currentAnswerIdx]) || undefined;
   const answerId = currentAnswer?.id;
-  const progress = questionsCount && currentQuestionNo / questionsCount;
+  const progress = questionsCount && questionNo / questionsCount;
   const percents = String(Math.round(progress * 100)) + '%';
   // Data receiver hook: for self record or remote partner
   console.log('[QuestionsCard]', {
+    // store,
+    isFinished,
     questions,
     currentQuestionIdx,
-    currentQuestionNo,
+    questionNo,
     currentQuestion,
     questionsCount,
     questionText,
@@ -70,14 +90,17 @@ export function QuestionsCard(props: TQuestionsCardProps) {
     percents,
   });
 
-  const handleAnswer = React.useCallback((ev: React.MouseEvent<HTMLDivElement>) => {
-    const { currentTarget } = ev;
-    const answerIdx = Number(currentTarget.dataset['answer']);
-    // const answer = answers?.[answerIdx];
-    // TODO: Check for active answers, send data to server, receive answer status (in reducer)
-    console.log('[QuestionsCard:handleAnswer]', { answerIdx });
-    dispatch(actions.setCurrentAnswerIdx(answerIdx));
-  }, []);
+  const handleAnswer = React.useCallback(
+    (ev: React.MouseEvent<HTMLDivElement>) => {
+      const { currentTarget } = ev;
+      const answerIdx = Number(currentTarget.dataset['answer']);
+      // const answer = answers?.[answerIdx];
+      // TODO: Check for active answers, send data to server, receive answer status (in reducer)
+      console.log('[QuestionsCard:handleAnswer]', { answerIdx });
+      dispatch(gameSessionActions.setCurrentAnswerIdx(answerIdx));
+    },
+    [dispatch],
+  );
 
   // Create answers list...
   const answersContent = React.useMemo(() => {
@@ -157,16 +180,37 @@ export function QuestionsCard(props: TQuestionsCardProps) {
     dispatch(gameSessionSendAnswerThunk(params));
   }, [questionId, answerId, dispatch]);
 
-  const goFurther = React.useCallback(() => {
+  const goToNextQuestion = React.useCallback(() => {
     // Send cancel request (to stop game), go to main page
-    console.log('[QuestionsCard:goFurther]');
-    debugger;
-  }, [dispatch]);
+    const nextQuestionIdx = questionIdx + 1;
+    console.log('[QuestionsCard:goToNextQuestion]', { questionIdx, nextQuestionIdx });
+    dispatch(saveGameSessionQuestionIdxThunk({ questionIdx: nextQuestionIdx })).then(
+      (action: TGameSessionQuestionIdxPayloadAction) => {
+        const { questionIdx } = action.payload;
+        return dispatch(gameSessionActions.setCurrentQuestionIdx(questionIdx));
+      },
+    );
+    // TODO: May be promised further...
+  }, [dispatch, questionIdx]);
+
+  const goToResults = React.useCallback(() => {
+    // Send cancel request (to stop game), go to main page
+    console.log('[QuestionsCard:goToResults]');
+    dispatch(gameSessionActions.resetQuestionAndAnswer());
+    dispatch(gameSessionFinishedThunk());
+    dispatch(gameSessionActions.setCurrentQuestionIdx(0));
+    // Go to results page
+    router.push('/results');
+  }, [dispatch, router]);
+
+  if (!isReady) {
+    return null;
+  }
 
   return (
     <Stack className={classnames(className, styles.container)}>
       <Stack className={classnames(styles.infoRow)} flexDirection="row" my={1}>
-        <Typography textAlign="left">Вопрос {currentQuestionIdx + 1}</Typography>
+        <Typography textAlign="left">Вопрос {questionNo}</Typography>
         <Typography textAlign="right" flex={1}>
           из {questionsCount}
         </Typography>
@@ -180,17 +224,25 @@ export function QuestionsCard(props: TQuestionsCardProps) {
       <Box className={classnames(styles.answersRow, isLoading && styles.answersLoading)} my={1}>
         {answersContent}
       </Box>
-      <Stack className={classnames(styles.actionsRow)} my={2} flexDirection="row" gap={1}>
+      <Stack
+        className={classnames(styles.actionsRow)}
+        my={2}
+        flexDirection="row"
+        gap={1}
+        flexWrap="wrap"
+      >
         <Button
           className="FixMuiButton"
           variant="contained"
           disabled={!hasAnswered || isLoading}
-          onClick={hasChecked ? goFurther : checkAnswers}
+          onClick={!hasChecked ? checkAnswers : !isLastQuestion ? goToNextQuestion : goToResults}
         >
-          <span className="Text">{hasChecked ? 'Следующий вопрос' : 'Проверить'}</span>
+          <span className="Text">
+            {!hasChecked ? 'Проверить' : !isLastQuestion ? 'Следующий вопрос' : 'Завершить'}
+          </span>
         </Button>
         <Button className="FixMuiButton" variant="outlined" onClick={handleCancel}>
-          <span className="Text">Завершить</span>
+          <span className="Text">Отказаться от игры</span>
         </Button>
       </Stack>
     </Stack>

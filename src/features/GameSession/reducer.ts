@@ -16,11 +16,23 @@ import {
   gameSessionStopThunk,
   gameSessionSendAnswerThunk,
   TGameSessionSendAnswerPayloadAction,
+  gameSessionFinishedThunk,
+  TGameSessionFinishedPayloadAction,
 } from './services';
+import { checkIsNotEmptyPartnersInfo, updatePartnersInfo } from './helpers';
 
 const initialState: TGameSessionState = {
   ...defaultState,
 };
+
+function setCurrentQuestionIdx(
+  state: TGameSessionState,
+  currentQuestionIdx: TGameSessionState['currentQuestionIdx'],
+) {
+  state.currentQuestionIdx = currentQuestionIdx;
+  state.currentAnswerIdx = undefined;
+  state.currentAnswerIsCorrect = undefined;
+}
 
 const gameSessionSlice = createSlice({
   name: 'gameSession',
@@ -33,6 +45,7 @@ const gameSessionSlice = createSlice({
       state.isPlaying = false;
       state.isFinished = false;
       // Game params...
+      state.gameStatus = undefined;
       state.gameToken = undefined;
       state.gameMode = undefined;
       state.partnerToken = undefined;
@@ -45,10 +58,15 @@ const gameSessionSlice = createSlice({
       state.currentAnswerIdx = action.payload;
       state.currentAnswerIsCorrect = undefined;
     },
-    goToNextAnswer: (state) => {
-      // Check answer in answers?
-      state.currentAnswerIdx = state.currentAnswerIdx == undefined ? 0 : state.currentAnswerIdx + 1;
-      state.currentAnswerIsCorrect = undefined;
+    // TODO: Make helpers
+    setCurrentQuestionIdx: (
+      state,
+      action: PayloadAction<TGameSessionState['currentQuestionIdx']>,
+    ) => {
+      setCurrentQuestionIdx(state, action.payload);
+    },
+    resetQuestionAndAnswer: (state) => {
+      setCurrentQuestionIdx(state, undefined);
     },
   },
   // Thunk reducers...
@@ -63,31 +81,39 @@ const gameSessionSlice = createSlice({
         String(gameSessionStartThunk.fulfilled),
         (state: TGameSessionState, action: TGameSessionStartPayloadAction) => {
           const {
-            // status,
-            // reason,
+            status,
+            reason,
             gameToken,
             gameMode,
             partnerName,
             partnerToken,
+            gameStatus,
+            gameResumed,
           } = action.payload;
-          /* console.log('[features/GameSession/reducer:gameSessionStartThunk.fulfilled]', {
-           *   status,
-           *   reason,
-           *   action,
-           *   gameToken,
-           *   gameMode,
-           *   partnerName,
-           *   partnerToken,
-           * });
-           */
+          console.log('[features/GameSession/reducer:gameSessionStartThunk.fulfilled]', {
+            status,
+            reason,
+            action,
+            gameToken,
+            gameStatus,
+            gameMode,
+            partnerName,
+            partnerToken,
+            gameResumed,
+          });
           // Game params...
           state.gameToken = gameToken;
+          state.gameStatus = gameStatus;
+          state.isFinished = gameStatus === 'finished' || gameStatus === 'stopped';
+          state.isPlaying = !state.isFinished;
           state.gameMode = gameMode;
           state.partnerName = partnerName;
           state.partnerToken = partnerToken;
-          // Game state...
-          state.isPlaying = true;
-          state.isFinished = false;
+          state.gameResumed = gameResumed;
+          if (!gameResumed) {
+            setCurrentQuestionIdx(state, 0);
+            // TODO: Save to gameSessionQuestionIdx?
+          }
           // Basic state...
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
@@ -116,47 +142,6 @@ const gameSessionSlice = createSlice({
           // NOTE: Cycle stops in `GameSession/expose-control-node`)
         },
       )
-      // gameSessionCheck...
-      .addCase(String(gameSessionCheckThunk.pending), (state: TGameSessionState) => {
-        // state.loadingCount++;
-        state.isSessionChecking = true;
-      })
-      .addCase(
-        String(gameSessionCheckThunk.fulfilled),
-        (state: TGameSessionState, action: TGameSessionCheckPayloadAction) => {
-          const { status, reason, currentQuestionIdx = 0 } = action.payload;
-          console.log('[features/GameSession/reducer:gameSessionCheckThunk.fulfilled]', {
-            status,
-            reason,
-            action,
-            // Game...
-            currentQuestionIdx,
-          });
-          // debugger;
-          // Update game...
-          state.currentQuestionIdx = currentQuestionIdx;
-          // Update game status...
-          state.isSessionChecking = false;
-          state.error = undefined;
-        },
-      )
-      .addCase(
-        String(gameSessionCheckThunk.rejected),
-        (state: TGameSessionState, action: TGameSessionCheckPayloadAction) => {
-          const { error, meta } = action;
-          // eslint-disable-next-line no-console
-          console.error('[features/GameSession/reducer:gameSessionCheckThunk.rejected]', {
-            error,
-            meta,
-          });
-          debugger; // eslint-disable-line no-debugger
-          if (error.name !== 'CanceledError') {
-            state.error = error;
-          }
-          state.isSessionChecking = false;
-          // NOTE: Cycle stops in `GameSession/expose-control-node`)
-        },
-      )
       // gameSessionStop...
       .addCase(String(gameSessionStopThunk.pending), (state: TGameSessionState) => {
         state.loadingCount++;
@@ -164,14 +149,23 @@ const gameSessionSlice = createSlice({
       })
       .addCase(
         String(gameSessionStopThunk.fulfilled),
-        (state: TGameSessionState, _action: TGameSessionStopPayloadAction) => {
-          // const { status, reason } = action.payload;
+        (state: TGameSessionState, action: TGameSessionStopPayloadAction) => {
+          const {
+            // status,
+            // reason,
+            gameStatus,
+          } = action.payload;
           /* console.log('[features/GameSession/reducer:gameSessionStopThunk.fulfilled]', {
            *   status,
            *   reason,
            *   action,
            * });
            */
+          state.gameStatus = gameStatus;
+          state.isFinished = gameStatus === 'finished' || gameStatus === 'stopped';
+          // state.isFinished = true; ???
+          state.isPlaying = !state.isFinished;
+          // TODO: isStopped?
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
           state.error = undefined;
@@ -195,6 +189,107 @@ const gameSessionSlice = createSlice({
           // NOTE: Cycle stops in `GameSession/expose-control-node`)
         },
       )
+      // gameSessionFinished...
+      .addCase(String(gameSessionFinishedThunk.pending), (state: TGameSessionState) => {
+        state.loadingCount++;
+        state.isLoading = true;
+      })
+      .addCase(
+        String(gameSessionFinishedThunk.fulfilled),
+        (state: TGameSessionState, action: TGameSessionFinishedPayloadAction) => {
+          const {
+            // status,
+            // reason,
+            gameStatus,
+          } = action.payload;
+          /* console.log('[features/GameSession/reducer:gameSessionFinishedThunk.fulfilled]', {
+           *   status,
+           *   reason,
+           *   action,
+           * });
+           */
+          state.gameStatus = gameStatus;
+          state.isFinished = gameStatus === 'finished' || gameStatus === 'stopped';
+          // state.isFinished = true; ???
+          state.isPlaying = !state.isFinished;
+          state.loadingCount--;
+          state.isLoading = !!state.loadingCount;
+          state.error = undefined;
+        },
+      )
+      .addCase(
+        String(gameSessionFinishedThunk.rejected),
+        (state: TGameSessionState, action: TGameSessionFinishedPayloadAction) => {
+          const { error, meta } = action;
+          // eslint-disable-next-line no-console
+          console.error('[features/GameSession/reducer:gameSessionFinishedThunk.rejected]', {
+            error,
+            meta,
+          });
+          debugger; // eslint-disable-line no-debugger
+          if (error.name !== 'CanceledError') {
+            state.error = error;
+          }
+          state.loadingCount--;
+          state.isLoading = !!state.loadingCount;
+          // NOTE: Cycle stops in `GameSession/expose-control-node`)
+        },
+      )
+      // gameSessionCheck...
+      .addCase(String(gameSessionCheckThunk.pending), (state: TGameSessionState) => {
+        // NOTE: Using special loader flag
+        // state.loadingCount++;
+        state.isSessionChecking = true;
+      })
+      .addCase(
+        String(gameSessionCheckThunk.fulfilled),
+        (state: TGameSessionState, action: TGameSessionCheckPayloadAction) => {
+          const {
+            status,
+            reason,
+            partnersInfo,
+            gameStatus,
+            // currentQuestionIdx = 0,
+          } = action.payload;
+          const isNotEmptyPartnersInfo = checkIsNotEmptyPartnersInfo(partnersInfo);
+          const hasUpdatedPartnersInfo = updatePartnersInfo(state, partnersInfo);
+          console.log('[features/GameSession/reducer:gameSessionCheckThunk.fulfilled]', {
+            status,
+            reason,
+            action,
+            // Game...
+            gameStatus,
+            partnersInfo,
+            // currentQuestionIdx,
+            // Test...
+            isNotEmptyPartnersInfo,
+            hasUpdatedPartnersInfo,
+          });
+          state.gameStatus = gameStatus;
+          state.isFinished = gameStatus === 'finished' || gameStatus === 'stopped';
+          state.isPlaying = !state.isFinished;
+          // Update game status...
+          state.isSessionChecking = false;
+          state.error = undefined;
+        },
+      )
+      .addCase(
+        String(gameSessionCheckThunk.rejected),
+        (state: TGameSessionState, action: TGameSessionCheckPayloadAction) => {
+          const { error, meta } = action;
+          // eslint-disable-next-line no-console
+          console.error('[features/GameSession/reducer:gameSessionCheckThunk.rejected]', {
+            error,
+            meta,
+          });
+          debugger; // eslint-disable-line no-debugger
+          if (error.name !== 'CanceledError') {
+            state.error = error;
+          }
+          state.isSessionChecking = false;
+          // NOTE: Cycle stops in `GameSession/expose-control-node`)
+        },
+      )
       // gameSessionSendAnswer...
       .addCase(String(gameSessionSendAnswerThunk.pending), (state: TGameSessionState) => {
         state.loadingCount++;
@@ -203,14 +298,29 @@ const gameSessionSlice = createSlice({
       .addCase(
         String(gameSessionSendAnswerThunk.fulfilled),
         (state: TGameSessionState, action: TGameSessionSendAnswerPayloadAction) => {
-          const { status, reason, isCorrect } = action.payload;
+          const { status, reason, isCorrect, partnersInfo, questionAnswers, questionId, answerId } =
+            action.payload;
+          const isNotEmptyPartnersInfo = checkIsNotEmptyPartnersInfo(partnersInfo);
+          const hasUpdatedPartnersInfo = updatePartnersInfo(state, partnersInfo);
           console.log('[features/GameSession/reducer:gameSessionSendAnswerThunk.fulfilled]', {
             isCorrect,
+            partnersInfo,
+            questionAnswers,
+            questionId,
+            answerId,
             status,
             reason,
             action,
+            // Test...
+            isNotEmptyPartnersInfo,
+            hasUpdatedPartnersInfo,
           });
+          // if (hasUpdatedPartnersInfo) {
+          //   debugger;
+          // }
+          // Update state...
           state.currentAnswerIsCorrect = isCorrect;
+          // TODO: Update state from partnersInfo or questionAnswers (as in `gameSessionCheck`)
           // Basic params...
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
@@ -255,6 +365,9 @@ export const selectors = {
     state.partnerToken,
   selectPartnerName: (state: TGameSessionState): TGameSessionState['partnerName'] =>
     state.partnerName,
+
+  selectGameResumed: (state: TGameSessionState): TGameSessionState['gameResumed'] =>
+    state.gameResumed,
 
   selectCurrentQuestionIdx: (state: TGameSessionState): TGameSessionState['currentQuestionIdx'] =>
     state.currentQuestionIdx,

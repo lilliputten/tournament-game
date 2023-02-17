@@ -43,7 +43,7 @@
       "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
       "args": [
         "--verbose",
-        "MODULE"
+        "partnersInfo.test"
       ],
       "type": "node",
       "request": "launch",

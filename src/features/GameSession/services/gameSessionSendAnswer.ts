@@ -1,10 +1,11 @@
 /** @module gameSessionSendAnswer
  *  @since 2023.02.16, 15:56
- *  @changed 2023.02.16, 15:56
+ *  @changed 2023.02.17, 02:03
  */
 
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
+import { TAnswerId, TPartnersInfo, TQuestionAnswers, TQuestionId } from '@/core';
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
 
@@ -19,9 +20,17 @@ interface TResponseData {
 
   isCorrect: boolean;
 
+  questionId: TQuestionId;
+  answerId: TAnswerId;
+  partnersInfo: TPartnersInfo;
+  questionAnswers: TQuestionAnswers;
+
   // TODO: Other params...
 }
-export type TGameSessionSendAnswerResult = Pick<TResponseData, 'status' | 'reason'> & {
+export type TGameSessionSendAnswerResult = Pick<
+  TResponseData,
+  'status' | 'reason' | 'partnersInfo' | 'questionAnswers' | 'questionId' | 'answerId'
+> & {
   isCorrect: boolean;
 };
 
@@ -58,13 +67,26 @@ export async function gameSessionSendAnswer(
     url,
     urlMethod,
   });
-  // debugger;
   return simpleDataFetch<TResponseData>({ url, method, data: queryData })
     .then((data) => {
-      const { success, status, error, reason, isCorrect } = data;
+      const {
+        success,
+        status,
+        error,
+        reason,
+        isCorrect,
+        partnersInfo,
+        questionAnswers,
+        questionId,
+        answerId,
+      } = data;
       // Check possible errors...
       console.log('[gameSessionSendAnswer]: request done', data, {
         isCorrect,
+        partnersInfo,
+        questionAnswers,
+        questionId,
+        answerId,
         success,
         status,
         reason,
@@ -76,7 +98,7 @@ export async function gameSessionSendAnswer(
         const throwError = new Error(error || reason || unknownErrorText);
         throw throwError;
       }
-      return { status, reason, isCorrect };
+      return { status, reason, isCorrect, partnersInfo, questionAnswers, questionId, answerId };
     })
     .catch((error) => {
       const errorMessage = requestErrorText + ': ' + error.message;
