@@ -5,8 +5,8 @@
 
 # Tournament game client app
 
-- Version: 0.0.6
-- Last changes timestamp: 2023.02.16, 02:37
+- Version: 0.0.7
+- Last changes timestamp: 2023.02.17, 20:39
 
 ## Client & server
 
