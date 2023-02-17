@@ -129,21 +129,22 @@ export async function gameSessionCheck(): Promise<TGameSessionCheckResult> {
       if (!success || error) {
         throw new Error(error || reason || unknownErrorText);
       }
-      console.log('[gameSessionCheck]: request done', data, {
-        Token,
-        gameStatus,
-        gameMode,
-        finishedStatus,
-        finishedTimestamp,
-        finishedTimestr,
-        partnersInfo,
-        startedTimestamp,
-        startedTimestr,
-        success,
-        status,
-        reason,
-        url,
-      });
+      /* console.log('[gameSessionCheck]: request done', data, {
+       *   Token,
+       *   gameStatus,
+       *   gameMode,
+       *   finishedStatus,
+       *   finishedTimestamp,
+       *   finishedTimestr,
+       *   partnersInfo,
+       *   startedTimestamp,
+       *   startedTimestr,
+       *   success,
+       *   status,
+       *   reason,
+       *   url,
+       * });
+       */
       return {
         Token,
         status,

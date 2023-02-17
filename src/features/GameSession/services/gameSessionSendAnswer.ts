@@ -60,13 +60,14 @@ export async function gameSessionSendAnswer(
     questionId,
     answerId,
   };
-  console.log('[gameSessionSendAnswer]: request start', {
-    queryData,
-    params,
-    method,
-    url,
-    urlMethod,
-  });
+  /* console.log('[gameSessionSendAnswer]: request start', {
+   *   queryData,
+   *   params,
+   *   method,
+   *   url,
+   *   urlMethod,
+   * });
+   */
   return simpleDataFetch<TResponseData>({ url, method, data: queryData })
     .then((data) => {
       const {
@@ -81,19 +82,20 @@ export async function gameSessionSendAnswer(
         answerId,
       } = data;
       // Check possible errors...
-      console.log('[gameSessionSendAnswer]: request done', data, {
-        isCorrect,
-        partnersInfo,
-        questionAnswers,
-        questionId,
-        answerId,
-        success,
-        status,
-        reason,
-        queryData,
-        params,
-        url,
-      });
+      /* console.log('[gameSessionSendAnswer]: request done', data, {
+       *   isCorrect,
+       *   partnersInfo,
+       *   questionAnswers,
+       *   questionId,
+       *   answerId,
+       *   success,
+       *   status,
+       *   reason,
+       *   queryData,
+       *   params,
+       *   url,
+       * });
+       */
       if (!success || error) {
         const throwError = new Error(error || reason || unknownErrorText);
         throw throwError;

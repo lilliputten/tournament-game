@@ -44,8 +44,6 @@ export function ResultsBlock(props: TResultsBlockProps): JSX.Element | null {
   const router = useRouter();
 
   const questions = useQuestions();
-  const hasQuestions = !!questions;
-  const questionsCount = hasQuestions ? questions.length : 0;
 
   const token = useGameParamsToken();
   const userName = useGameParamsUserName();

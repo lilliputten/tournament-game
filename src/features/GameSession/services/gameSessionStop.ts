@@ -37,11 +37,12 @@ const unknownErrorText = 'Операция завершена с неопред�
 export async function gameSessionStop(): Promise<TGameSessionStopResult> {
   const method = 'POST';
   const url = config.api.apiUrlPrefix + urlMethod;
-  console.log('[gameSessionStop]: request start', {
-    method,
-    url,
-    urlMethod,
-  });
+  /* console.log('[gameSessionStop]: request start', {
+   *   method,
+   *   url,
+   *   urlMethod,
+   * });
+   */
   return simpleDataFetch<TResponseData>({ url, method })
     .then((data) => {
       const { success, status, error, reason, gameStatus } = data;
@@ -49,14 +50,15 @@ export async function gameSessionStop(): Promise<TGameSessionStopResult> {
       if (!success || error) {
         throw new Error(error || reason || unknownErrorText);
       }
-      console.log('[gameSessionStop]: request done', data, {
-        gameStatus,
-        success,
-        status,
-        reason,
-        url,
-        urlMethod,
-      });
+      /* console.log('[gameSessionStop]: request done', data, {
+       *   gameStatus,
+       *   success,
+       *   status,
+       *   reason,
+       *   url,
+       *   urlMethod,
+       * });
+       */
       return { status, reason, gameStatus };
     })
     .catch((error) => {

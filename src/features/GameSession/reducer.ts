@@ -19,7 +19,7 @@ import {
   gameSessionFinishedThunk,
   TGameSessionFinishedPayloadAction,
 } from './services';
-import { checkIsNotEmptyPartnersInfo, updatePartnersInfo } from './helpers';
+import { updatePartnersInfo } from './helpers';
 
 const initialState: TGameSessionState = {
   ...defaultState,
@@ -40,8 +40,8 @@ function updateGameStatus(
   opts: { omitFinishedStatus?: boolean } = {},
 ) {
   const {
-    status,
-    reason,
+    // status,
+    // reason,
     // Game...
     gameStatus,
     finishedStatus,
@@ -57,30 +57,30 @@ function updateGameStatus(
     state.isPlaying = !state.isFinished;
   }
   // partnersInfo...
-  const isNotEmptyPartnersInfo = checkIsNotEmptyPartnersInfo(partnersInfo);
-  const hasUpdatedPartnersInfo = updatePartnersInfo(state, partnersInfo);
+  updatePartnersInfo(state, partnersInfo);
   // Game...
   state.finishedStatus = finishedStatus;
   state.finishedTimestamp = finishedTimestamp;
   state.finishedTimestr = finishedTimestr;
   state.startedTimestamp = startedTimestamp;
   state.startedTimestr = startedTimestr;
-  console.log('[GameSession/reducer:updateGameStatus]', {
-    status,
-    reason,
-    action,
-    // Game...
-    gameStatus,
-    finishedStatus,
-    finishedTimestamp,
-    finishedTimestr,
-    partnersInfo,
-    startedTimestamp,
-    startedTimestr,
-    // Test...
-    isNotEmptyPartnersInfo,
-    hasUpdatedPartnersInfo,
-  });
+  /* console.log('[GameSession/reducer:updateGameStatus]', {
+   *   status,
+   *   reason,
+   *   action,
+   *   // Game...
+   *   gameStatus,
+   *   finishedStatus,
+   *   finishedTimestamp,
+   *   finishedTimestr,
+   *   partnersInfo,
+   *   startedTimestamp,
+   *   startedTimestr,
+   *   // Test...
+   *   isNotEmptyPartnersInfo,
+   *   hasUpdatedPartnersInfo,
+   * });
+   */
 }
 
 type TResetDataCause = 'onFinish' | undefined;
@@ -142,8 +142,8 @@ const gameSessionSlice = createSlice({
         String(gameSessionStartThunk.fulfilled),
         (state: TGameSessionState, action: TGameSessionStartPayloadAction) => {
           const {
-            status,
-            reason,
+            // status,
+            // reason,
             gameToken,
             gameMode,
             partnerName,
@@ -151,17 +151,18 @@ const gameSessionSlice = createSlice({
             gameStatus,
             gameResumed,
           } = action.payload;
-          console.log('[GameSession/reducer:gameSessionStartThunk.fulfilled]', {
-            status,
-            reason,
-            action,
-            gameToken,
-            gameStatus,
-            gameMode,
-            partnerName,
-            partnerToken,
-            gameResumed,
-          });
+          /* console.log('[GameSession/reducer:gameSessionStartThunk.fulfilled]', {
+           *   status,
+           *   reason,
+           *   action,
+           *   gameToken,
+           *   gameStatus,
+           *   gameMode,
+           *   partnerName,
+           *   partnerToken,
+           *   gameResumed,
+           * });
+           */
           // Game params...
           state.gameToken = gameToken;
           state.gameStatus = gameStatus;
@@ -258,7 +259,6 @@ const gameSessionSlice = createSlice({
       .addCase(
         String(gameSessionFinishedThunk.fulfilled),
         (state: TGameSessionState, action: TGameSessionFinishedPayloadAction) => {
-          console.log('[GameSession/reducer:gameSessionFinishedThunk.fulfilled]', action.payload);
           updateGameStatus(state, action);
           // Update game status...
           state.loadingCount--;
@@ -295,29 +295,30 @@ const gameSessionSlice = createSlice({
         (state: TGameSessionState, action: TGameSessionCheckPayloadAction) => {
           const {
             Token,
-            status,
-            reason,
+            // status,
+            // reason,
             // Game...
             gameStatus,
-            finishedStatus,
-            finishedTimestamp,
-            finishedTimestr,
+            // finishedStatus,
+            // finishedTimestamp,
+            // finishedTimestr,
             partnersInfo,
-            startedTimestamp,
-            startedTimestr,
+            // startedTimestamp,
+            // startedTimestr,
           } = action.payload;
-          console.log('[GameSession/reducer:gameSessionCheckThunk.fulfilled]', action.payload, {
-            status,
-            reason,
-            // Game...
-            gameStatus,
-            finishedStatus,
-            finishedTimestamp,
-            finishedTimestr,
-            partnersInfo,
-            startedTimestamp,
-            startedTimestr,
-          });
+          /* console.log('[GameSession/reducer:gameSessionCheckThunk.fulfilled]', action.payload, {
+           *   status,
+           *   reason,
+           *   // Game...
+           *   gameStatus,
+           *   finishedStatus,
+           *   finishedTimestamp,
+           *   finishedTimestr,
+           *   partnersInfo,
+           *   startedTimestamp,
+           *   startedTimestr,
+           * });
+           */
           if (gameStatus === 'finished') {
             const partnerStatuses =
               partnersInfo && Object.values(partnersInfo).map(({ status }) => status);
@@ -327,15 +328,16 @@ const gameSessionSlice = createSlice({
             const youPlaying = yourInfo && yourInfo.status !== 'finished';
             const youFinished = !youPlaying;
             const isFinished = youFinished || !hasPlayingPartner;
-            console.log('[GameSession/reducer:gameSessionCheckThunk.fulfilled]: check finished', {
-              isFinished,
-              Token,
-              partnerStatuses,
-              hasPlayingPartner,
-              yourInfo,
-              youPlaying,
-              youFinished,
-            });
+            /* console.log('[GameSession/reducer:gameSessionCheckThunk.fulfilled]: check finished', {
+             *   isFinished,
+             *   Token,
+             *   partnerStatuses,
+             *   hasPlayingPartner,
+             *   yourInfo,
+             *   youPlaying,
+             *   youFinished,
+             * });
+             */
             state.isFinished = isFinished;
             // TODO: Detect case whan your partner finished the game
           } else {
@@ -373,23 +375,27 @@ const gameSessionSlice = createSlice({
       .addCase(
         String(gameSessionSendAnswerThunk.fulfilled),
         (state: TGameSessionState, action: TGameSessionSendAnswerPayloadAction) => {
-          const { status, reason, isCorrect, partnersInfo, questionAnswers, questionId, answerId } =
-            action.payload;
-          const isNotEmptyPartnersInfo = checkIsNotEmptyPartnersInfo(partnersInfo);
-          const hasUpdatedPartnersInfo = updatePartnersInfo(state, partnersInfo);
-          console.log('[features/GameSession/reducer:gameSessionSendAnswerThunk.fulfilled]', {
+          const {
+            // status,
+            // reason,
             isCorrect,
             partnersInfo,
-            questionAnswers,
-            questionId,
-            answerId,
-            status,
-            reason,
-            action,
-            // Test...
-            isNotEmptyPartnersInfo,
-            hasUpdatedPartnersInfo,
-          });
+            // questionAnswers,
+            // questionId,
+            // answerId,
+          } = action.payload;
+          updatePartnersInfo(state, partnersInfo);
+          /* console.log('[features/GameSession/reducer:gameSessionSendAnswerThunk.fulfilled]', {
+           *   isCorrect,
+           *   partnersInfo,
+           *   questionAnswers,
+           *   questionId,
+           *   answerId,
+           *   status,
+           *   reason,
+           *   action,
+           * });
+           */
           // Update state...
           state.currentAnswerIsCorrect = isCorrect;
           // Basic params...

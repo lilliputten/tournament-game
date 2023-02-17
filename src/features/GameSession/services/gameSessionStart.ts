@@ -84,18 +84,19 @@ export async function gameSessionStart(): Promise<TGameSessionStartResult> {
       if (!success || error) {
         throw new Error(error || reason || unknownErrorText);
       }
-      console.log('[gameSessionStart]: request done', data, {
-        success,
-        status,
-        reason,
-        url,
-        gameToken,
-        gameStatus,
-        gameMode,
-        partnerName,
-        partnerToken,
-        gameResumed,
-      });
+      /* console.log('[gameSessionStart]: request done', data, {
+       *   success,
+       *   status,
+       *   reason,
+       *   url,
+       *   gameToken,
+       *   gameStatus,
+       *   gameMode,
+       *   partnerName,
+       *   partnerToken,
+       *   gameResumed,
+       * });
+       */
       return {
         status,
         reason,

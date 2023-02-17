@@ -8,7 +8,6 @@ import { useRouter } from 'next/router';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import classnames from 'classnames';
 
-import { store } from '@/core/app/app-store';
 import {
   cancelAllActiveRequests,
   // TAnswer,
@@ -47,7 +46,6 @@ export function QuestionsCard(props: TQuestionsCardProps) {
   // Is game finished?
   React.useEffect(() => {
     if (isFinished) {
-      debugger;
       router.push('/results');
     }
   }, [isFinished, router]);
@@ -75,28 +73,11 @@ export function QuestionsCard(props: TQuestionsCardProps) {
   const answerId = currentAnswer?.id;
   const progress = questionsCount && questionNo / questionsCount;
   const percents = String(Math.round(progress * 100)) + '%';
-  // Data receiver hook: for self record or remote partner
-  console.log('[QuestionsCard]', {
-    // store,
-    isFinished,
-    questions,
-    currentQuestionIdx,
-    questionNo,
-    currentQuestion,
-    questionsCount,
-    questionText,
-    answers,
-    progress,
-    percents,
-  });
 
   const handleAnswer = React.useCallback(
     (ev: React.MouseEvent<HTMLDivElement>) => {
       const { currentTarget } = ev;
       const answerIdx = Number(currentTarget.dataset['answer']);
-      // const answer = answers?.[answerIdx];
-      // TODO: Check for active answers, send data to server, receive answer status (in reducer)
-      console.log('[QuestionsCard:handleAnswer]', { answerIdx });
       dispatch(gameSessionActions.setCurrentAnswerIdx(answerIdx));
     },
     [dispatch],
@@ -160,7 +141,6 @@ export function QuestionsCard(props: TQuestionsCardProps) {
   const checkAnswers = React.useCallback(() => {
     if (!questionId || !answerId) {
       const error = new Error('Answer params is undefined');
-      console.error;
       // eslint-disable-next-line no-console
       console.error('[QuestionsCard]: checkAnswers: error', {
         error,
@@ -175,15 +155,12 @@ export function QuestionsCard(props: TQuestionsCardProps) {
       questionId,
       answerId,
     };
-    console.log('[QuestionsCard:checkAnswers]', params);
-    // debugger;
     dispatch(gameSessionSendAnswerThunk(params));
   }, [questionId, answerId, dispatch]);
 
   const goToNextQuestion = React.useCallback(() => {
     // Send cancel request (to stop game), go to main page
     const nextQuestionIdx = questionIdx + 1;
-    console.log('[QuestionsCard:goToNextQuestion]', { questionIdx, nextQuestionIdx });
     dispatch(saveGameSessionQuestionIdxThunk({ questionIdx: nextQuestionIdx })).then(
       (action: TGameSessionQuestionIdxPayloadAction) => {
         const { questionIdx } = action.payload;
@@ -195,7 +172,6 @@ export function QuestionsCard(props: TQuestionsCardProps) {
 
   const goToResults = React.useCallback(() => {
     // Send cancel request (to stop game), go to main page
-    console.log('[QuestionsCard:goToResults]');
     dispatch(gameSessionActions.resetQuestionAndAnswer());
     dispatch(gameSessionFinishedThunk());
     dispatch(gameSessionActions.setCurrentQuestionIdx(0));

@@ -32,14 +32,14 @@ export default function ExposeControlNode(): null {
   }, [dispatch]);
   React.useEffect(() => {
     if (doPolling) {
-      console.log('[GameSession/expose-control-node]: start game');
+      // console.log('[GameSession/expose-control-node]: start game');
       const playingPolling = intervalPolling(async () => {
         // console.log('[GameSession/expose-control-node]: game iteration');
         return dispatch(gameSessionCheckThunk());
       }, gameSessionCheckPollingTimeout);
       playingPolling.polling();
       return () => {
-        console.log('[GameSession/expose-control-node]: stop game');
+        // console.log('[GameSession/expose-control-node]: stop game');
         playingPolling.close();
         // Reset game data
         dispatch(gameSessionActions.resetPlayingState());
