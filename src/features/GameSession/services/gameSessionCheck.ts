@@ -8,6 +8,7 @@ import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
 import { TPartnersInfo, TToken } from '@/core';
+import { TFinishedStatus } from '../types';
 
 interface TResponseData {
   Token?: TToken;
@@ -22,7 +23,9 @@ interface TResponseData {
   gameStatus?: string;
   gameMode?: string;
 
-  finishedStatus?: string; // none, all (?)
+  winnerToken?: TToken;
+
+  finishedStatus?: TFinishedStatus; // none, all, some (?)
   finishedTimestamp?: number;
   finishedTimestr?: string;
   partnersInfo?: TPartnersInfo;
@@ -36,6 +39,7 @@ export type TGameSessionCheckResult = Pick<
   | 'reason'
   | 'gameStatus'
   | 'gameMode'
+  | 'winnerToken'
   | 'finishedStatus'
   | 'finishedTimestamp'
   | 'finishedTimestr'
@@ -118,6 +122,7 @@ export async function gameSessionCheck(): Promise<TGameSessionCheckResult> {
         // Game...
         gameStatus,
         gameMode,
+        winnerToken,
         finishedStatus,
         finishedTimestamp,
         finishedTimestr,
@@ -151,6 +156,7 @@ export async function gameSessionCheck(): Promise<TGameSessionCheckResult> {
         reason,
         gameStatus,
         gameMode,
+        winnerToken,
         finishedStatus,
         finishedTimestamp,
         finishedTimestr,

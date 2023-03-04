@@ -1,10 +1,12 @@
 /** @module types
  *  @since 2023.02.13, 20:21
- *  @changed 2023.03.04, 19:15
+ *  @changed 2023.03.04, 21:51
  */
 
-import { TGameMode, TPartnersInfo, TQuestionId } from '@/core/types';
+import { TGameMode, TPartnersInfo, TQuestionId, TToken } from '@/core/types';
 import { AnyAction, Reducer } from 'redux';
+
+export type TFinishedStatus = 'all' | 'some' | 'none';
 
 export interface TGameSessionState {
   // Game status...
@@ -13,6 +15,8 @@ export interface TGameSessionState {
   isFinished: boolean; // Is game finished
 
   // Game params...
+
+  Token?: TToken;
 
   gameStatus?: string;
   gameResumed?: boolean;
@@ -26,7 +30,10 @@ export interface TGameSessionState {
 
   partnersInfo?: TPartnersInfo;
 
-  finishedStatus?: string; // none, all (?)
+  winnerToken?: TToken;
+  isWinner?: boolean;
+
+  finishedStatus?: TFinishedStatus; // none, all, some (?)
   finishedTimestamp?: number;
   finishedTimestr?: string;
   startedTimestamp?: number;

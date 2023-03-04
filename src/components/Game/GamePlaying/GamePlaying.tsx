@@ -29,10 +29,6 @@ export interface TGamePlayingProps extends JSX.IntrinsicAttributes {
 
 export function GamePlaying(props: TGamePlayingProps): JSX.Element | null {
   const { className } = props;
-  /* // @see:
-   * - [Школа/ сервисы – Figma](https://www.figma.com/file/C1ylOhuxpqwMitM11JHE8Y/%D0%A8%D0%BA%D0%BE%D0%BB%D0%B0%2F-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D1%8B?node-id=2323%3A1061&t=vjG6YjAtpOyUFoIc-0)
-   * - [React Typography component - Material UI](https://mui.com/material-ui/react-typography/)
-   */
 
   // const appRootStore = useStore<TRootState>();
   // const dispatch = useAppDispatch();

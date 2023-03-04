@@ -38,12 +38,18 @@ export const useGameSessionGameResumed = (): ReturnType<typeof selectors.selectG
   selectors.selectGameResumed(useGameSessionState());
 export const useGameSessionQuestionsIds = (): ReturnType<typeof selectors.selectQuestionsIds> =>
   selectors.selectQuestionsIds(useGameSessionState());
+export const useGameSessionGameMode = (): ReturnType<typeof selectors.selectGameMode> =>
+  selectors.selectGameMode(useGameSessionState());
+export const useGameSessionGameStatus = (): ReturnType<typeof selectors.selectGameStatus> =>
+  selectors.selectGameStatus(useGameSessionState());
 
 // Template: export const useGameSession\u& = (): ReturnType<typeof selectors.select\u&> => selectors.select\u&(useGameSessionState());
 
 export const useGameSessionPartnersInfo = (): ReturnType<typeof selectors.selectPartnersInfo> =>
   selectors.selectPartnersInfo(useGameSessionState());
 
+export const useGameSessionIsWinner = (): ReturnType<typeof selectors.selectIsWinner> =>
+  selectors.selectIsWinner(useGameSessionState());
 export const useGameSessionFinishedStatus = (): ReturnType<typeof selectors.selectFinishedStatus> =>
   selectors.selectFinishedStatus(useGameSessionState());
 export const useGameSessionFinishedTimestamp = (): ReturnType<

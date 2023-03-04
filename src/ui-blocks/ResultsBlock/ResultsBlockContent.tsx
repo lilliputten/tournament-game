@@ -11,6 +11,9 @@ import config from '@/config';
 import styles from './ResultsBlockContent.module.scss';
 import { TPartnersInfo, TQuestionAnswers, TQuestions, TToken } from '@/core';
 
+import CandySvg from './assets/candy.svg';
+import CupWinnerSvg from './assets/cup-winner.svg';
+
 export interface TResultsBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
 }
@@ -33,10 +36,56 @@ interface TGameInfo {
   partnersInfo?: TPartnersInfo;
   token?: TToken;
   questions?: TQuestions;
+  // useGameResultStatus...
+  isSingle: boolean;
+  isWinner: boolean | undefined;
+  isFinished: boolean;
+  isWaitingForOtherPlayer: boolean;
 }
 
-export function ShowInfo(props: TGameInfo) {
-  const { finishedTimestamp, startedTimestamp, partnersInfo, token, questions } = props;
+function getResultText(props: TGameInfo) {
+  const { isWinner, isWaitingForOtherPlayer } = props;
+  if (isWinner == undefined) {
+    return 'Игра завершена!';
+  }
+  if (isWinner) {
+    return 'Вы победили в этой игре!';
+  }
+  if (isWaitingForOtherPlayer) {
+    return 'Результат игры ещё не известен.';
+  }
+  return 'Увы но вы не победили. Хотите сыграть еще раз?';
+}
+
+function ShowResultText(props: TGameInfo) {
+  const text = getResultText(props);
+  return (
+    <Typography variant="h5" gutterBottom>
+      {text}
+    </Typography>
+  );
+}
+
+function ShowResultIcon(props: TGameInfo) {
+  const { isWinner } = props;
+  if (isWinner == undefined) {
+    return null;
+  }
+  if (isWinner) {
+    return <CupWinnerSvg />;
+  }
+  return <CandySvg />;
+}
+
+function ShowInfo(props: TGameInfo) {
+  const {
+    finishedTimestamp,
+    startedTimestamp,
+    partnersInfo,
+    token,
+    questions,
+    isWaitingForOtherPlayer,
+  } = props;
 
   // Get duration string...
   const duration = getDurationString(startedTimestamp, finishedTimestamp);
@@ -58,10 +107,15 @@ export function ShowInfo(props: TGameInfo) {
   }
 
   return (
-    <Typography gutterBottom>
-      Ваш результат {correctAnswersCount} из {questionsCount}
-      {duration && ' за ' + duration}
-    </Typography>
+    <>
+      {isWaitingForOtherPlayer && (
+        <Typography gutterBottom>Ждём, пока ваш соперник завершит свою игру.</Typography>
+      )}
+      <Typography gutterBottom>
+        Ваш результат {correctAnswersCount} из {questionsCount}
+        {duration && ' за ' + duration}
+      </Typography>
+    </>
   );
 }
 
@@ -69,9 +123,8 @@ export function GameInfo(props: TGameInfo) {
   const { onClick, goToStartPage } = props;
   return (
     <Box className={classnames(styles.container, styles.WaitingFailed)}>
-      <Typography variant="h5" gutterBottom>
-        Игра завершена!
-      </Typography>
+      <ShowResultIcon {...props} />
+      <ShowResultText {...props} />
       <ShowInfo {...props} />
       {/*
       <Typography variant="h5">Ура! Вы победили в этой игре</Typography>

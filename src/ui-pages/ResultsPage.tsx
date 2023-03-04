@@ -8,11 +8,13 @@ import { PageSectionWrapper } from '@/ui-elements';
 import { subPageTitle } from '@/ui-support/pageUtils';
 import { ResultsBlock } from '@/ui-blocks/ResultsBlock';
 
+import styles from './ResultsPage.module.scss';
+
 export default function IndexPage(): JSX.Element {
   const pageTitle = 'Результаты';
   const title = subPageTitle(pageTitle);
   return (
-    <GenericPageLayout title={title}>
+    <GenericPageLayout className={styles.root} title={title}>
       <PageSectionWrapper flex flexVertical fullSizeFlexChild flexCenter>
         <ResultsBlock />
       </PageSectionWrapper>

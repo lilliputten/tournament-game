@@ -7,7 +7,8 @@
   margin: auto;
   display: flex;
   gap: 20px;
-  flex-direction: column;
+  flex-direction: column-reverse;
+  align-items: center;
   @media (min-width: $breakpointsMdPx) {
     gap: 30px;
     flex-direction: row;

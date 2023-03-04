@@ -44,6 +44,7 @@ function updateGameStatus(
     // reason,
     // Game...
     gameStatus,
+    winnerToken,
     finishedStatus,
     finishedTimestamp,
     finishedTimestr,
@@ -59,14 +60,16 @@ function updateGameStatus(
   // partnersInfo...
   updatePartnersInfo(state, partnersInfo);
   // Game...
+  state.winnerToken = winnerToken;
+  state.isWinner = winnerToken && state.Token ? winnerToken === state.Token : undefined;
   state.finishedStatus = finishedStatus;
   state.finishedTimestamp = finishedTimestamp;
   state.finishedTimestr = finishedTimestr;
   state.startedTimestamp = startedTimestamp;
   state.startedTimestr = startedTimestr;
   /* console.log('[GameSession/reducer:updateGameStatus]', {
-   *   status,
-   *   reason,
+   *   // status,
+   *   // reason,
    *   action,
    *   // Game...
    *   gameStatus,
@@ -76,9 +79,9 @@ function updateGameStatus(
    *   partnersInfo,
    *   startedTimestamp,
    *   startedTimestr,
-   *   // Test...
-   *   isNotEmptyPartnersInfo,
-   *   hasUpdatedPartnersInfo,
+   *   'state.Token': state.Token,
+   *   'state.winnerToken': state.winnerToken,
+   *   'state.isWinner': state.isWinner,
    * });
    */
 }
@@ -90,6 +93,7 @@ const gameSessionSlice = createSlice({
   initialState,
   reducers: {
     resetData: (state, action: PayloadAction<TResetDataCause>) => {
+      // TODO: Reset all parameters!!!
       const cause = action.payload;
       // Generic state...
       state.error = undefined;
@@ -102,6 +106,9 @@ const gameSessionSlice = createSlice({
         state.gameMode = undefined;
       }
       // Game params...
+      state.Token = undefined;
+      state.winnerToken = undefined;
+      state.isWinner = undefined;
       state.partnerToken = undefined;
       state.partnerName = undefined;
       state.currentQuestionIdx = 0;
@@ -109,7 +116,10 @@ const gameSessionSlice = createSlice({
       state.currentAnswerIsCorrect = undefined;
     },
     resetPlayingState: (state) => {
+      // TODO: Reset all parameters!!!
       state.error = undefined;
+      state.winnerToken = undefined;
+      state.isWinner = undefined;
       state.isPlaying = false;
       state.currentQuestionIdx = 0;
       state.currentAnswerIdx = undefined;
@@ -144,6 +154,7 @@ const gameSessionSlice = createSlice({
           const {
             // status,
             // reason,
+            Token,
             gameToken,
             gameMode,
             partnerName,
@@ -156,6 +167,7 @@ const gameSessionSlice = createSlice({
            *   // status,
            *   // reason,
            *   action,
+           *   Token,
            *   gameToken,
            *   gameStatus,
            *   gameMode,
@@ -166,6 +178,7 @@ const gameSessionSlice = createSlice({
            * });
            */
           // Game params...
+          state.Token = Token;
           state.gameToken = gameToken;
           state.gameStatus = gameStatus;
           state.isFinished = gameStatus === 'finished' || gameStatus === 'stopped';
@@ -262,6 +275,7 @@ const gameSessionSlice = createSlice({
       .addCase(
         String(gameSessionFinishedThunk.fulfilled),
         (state: TGameSessionState, action: TGameSessionFinishedPayloadAction) => {
+          // console.log('[GameSession/reducer]: gameSessionFinishedThunk.fulfilled', action.payload);
           updateGameStatus(state, action);
           // Update game status...
           state.loadingCount--;
@@ -331,15 +345,19 @@ const gameSessionSlice = createSlice({
             const youPlaying = yourInfo && yourInfo.status !== 'finished';
             const youFinished = !youPlaying;
             const isFinished = youFinished || !hasPlayingPartner;
-            /* console.log('[GameSession/reducer:gameSessionCheckThunk.fulfilled]: check finished', {
-             *   isFinished,
-             *   Token,
-             *   partnerStatuses,
-             *   hasPlayingPartner,
-             *   yourInfo,
-             *   youPlaying,
-             *   youFinished,
-             * });
+            /* console.log(
+             *   '[GameSession/reducer:gameSessionCheckThunk.fulfilled]: check finished',
+             *   {
+             *     isFinished,
+             *     Token,
+             *     partnerStatuses,
+             *     hasPlayingPartner,
+             *     yourInfo,
+             *     youPlaying,
+             *     youFinished,
+             *   },
+             *   action.payload,
+             * );
              */
             state.isFinished = isFinished;
             // TODO: Detect case whan your partner finished the game
@@ -441,6 +459,7 @@ export const selectors = {
   // Custom selectors...
   selectGameToken: (state: TGameSessionState): TGameSessionState['gameToken'] => state.gameToken,
   selectGameMode: (state: TGameSessionState): TGameSessionState['gameMode'] => state.gameMode,
+  selectGameStatus: (state: TGameSessionState): TGameSessionState['gameStatus'] => state.gameStatus,
   selectPartnerToken: (state: TGameSessionState): TGameSessionState['partnerToken'] =>
     state.partnerToken,
   selectPartnerName: (state: TGameSessionState): TGameSessionState['partnerName'] =>
@@ -453,6 +472,8 @@ export const selectors = {
 
   selectPartnersInfo: (state: TGameSessionState): TGameSessionState['partnersInfo'] =>
     state.partnersInfo,
+
+  selectIsWinner: (state: TGameSessionState): TGameSessionState['isWinner'] => state.isWinner,
 
   selectFinishedStatus: (state: TGameSessionState): TGameSessionState['finishedStatus'] =>
     state.finishedStatus,

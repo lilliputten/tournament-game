@@ -29,3 +29,5 @@ export const useGameParamsUserName = (): ReturnType<typeof selectors.selectUserN
   selectors.selectUserName(useGameParamsState());
 export const useGameParamsGameMode = (): ReturnType<typeof selectors.selectGameMode> =>
   selectors.selectGameMode(useGameParamsState());
+// export const useGameParamsGameStatus = (): ReturnType<typeof selectors.selectGameStatus> =>
+//   selectors.selectGameStatus(useGameParamsState());

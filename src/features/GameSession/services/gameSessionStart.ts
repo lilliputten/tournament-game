@@ -7,7 +7,7 @@ import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
-import { TGameMode, TQuestionId } from '@/core/types';
+import { TGameMode, TQuestionId, TToken } from '@/core/types';
 
 export type TGameSessionStartStatus = string;
 
@@ -17,6 +17,8 @@ interface TResponseData {
   reason?: string; // ('Partner found, game started')
   status?: TGameSessionStartStatus;
   success: boolean; // true
+
+  Token?: TToken;
 
   // Params...
   gameStatus?: string;
@@ -36,6 +38,7 @@ export type TGameSessionStartResult = Pick<
   | 'gameMode'
   | 'partnerName'
   | 'partnerToken'
+  | 'Token'
   | 'gameStatus'
   | 'gameResumed'
   | 'questionsIds'
@@ -79,6 +82,7 @@ export async function gameSessionStart(): Promise<TGameSessionStartResult> {
         gameMode,
         partnerName,
         partnerToken,
+        Token,
         gameStatus,
         gameResumed,
         questionsIds,
@@ -93,6 +97,7 @@ export async function gameSessionStart(): Promise<TGameSessionStartResult> {
        *   reason,
        *   url,
        *   gameToken,
+       *   Token,
        *   gameStatus,
        *   gameMode,
        *   partnerName,
@@ -108,6 +113,7 @@ export async function gameSessionStart(): Promise<TGameSessionStartResult> {
         gameMode,
         partnerName,
         partnerToken,
+        Token,
         gameStatus,
         gameResumed,
         questionsIds,

@@ -1,6 +1,6 @@
 /** @module ResultsBlock
  *  @since 2023.02.17, 05:07
- *  @changed 2023.02.17, 18:06
+ *  @changed 2023.03.04, 22:21
  */
 
 import React from 'react';
@@ -10,9 +10,11 @@ import classnames from 'classnames';
 
 import {
   TPartnersInfo,
+  // useGameParamsGameMode,
   useGameParamsToken,
   useGameParamsUserName,
   useGameQuestions,
+  // useGameSessionFinishedStatus,
   useGameSessionFinishedTimestamp,
   useGameSessionGameToken,
   useGameSessionPartnersInfo,
@@ -21,6 +23,7 @@ import {
 import { Empty, GameInfo } from './ResultsBlockContent';
 
 import styles from './ResultsBlock.module.scss';
+import { useGameResultStatus } from '@/core/hooks/useGameResultStatus';
 
 export interface TResultsBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
@@ -48,13 +51,21 @@ export function ResultsBlock(props: TResultsBlockProps): JSX.Element | null {
   const startedTimestamp = useGameSessionStartedTimestamp();
   // const startedTimestr = useGameSessionStartedTimestr();
 
+  const resultsStatus = useGameResultStatus();
+  const { isSingle, isWinner, isFinished, isWaitingForOtherPlayer } = resultsStatus;
+
   /* console.log('[ResultsBlock]: DEBUG', {
+   *   isSingle,
+   *   isWinner,
+   *   isFinished,
+   *   isWaitingForOtherPlayer,
+   *   gameMode,
    *   partnersInfo,
    *   finishedStatus,
    *   finishedTimestamp,
-   *   finishedTimestr,
+   *   // finishedTimestr,
    *   startedTimestamp,
-   *   startedTimestr,
+   *   // startedTimestr,
    *   questions,
    * });
    */
@@ -91,6 +102,10 @@ export function ResultsBlock(props: TResultsBlockProps): JSX.Element | null {
         partnersInfo={partnersInfo}
         token={token}
         questions={questions}
+        isSingle={isSingle}
+        isWinner={isWinner}
+        isFinished={isFinished}
+        isWaitingForOtherPlayer={isWaitingForOtherPlayer}
       />
     );
   }, [
@@ -102,6 +117,10 @@ export function ResultsBlock(props: TResultsBlockProps): JSX.Element | null {
     partnersInfo,
     token,
     questions,
+    isSingle,
+    isWinner,
+    isFinished,
+    isWaitingForOtherPlayer,
   ]);
 
   return (

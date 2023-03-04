@@ -1,6 +1,6 @@
 /** @module constants
  *  @since 2023.02.13, 20:21
- *  @changed 2023.02.13, 20:21
+ *  @changed 2023.03.04, 21:51
  */
 
 import * as buildConfig from '@/config/build';
@@ -15,6 +15,8 @@ export const defaultState: TGameSessionState = {
 
   // Game params...
 
+  Token: undefined,
+
   gameStatus: undefined,
   gameResumed: undefined,
 
@@ -26,6 +28,9 @@ export const defaultState: TGameSessionState = {
   // Other game params...
 
   partnersInfo: undefined,
+
+  winnerToken: undefined,
+  isWinner: undefined,
 
   finishedStatus: undefined,
   finishedTimestamp: undefined,
