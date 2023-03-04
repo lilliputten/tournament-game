@@ -1,40 +1,40 @@
 /** @module gameSessionFinished
  *  @since 2023.02.13, 21:05
- *  @changed 2023.02.13, 21:05
+ *  @changed 2023.03.05, 03:53
  */
 
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
-import { TPartnersInfo, TToken } from '@/core';
-import { TFinishedStatus } from '../types';
+import { TGameRecord } from '@/core';
 
 export type TGameSessionFinishedStatus = string;
 
-interface TResponseData {
-  // Operation result...
-  error?: string; // Error text (if occured)
-  reason?: string; // ('Partner found, game started')
-  status?: TGameSessionFinishedStatus;
-  success: boolean; // true
-
-  // Game params...
-  gameStatus?: string;
-  gameMode?: string;
-
-  winnerToken?: TToken;
-
-  finishedStatus?: TFinishedStatus; // none, all, some (?)
-  finishedTimestamp?: number;
-  finishedTimestr?: string;
-  partnersInfo?: TPartnersInfo;
-  startedTimestamp?: number;
-  startedTimestr?: string;
-
-  // 'gameStatus' | 'gameMode' | 'finishedStatus' | 'finishedTimestamp' | 'finishedTimestr' | 'partnersInfo' | 'startedTimestamp' | 'startedTimestr'
-  // gameStatus, gameMode, finishedStatus, finishedTimestamp, finishedTimestr, partnersInfo, startedTimestamp, startedTimestr
-}
+type TResponseData = TGameRecord;
+// interface TResponseData {
+//   // Operation result...
+//   error?: string; // Error text (if occured)
+//   reason?: string; // ('Partner found, game started')
+//   status?: TGameSessionFinishedStatus;
+//   success: boolean; // true
+//
+//   // Game params...
+//   gameStatus?: string;
+//   gameMode?: string;
+//
+//   winnerToken?: TToken;
+//
+//   finishedStatus?: TFinishedStatus; // none, all, some (?)
+//   finishedTimestamp?: number;
+//   finishedTimestr?: string;
+//   partnersInfo?: TPartnersInfo;
+//   startedTimestamp?: number;
+//   startedTimestr?: string;
+//
+//   // 'gameStatus' | 'gameMode' | 'finishedStatus' | 'finishedTimestamp' | 'finishedTimestr' | 'partnersInfo' | 'startedTimestamp' | 'startedTimestr'
+//   // gameStatus, gameMode, finishedStatus, finishedTimestamp, finishedTimestr, partnersInfo, startedTimestamp, startedTimestr
+// }
 export type TGameSessionFinishedResult = Pick<
   TResponseData,
   | 'status'

@@ -8,7 +8,7 @@ import { PageSectionWrapper } from '@/ui-elements';
 import { subPageTitle } from '@/ui-support/pageUtils';
 import { WrappedGameBlock } from '@/ui-blocks/GameBlock';
 
-export default function IndexPage(): JSX.Element {
+export default function GamePage(): JSX.Element {
   const pageTitle = 'Игра';
   const title = subPageTitle(pageTitle);
   return (

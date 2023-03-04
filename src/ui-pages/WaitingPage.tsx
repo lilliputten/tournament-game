@@ -8,7 +8,7 @@ import { PageSectionWrapper } from '@/ui-elements';
 import { subPageTitle } from '@/ui-support/pageUtils';
 import { WrappedWaitingBlock } from '@/ui-blocks/WaitingBlock';
 
-export default function IndexPage(): JSX.Element {
+export default function WaitingPage(): JSX.Element {
   const pageTitle = 'Старт игры';
   const title = subPageTitle(pageTitle);
   return (

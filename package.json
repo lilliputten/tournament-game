@@ -5,7 +5,7 @@
   "version": "0.0.7",
   "timetag": "230217-2039",
   "timestamp": "2023.02.17, 20:39",
-  "changed": "2023.01.29, 23:57",
+  "changed": "2023.03.05, 05:34",
   "private": true,
   "repository": {
     "type": "git",
@@ -94,7 +94,7 @@
     "publish": "echo --Publish build (posix commands used)-- && sh ./utils/publish.sh",
     "tags": "ctags -R --exclude=@.ctagsignore .",
     "type-check": "echo --Run typescript linter-- && tsc --pretty --noEmit",
-    "prettier": "prettier --write .",
+    "prettier": "echo --Run prettier-- && prettier --write --cache . | grep -v '(cached)' || true",
     "test-all": "echo --Run all lint & test tasks-- && npm-run-all lint type-check test && echo --All tests passed--",
     "check-all": "echo --Run all pre-commit check-ups-- && npm-run-all prettier stylelint lint type-check && echo --All check-ups passed--",
     "stylelint": "echo --Lint styles-- && stylelint src/**/*.{css,scss,less}",

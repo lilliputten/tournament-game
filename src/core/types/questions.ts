@@ -23,5 +23,7 @@ export interface TPartnerInfo {
   name: string;
   questionAnswers?: TQuestionAnswers;
   status?: TPartnerInfoStatus;
+  finishedTimestamp?: number;
+  finishedTimestr?: number;
 }
 export type TPartnersInfo = Record<TToken, TPartnerInfo>;

@@ -9,7 +9,7 @@ import { getDurationString } from '@/utils';
 import config from '@/config';
 
 import styles from './ResultsBlockContent.module.scss';
-import { TPartnersInfo, TQuestionAnswers, TQuestions, TToken } from '@/core';
+import { TPartnerInfo, TPartnersInfo, TQuestionAnswers, TQuestions, TToken } from '@/core';
 
 import CandySvg from './assets/candy.svg';
 import CupWinnerSvg from './assets/cup-winner.svg';
@@ -43,26 +43,38 @@ interface TGameInfo {
   isWaitingForOtherPlayer: boolean;
 }
 
-function getResultText(props: TGameInfo) {
+function ShowResultText(props: TGameInfo) {
   const { isWinner, isWaitingForOtherPlayer } = props;
   if (isWinner == undefined) {
-    return 'Игра завершена!';
+    return (
+      <Typography variant="h5" gutterBottom>
+        Игра завершена!
+      </Typography>
+    );
   }
   if (isWinner) {
-    return 'Вы победили в этой игре!';
+    return (
+      <Typography variant="h5" gutterBottom>
+        Вы победили в этой игре!
+      </Typography>
+    );
   }
   if (isWaitingForOtherPlayer) {
-    return 'Результат игры ещё не известен.';
+    return (
+      <Typography variant="h5" gutterBottom>
+        Результат игры ещё не известен.
+      </Typography>
+    );
   }
-  return 'Увы но вы не победили. Хотите сыграть еще раз?';
-}
-
-function ShowResultText(props: TGameInfo) {
-  const text = getResultText(props);
   return (
-    <Typography variant="h5" gutterBottom>
-      {text}
-    </Typography>
+    <>
+      <Typography variant="h5" gutterBottom>
+        Увы, но вы не победили.
+      </Typography>
+      <Typography gutterBottom mb={2}>
+        Хотите сыграть еще раз?
+      </Typography>
+    </>
   );
 }
 
@@ -72,9 +84,90 @@ function ShowResultIcon(props: TGameInfo) {
     return null;
   }
   if (isWinner) {
-    return <CupWinnerSvg />;
+    return <CupWinnerSvg className={styles.image} />;
   }
-  return <CandySvg />;
+  return <CandySvg className={styles.image} />;
+}
+
+function ShowPartnerInfo(props: {
+  showName?: boolean;
+  partnerInfo: TPartnerInfo;
+  startedTimestamp?: number;
+  questionsCount: number;
+}) {
+  const { showName, startedTimestamp, questionsCount, partnerInfo } = props;
+  const { name, finishedTimestamp } = partnerInfo;
+
+  // Get duration string...
+  const duration = getDurationString(startedTimestamp, finishedTimestamp);
+
+  // Get correct answers count...
+  // const selfInfo = partnersInfo && token && partnersInfo[token];
+  const questionAnswers: TQuestionAnswers | undefined =
+    (partnerInfo && partnerInfo.questionAnswers) || undefined;
+  const correctAnswersCount =
+    questionAnswers &&
+    Object.values(questionAnswers).filter((result) => result === 'correct').length;
+
+  return (
+    <>
+      {showName && name && name + ': '}
+      {correctAnswersCount} из {questionsCount}
+      {duration && ' за ' + duration}
+    </>
+  );
+}
+
+function ShowPartnerResults(props: TGameInfo) {
+  const {
+    // finishedTimestamp,
+    startedTimestamp,
+    partnersInfo,
+    token,
+    questions,
+    // isWaitingForOtherPlayer,
+  } = props;
+  const otherTokens = partnersInfo && Object.keys(partnersInfo).filter((key) => key !== token);
+  const otherPartners =
+    partnersInfo && otherTokens && otherTokens.map((tkn) => ({ token: tkn, ...partnersInfo[tkn] }));
+  if (!otherPartners || !otherPartners.length) {
+    return null;
+  }
+  const questionsCount = questions ? questions.length : 0;
+
+  if (otherPartners.length === 1) {
+    const partnerInfo = otherPartners[0];
+    return (
+      <>
+        Ваш партнёр {partnerInfo.name}:{' '}
+        <ShowPartnerInfo
+          partnerInfo={partnerInfo}
+          questionsCount={questionsCount}
+          startedTimestamp={startedTimestamp}
+        />
+      </>
+    );
+  } else {
+    return (
+      <>
+        Ваши партнёры:{' '}
+        {otherPartners.map((partnerInfo, n) => {
+          return (
+            <>
+              {!!n && ', '}
+              <ShowPartnerInfo
+                key={partnerInfo.token}
+                partnerInfo={partnerInfo}
+                questionsCount={questionsCount}
+                startedTimestamp={startedTimestamp}
+                showName
+              />
+            </>
+          );
+        })}
+      </>
+    );
+  }
 }
 
 function ShowInfo(props: TGameInfo) {
@@ -87,9 +180,6 @@ function ShowInfo(props: TGameInfo) {
     isWaitingForOtherPlayer,
   } = props;
 
-  // Get duration string...
-  const duration = getDurationString(startedTimestamp, finishedTimestamp);
-
   // Get correct answers count...
   const selfInfo = partnersInfo && token && partnersInfo[token];
   const questionAnswers: TQuestionAnswers | undefined =
@@ -98,9 +188,14 @@ function ShowInfo(props: TGameInfo) {
     questionAnswers &&
     Object.values(questionAnswers).filter((result) => result === 'correct').length;
 
+  // Get duration string...
+  const duration = getDurationString(
+    startedTimestamp,
+    (selfInfo && selfInfo.finishedTimestamp) || finishedTimestamp,
+  );
+
   // Questions...
-  const hasQuestions = !!questions;
-  const questionsCount = hasQuestions ? questions.length : 0;
+  const questionsCount = questions ? questions.length : 0;
 
   if (typeof correctAnswersCount == undefined || !questionsCount) {
     return null;
@@ -112,9 +207,11 @@ function ShowInfo(props: TGameInfo) {
         <Typography gutterBottom>Ждём, пока ваш соперник завершит свою игру.</Typography>
       )}
       <Typography gutterBottom>
-        Ваш результат {correctAnswersCount} из {questionsCount}
+        Ваш результат: {correctAnswersCount} из {questionsCount}
         {duration && ' за ' + duration}
       </Typography>
+      {/* TODO: Show partner(s) results? */}
+      {!isWaitingForOtherPlayer && <ShowPartnerResults {...props} />}
     </>
   );
 }
@@ -143,7 +240,7 @@ export function GameInfo(props: TGameInfo) {
             <span className="Text">Сыграть ещё раз</span>
           </Button>
         )}
-        <Button className="FixMuiButton" onClick={onClick} disabled>
+        <Button className="FixMuiButton" onClick={onClick} disabled={!onClick}>
           <span className="Text">Посмотреть турнирную таблицу</span>
         </Button>
       </Stack>

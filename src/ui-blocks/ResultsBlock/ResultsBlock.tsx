@@ -1,6 +1,6 @@
 /** @module ResultsBlock
  *  @since 2023.02.17, 05:07
- *  @changed 2023.03.04, 22:21
+ *  @changed 2023.03.05, 04:49
  */
 
 import React from 'react';
@@ -10,20 +10,18 @@ import classnames from 'classnames';
 
 import {
   TPartnersInfo,
-  // useGameParamsGameMode,
   useGameParamsToken,
   useGameParamsUserName,
   useGameQuestions,
-  // useGameSessionFinishedStatus,
   useGameSessionFinishedTimestamp,
   useGameSessionGameToken,
   useGameSessionPartnersInfo,
   useGameSessionStartedTimestamp,
 } from '@/core';
+import { useGameResultStatus } from '@/core/hooks/useGameResultStatus';
 import { Empty, GameInfo } from './ResultsBlockContent';
 
 import styles from './ResultsBlock.module.scss';
-import { useGameResultStatus } from '@/core/hooks/useGameResultStatus';
 
 export interface TResultsBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
@@ -32,7 +30,6 @@ export interface TResultsBlockProps extends JSX.IntrinsicAttributes {
 export function ResultsBlock(props: TResultsBlockProps): JSX.Element | null {
   const { className } = props;
 
-  // const dispatch = useAppDispatch();
   const router = useRouter();
 
   const questions = useGameQuestions();
@@ -47,30 +44,11 @@ export function ResultsBlock(props: TResultsBlockProps): JSX.Element | null {
 
   // const finishedStatus = useGameSessionFinishedStatus();
   const finishedTimestamp = useGameSessionFinishedTimestamp();
-  // const finishedTimestr = useGameSessionFinishedTimestr();
   const startedTimestamp = useGameSessionStartedTimestamp();
-  // const startedTimestr = useGameSessionStartedTimestr();
 
   const resultsStatus = useGameResultStatus();
   const { isSingle, isWinner, isFinished, isWaitingForOtherPlayer } = resultsStatus;
 
-  /* console.log('[ResultsBlock]: DEBUG', {
-   *   isSingle,
-   *   isWinner,
-   *   isFinished,
-   *   isWaitingForOtherPlayer,
-   *   gameMode,
-   *   partnersInfo,
-   *   finishedStatus,
-   *   finishedTimestamp,
-   *   // finishedTimestr,
-   *   startedTimestamp,
-   *   // startedTimestr,
-   *   questions,
-   * });
-   */
-
-  // const isParamsReady = !!(token && userName && hasGameStarted);
   const isReady = !!(userName && token && gameToken);
 
   const goToStartPage = React.useCallback(() => {
@@ -84,9 +62,9 @@ export function ResultsBlock(props: TResultsBlockProps): JSX.Element | null {
     }
   }, [goToStartPage, isReady]);
 
-  const showTable = React.useCallback(() => {
-    // dispatch(gameParamsActions.setGameMode('single'));
-  }, []);
+  const handleShowRecordsTable = React.useCallback(() => {
+    router.push('/records-table');
+  }, [router]);
 
   const content = React.useMemo(() => {
     if (!isReady) {
@@ -95,7 +73,7 @@ export function ResultsBlock(props: TResultsBlockProps): JSX.Element | null {
     }
     return (
       <GameInfo
-        onClick={showTable}
+        onClick={handleShowRecordsTable}
         goToStartPage={goToStartPage}
         finishedTimestamp={finishedTimestamp}
         startedTimestamp={startedTimestamp}
@@ -110,7 +88,7 @@ export function ResultsBlock(props: TResultsBlockProps): JSX.Element | null {
     );
   }, [
     isReady,
-    showTable,
+    handleShowRecordsTable,
     goToStartPage,
     finishedTimestamp,
     startedTimestamp,

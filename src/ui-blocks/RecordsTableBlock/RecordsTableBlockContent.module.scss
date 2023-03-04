@@ -2,12 +2,6 @@ $sectionsMargin: 10px;
 
 .container,
 .Empty,
-.WaitingMulti,
-.WaitingSingle,
-.WaitingFailed,
-.WasCancelled,
-.GameReady,
-.WaitingStart,
 .DEBUG {
   /*!KEEP*/
 }
@@ -25,6 +19,18 @@ $sectionsMargin: 10px;
   margin-top: 30px;
 }
 
-.image {
-  padding: 20px;
+.tableHead,
+.tableHeadRow,
+.tableBody,
+.tableRow,
+.tableCell,
+.table {
+  /*!KEEP*/
+  border: 1px solid gray;
+  border: none;
+  margin: 0 auto;
+}
+.table {
+  border: none;
+  border-collapse: collapse;
 }

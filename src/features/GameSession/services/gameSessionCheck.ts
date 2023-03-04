@@ -1,37 +1,37 @@
 /** @module gameSessionCheck
  *  @since 2023.02.13, 21:05
- *  @changed 2023.02.13, 21:05
+ *  @changed 2023.03.05, 03:54
  */
 
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
-import { TPartnersInfo, TToken } from '@/core';
-import { TFinishedStatus } from '../types';
+import { TGameRecord } from '@/core';
 
-interface TResponseData {
-  Token?: TToken;
-
-  // Operation result...
-  error?: string; // Error text (if occured)
-  reason?: string; // ('Partner found, game started')
-  status?: string; // ('waitingFinished')
-  success: boolean; // true
-
-  // Game params...
-  gameStatus?: string;
-  gameMode?: string;
-
-  winnerToken?: TToken;
-
-  finishedStatus?: TFinishedStatus; // none, all, some (?)
-  finishedTimestamp?: number;
-  finishedTimestr?: string;
-  partnersInfo?: TPartnersInfo;
-  startedTimestamp?: number;
-  startedTimestr?: string;
-}
+type TResponseData = TGameRecord;
+// interface TResponseData {
+//   Token?: TToken;
+//
+//   // Operation result...
+//   error?: string; // Error text (if occured)
+//   reason?: string; // ('Partner found, game started')
+//   status?: string; // ('waitingFinished')
+//   success: boolean; // true
+//
+//   // Game params...
+//   gameStatus?: string;
+//   gameMode?: string;
+//
+//   winnerToken?: TToken;
+//
+//   finishedStatus?: TFinishedStatus; // none, all, some (?)
+//   finishedTimestamp?: number;
+//   finishedTimestr?: string;
+//   partnersInfo?: TPartnersInfo;
+//   startedTimestamp?: number;
+//   startedTimestr?: string;
+// }
 export type TGameSessionCheckResult = Pick<
   TResponseData,
   | 'Token'

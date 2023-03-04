@@ -16,7 +16,7 @@ import { subPageTitle } from '@/ui-support/pageUtils';
 import { WrappedStartBlock } from '@/ui-blocks/StartBlock';
 import { useGameParamsHasStarted, useGameParamsToken } from '@/core';
 
-export default function IndexPage(): JSX.Element {
+export default function StartPage(): JSX.Element {
   const pageTitle = 'Стартовая страница';
   const title = subPageTitle(pageTitle);
 

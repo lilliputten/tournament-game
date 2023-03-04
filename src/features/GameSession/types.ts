@@ -3,10 +3,8 @@
  *  @changed 2023.03.04, 21:51
  */
 
-import { TGameMode, TPartnersInfo, TQuestionId, TToken } from '@/core/types';
+import { TFinishedStatus, TGameMode, TPartnersInfo, TQuestionId, TToken } from '@/core/types';
 import { AnyAction, Reducer } from 'redux';
-
-export type TFinishedStatus = 'all' | 'some' | 'none';
 
 export interface TGameSessionState {
   // Game status...
