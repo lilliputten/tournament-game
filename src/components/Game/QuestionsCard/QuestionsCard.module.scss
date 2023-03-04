@@ -30,7 +30,7 @@
   }
 }
 
-$shadeColor: color.adjust(#000, $alpha: -0.9);
+$shadeColor: color.adjust(#000, $alpha: -0.85);
 $borderColor: $shadeColor;
 
 .answersRow {
