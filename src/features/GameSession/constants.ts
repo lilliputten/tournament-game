@@ -35,6 +35,8 @@ export const defaultState: TGameSessionState = {
 
   // Questions...
 
+  questionsIds: undefined,
+
   currentQuestionIdx: undefined,
   currentAnswerIdx: undefined,
   currentAnswerIsCorrect: undefined,

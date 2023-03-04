@@ -17,7 +17,7 @@ import {
   useGameSessionCurrentQuestionIdx,
   useGameSessionIsFinished,
   useGameSessionIsLoading,
-  useQuestions,
+  useGameQuestions,
 } from '@/core';
 import {
   gameSessionFinishedThunk,
@@ -57,7 +57,7 @@ export function QuestionsCard(props: TQuestionsCardProps) {
   const hasChecked = currentAnswerIsCorrect !== undefined;
 
   // Get data...
-  const questions = useQuestions();
+  const questions = useGameQuestions();
   const questionsCount = questions?.length || 0;
   const currentQuestionIdx = useGameSessionCurrentQuestionIdx(); // NOTE: Can be undefined!
   const isReady = currentQuestionIdx != undefined;

@@ -1,6 +1,6 @@
 /** @module reducer
  *  @since 2023.02.13, 20:21
- *  @changed 2023.02.15, 01:34
+ *  @changed 2023.03.04, 19:47
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -150,10 +150,11 @@ const gameSessionSlice = createSlice({
             partnerToken,
             gameStatus,
             gameResumed,
+            questionsIds,
           } = action.payload;
           /* console.log('[GameSession/reducer:gameSessionStartThunk.fulfilled]', {
-           *   status,
-           *   reason,
+           *   // status,
+           *   // reason,
            *   action,
            *   gameToken,
            *   gameStatus,
@@ -161,6 +162,7 @@ const gameSessionSlice = createSlice({
            *   partnerName,
            *   partnerToken,
            *   gameResumed,
+           *   questionsIds,
            * });
            */
           // Game params...
@@ -172,6 +174,7 @@ const gameSessionSlice = createSlice({
           state.partnerName = partnerName;
           state.partnerToken = partnerToken;
           state.gameResumed = gameResumed;
+          state.questionsIds = questionsIds;
           if (!gameResumed) {
             setCurrentQuestionIdx(state, 0);
             // TODO: Save to gameSessionQuestionIdx?
@@ -445,6 +448,8 @@ export const selectors = {
 
   selectGameResumed: (state: TGameSessionState): TGameSessionState['gameResumed'] =>
     state.gameResumed,
+  selectQuestionsIds: (state: TGameSessionState): TGameSessionState['questionsIds'] =>
+    state.questionsIds,
 
   selectPartnersInfo: (state: TGameSessionState): TGameSessionState['partnersInfo'] =>
     state.partnersInfo,

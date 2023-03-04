@@ -1,6 +1,6 @@
 /** @module expose-hooks
  *  @since 2023.02.13, 20:21
- *  @changed 2023.02.13, 20:21
+ *  @changed 2023.03.04, 19:24
  */
 
 import { TRootState, useTypedSelector } from '@/core/app/app-root-state';
@@ -36,6 +36,8 @@ export const useGameSessionPartnerName = (): ReturnType<typeof selectors.selectP
 
 export const useGameSessionGameResumed = (): ReturnType<typeof selectors.selectGameResumed> =>
   selectors.selectGameResumed(useGameSessionState());
+export const useGameSessionQuestionsIds = (): ReturnType<typeof selectors.selectQuestionsIds> =>
+  selectors.selectQuestionsIds(useGameSessionState());
 
 // Template: export const useGameSession\u& = (): ReturnType<typeof selectors.select\u&> => selectors.select\u&(useGameSessionState());
 

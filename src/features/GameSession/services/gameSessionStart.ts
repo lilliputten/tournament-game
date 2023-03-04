@@ -1,13 +1,13 @@
 /** @module gameSessionStart
  *  @since 2023.02.13, 21:05
- *  @changed 2023.02.14, 00:26
+ *  @changed 2023.03.04, 19:19
  */
 
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import config from '@/config';
 import { simpleDataFetch } from '@/core/helpers/simpleDataFetch';
-import { TGameMode } from '@/core/types';
+import { TGameMode, TQuestionId } from '@/core/types';
 
 export type TGameSessionStartStatus = string;
 
@@ -26,6 +26,7 @@ interface TResponseData {
   partnerToken?: string;
 
   gameResumed?: boolean;
+  questionsIds?: TQuestionId[];
 }
 export type TGameSessionStartResult = Pick<
   TResponseData,
@@ -37,6 +38,7 @@ export type TGameSessionStartResult = Pick<
   | 'partnerToken'
   | 'gameStatus'
   | 'gameResumed'
+  | 'questionsIds'
 >;
 
 export type TGameSessionStartPayloadAction = PayloadAction<
@@ -79,6 +81,7 @@ export async function gameSessionStart(): Promise<TGameSessionStartResult> {
         partnerToken,
         gameStatus,
         gameResumed,
+        questionsIds,
       } = data;
       // Check possible errors...
       if (!success || error) {
@@ -95,6 +98,7 @@ export async function gameSessionStart(): Promise<TGameSessionStartResult> {
        *   partnerName,
        *   partnerToken,
        *   gameResumed,
+       *   questionsIds,
        * });
        */
       return {
@@ -106,6 +110,7 @@ export async function gameSessionStart(): Promise<TGameSessionStartResult> {
         partnerToken,
         gameStatus,
         gameResumed,
+        questionsIds,
       };
     })
     .catch((error) => {

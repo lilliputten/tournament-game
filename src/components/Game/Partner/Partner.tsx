@@ -7,7 +7,7 @@ import React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import classnames from 'classnames';
 
-import { TQuestionAnswers, TQuestions, TToken, useQuestions } from '@/core';
+import { TQuestionAnswers, TQuestions, TToken, useGameQuestions } from '@/core';
 
 import styles from './Partner.module.scss';
 
@@ -30,7 +30,7 @@ export function Partner(props: TPartnerProps): JSX.Element | null {
    */
 
   const selfId = self ? 'self' : 'other';
-  const questions: TQuestions | undefined = useQuestions();
+  const questions: TQuestions | undefined = useGameQuestions();
 
   const questionsContent = React.useMemo(() => {
     if (!questions || !questions.length) {

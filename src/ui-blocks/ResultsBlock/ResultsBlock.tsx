@@ -8,22 +8,15 @@ import { useRouter } from 'next/router';
 import Box from '@mui/material/Box';
 import classnames from 'classnames';
 
-// import config from '@/config';
 import {
   TPartnersInfo,
-  TQuestionAnswers,
-  // useGameParamsGameMode,
   useGameParamsToken,
   useGameParamsUserName,
-  useGameSessionFinishedStatus,
+  useGameQuestions,
   useGameSessionFinishedTimestamp,
-  useGameSessionFinishedTimestr,
   useGameSessionGameToken,
   useGameSessionPartnersInfo,
   useGameSessionStartedTimestamp,
-  useGameSessionStartedTimestr,
-  useGameWaitingIsGameStarted,
-  useQuestions,
 } from '@/core';
 import { Empty, GameInfo } from './ResultsBlockContent';
 
@@ -35,15 +28,11 @@ export interface TResultsBlockProps extends JSX.IntrinsicAttributes {
 
 export function ResultsBlock(props: TResultsBlockProps): JSX.Element | null {
   const { className } = props;
-  /* // @see:
-   * - [Школа/ сервисы – Figma](https://www.figma.com/file/C1ylOhuxpqwMitM11JHE8Y/%D0%A8%D0%BA%D0%BE%D0%BB%D0%B0%2F-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D1%8B?node-id=2323%3A1061&t=vjG6YjAtpOyUFoIc-0)
-   * - [React Typography component - Material UI](https://mui.com/material-ui/react-typography/)
-   */
 
   // const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const questions = useQuestions();
+  const questions = useGameQuestions();
 
   const token = useGameParamsToken();
   const userName = useGameParamsUserName();

@@ -154,7 +154,7 @@ export function GameReady({ partnerName, gameMode, startGameDelaySec }: TGameRea
       </Typography>
       <Typography gutterBottom>
         Турнир
-        {gameMode && config.build.isDev && ' (в режиме ' + gameMode + ')'}
+        {/*gameMode && config.build.isDev && ' (в режиме ' + gameMode + ')'*/}
         {partnerName && ' с игроком ' + partnerName}
         {startGameDelaySec
           ? ' начнется через ' + startGameDelaySec + '  секунды'

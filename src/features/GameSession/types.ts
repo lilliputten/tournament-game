@@ -1,9 +1,9 @@
 /** @module types
  *  @since 2023.02.13, 20:21
- *  @changed 2023.02.13, 20:21
+ *  @changed 2023.03.04, 19:15
  */
 
-import { TGameMode, TPartnersInfo } from '@/core/types';
+import { TGameMode, TPartnersInfo, TQuestionId } from '@/core/types';
 import { AnyAction, Reducer } from 'redux';
 
 export interface TGameSessionState {
@@ -33,6 +33,8 @@ export interface TGameSessionState {
   startedTimestr?: string;
 
   // Questions...
+
+  questionsIds?: TQuestionId[];
 
   currentQuestionIdx?: number;
   currentAnswerIdx?: number;
