@@ -1,13 +1,25 @@
 /** @module StartBlock.module.scss
  *  @since 2023.02.07, 20:35
- *  @changed 2023.02.07, 20:35
+ *  @changed 2023.03.04, 15:51
  */
 
 .container {
-  box-sizing: border-box;
+  margin: auto;
   display: flex;
+  gap: 20px;
   flex-direction: column;
+  @media (min-width: $breakpointsMdPx) {
+    gap: 30px;
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.content {
   text-align: center;
+}
+.visual {
+  /*!KEEP*/
 }
 
 .actions,

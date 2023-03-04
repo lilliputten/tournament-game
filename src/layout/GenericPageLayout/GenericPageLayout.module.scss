@@ -1,12 +1,19 @@
 /** @module GenericPageLayout.module.scss
  *  @since 2023.01.26, 23:51
- *  @changed 2023.01.26, 23:51
+ *  @changed 2023.03.04, 16:02
  */
 
 .container {
   display: flex;
   flex-direction: column;
   max-width: 100%;
+  // Full-size
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  min-height: 100%;
+  min-width: 100%;
+
 }
 
 .content {

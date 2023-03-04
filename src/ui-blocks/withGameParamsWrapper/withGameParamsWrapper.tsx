@@ -17,6 +17,7 @@ import styles from './GameParamsWrapper.module.scss';
 
 export interface TWithGameParamsWrapperParams {
   wrapperClassName?: string;
+  contentClassName?: string;
   errorClassName?: string;
   showErrorInWrapper?: boolean;
 }
@@ -29,7 +30,7 @@ export interface TWithGameParamsWrapperProps extends JSX.IntrinsicAttributes {
 export function withGameParamsWrapperFabric<P extends JSX.IntrinsicAttributes>(
   params: TWithGameParamsWrapperParams,
 ): (Component: React.ComponentType<P & TWithGameParamsWrapperProps>) => (props: P) => JSX.Element {
-  const { wrapperClassName, errorClassName, showErrorInWrapper = true } = params;
+  const { wrapperClassName, contentClassName, errorClassName, showErrorInWrapper = true } = params;
   return function withGameParamsWrapper<P extends JSX.IntrinsicAttributes>(
     Component: React.ComponentType<P>,
   ) {
@@ -48,7 +49,7 @@ export function withGameParamsWrapperFabric<P extends JSX.IntrinsicAttributes>(
               {errorToString(error)}
             </Typography>
           )}
-          <div className={styles.contentContainer}>
+          <div className={classnames(contentClassName, styles.contentContainer)}>
             <Component {...props} error={error} isLoading={isLoading} />
           </div>
           {/* Show small loader at the end of article items if some data has loaded */}

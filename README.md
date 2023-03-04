@@ -8,11 +8,18 @@
 - Version: 0.0.7
 - Last changes timestamp: 2023.02.17, 20:39
 
+
+## Design layout
+
+- [Figma](https://www.figma.com/file/C1ylOhuxpqwMitM11JHE8Y/%D0%A8%D0%BA%D0%BE%D0%BB%D0%B0%2F-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D1%8B?node-id=2323%3A1061&t=vjG6YjAtpOyUFoIc-0)
+
+
 ## Client & server
 
 Server repo: https://github.com/lilliputten/tournament-game-server
 
 Client repo: https://github.com/lilliputten/tournament-game
+
 
 ## Install
 

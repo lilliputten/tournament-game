@@ -3,7 +3,7 @@
 
 /** @module next.config
  *  @since 2023.01.26, 18:09
- *  @changed 2023.02.07, 21:42
+ *  @changed 2023.03.04, 16:13
  */
 
 const path = require('path');
@@ -85,6 +85,16 @@ fs.writeFileSync(jsGeneratedConfigFile, jsStr);
 // console.log('Generated', scssGeneratedConfigFile);
 
 const nextConfig = {
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }) => {
+    // @see https://react-svgr.com/docs/webpack/
+    // @see https://react-svgr.com/docs/next/
+    config.module.rules.push({
+      test: /\.svg$/,
+      issuer: /\.[jt]sx?$/,
+      use: ['@svgr/webpack'],
+    });
+    return config;
+  },
   reactStrictMode: false, // NOTE: Debug only? It causes double rendering and hooks calling.
   images: {
     unoptimized: true,

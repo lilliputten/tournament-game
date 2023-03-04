@@ -1,11 +1,12 @@
 /** @module GenericPageLayout
  *  @desc Renders parameters for `head` page part (title, meta-data, etc).
  *  @since 2023.01.26, 23:51
- *  @changed 2023.02.07, 21:49
+ *  @changed 2023.03.04, 16:02
  */
 
 import * as React from 'react';
 import classnames from 'classnames';
+import { Typography } from '@mui/material';
 
 import { WithToastsWrapper } from '@/ui-elements/Elements/Toasts/Toasts';
 import { TReactContent } from '@/utils/react-types';
@@ -25,13 +26,13 @@ export default function GenericPageLayout(props: TGenericPageLayoutProps): JSX.E
   const { className, children, ...restProps } = props;
   // prettier-ignore
   return (
-    <div className={classnames(className, styles.container)}>
+    <Typography className={classnames(className, styles.container)} component="article">
       <HtmlHeader {...restProps} />
       <PageContent className={styles.content}>
         <WithToastsWrapper>
           {children}
         </WithToastsWrapper>
       </PageContent>
-    </div>
+    </Typography>
   );
 }

@@ -17,5 +17,6 @@ export const WrappedStartBlock = compose<React.FC<TStartBlockProps>>(
   withGameParamsWrapperFabric<TStartBlockProps>({
     errorClassName: styles.error,
     wrapperClassName: styles.wrapper,
+    contentClassName: styles.content,
   }),
 )(StartBlock);

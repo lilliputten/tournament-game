@@ -1,13 +1,13 @@
 /** @module StartBlock
  *  @since 2023.02.07, 20:35
- *  @changed 2023.02.10, 21:53
+ *  @changed 2023.03.04, 15:51
  */
 
 import React from 'react';
 import { useRouter } from 'next/router';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import Box from '@mui/material/Box';
+import { Stack, Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import classnames from 'classnames';
 
@@ -26,8 +26,9 @@ import {
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
 import { TWithGameParamsWrapperProps } from '../withGameParamsWrapper/withGameParamsWrapper';
 
+import CupSvg from './assets/cup.svg';
+
 import styles from './StartBlock.module.scss';
-// import { postSetNameAction } from '@/features/GameParams/services';
 
 export interface TStartBlockProps extends TWithGameParamsWrapperProps {
   className?: string;
@@ -35,10 +36,6 @@ export interface TStartBlockProps extends TWithGameParamsWrapperProps {
 
 export function StartBlock(props: TStartBlockProps) {
   const { className } = props;
-  /* // @see:
-   * - [Школа/ сервисы – Figma](https://www.figma.com/file/C1ylOhuxpqwMitM11JHE8Y/%D0%A8%D0%BA%D0%BE%D0%BB%D0%B0%2F-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D1%8B?node-id=2323%3A1061&t=vjG6YjAtpOyUFoIc-0)
-   * - [React Typography component - Material UI](https://mui.com/material-ui/react-typography/)
-   */
 
   const dispatch = useAppDispatch();
   // const appRootStore = useRootStore();
@@ -84,34 +81,39 @@ export function StartBlock(props: TStartBlockProps) {
 
   return (
     <Box className={classnames(className, styles.container)}>
-      <Typography variant="h5" className={classnames(styles.title)} gutterBottom>
-        Турнир по теме «Что проверить в договорах»
-      </Typography>
-      {!isLoading && hasStarted && token && (
-        <>
-          <Typography className={classnames(styles.question)} gutterBottom>
-            Как вы хотите сыграть?
-          </Typography>
-          <ButtonGroup
-            className={classnames(styles.actions)}
-            variant="outlined"
-            aria-label="outlined primary button group"
-          >
-            <Button className="FixMuiButton" onClick={chooseSinglePlayer}>
-              <span className="Text">Турнир для одного</span>
-            </Button>
-            <Button className="FixMuiButton" onClick={chooseMultiPlayer}>
-              <span className="Text">Турнир для двоих</span>
-            </Button>
-          </ButtonGroup>
-        </>
-      )}
-      <UserNameDialog
-        name={userName || ''}
-        open={isUserNameDialogOpened}
-        onClose={closeNameDialog}
-        onSubmit={handleUserName}
-      />
+      <Stack className={classnames(styles.content)}>
+        <Typography variant="h5" className={classnames(styles.title)} gutterBottom>
+          Турнир по теме «Что проверить в договорах»
+        </Typography>
+        {!isLoading && hasStarted && token && (
+          <>
+            <Typography className={classnames(styles.question)} gutterBottom>
+              Как вы хотите сыграть?
+            </Typography>
+            <ButtonGroup
+              className={classnames(styles.actions)}
+              variant="outlined"
+              aria-label="outlined primary button group"
+            >
+              <Button className="FixMuiButton" onClick={chooseSinglePlayer}>
+                <span className="Text">Турнир для одного</span>
+              </Button>
+              <Button className="FixMuiButton" onClick={chooseMultiPlayer}>
+                <span className="Text">Турнир для двоих</span>
+              </Button>
+            </ButtonGroup>
+          </>
+        )}
+        <UserNameDialog
+          name={userName || ''}
+          open={isUserNameDialogOpened}
+          onClose={closeNameDialog}
+          onSubmit={handleUserName}
+        />
+      </Stack>
+      <Stack className={classnames(styles.visual)}>
+        <CupSvg />
+      </Stack>
     </Box>
   );
 }
