@@ -170,6 +170,21 @@ function ShowPartnerResults(props: TGameInfo) {
   }
 }
 
+function getOtherPartnersRemainedQuestions(props: TGameInfo): number | undefined {
+  const { partnersInfo, token, questions } = props;
+  const totalQuestionsCount = questions ? questions.length : 0;
+  const otherAnswers =
+    partnersInfo &&
+    Object.entries(partnersInfo)
+      .filter(([thisToken]) => token !== thisToken)
+      .map(([_token, info]) =>
+        info.questionAnswers ? Object.keys(info.questionAnswers).length : 0,
+      )
+      .map((answersCount) => totalQuestionsCount - answersCount)
+      .reduce((sum, otherAnswers) => sum + otherAnswers, 0);
+  return otherAnswers;
+}
+
 function ShowInfo(props: TGameInfo) {
   const {
     finishedTimestamp,
@@ -201,10 +216,21 @@ function ShowInfo(props: TGameInfo) {
     return null;
   }
 
+  const otherPartnersRemainedQuestions =
+    isWaitingForOtherPlayer && getOtherPartnersRemainedQuestions(props);
+
+  const partnersCount = partnersInfo ? Object.keys(partnersInfo).length : 0;
+
   return (
     <>
       {isWaitingForOtherPlayer && (
-        <Typography gutterBottom>Ждём, пока ваш соперник завершит свою игру.</Typography>
+        <Typography gutterBottom>
+          Ждём, пока {partnersCount > 2 ? 'ваши соперники завершат' : 'ваш соперник завершит'} свою игру
+          {!!otherPartnersRemainedQuestions &&
+            otherPartnersRemainedQuestions > 0 &&
+            ' (осталось неотвеченных вопросов: ' + otherPartnersRemainedQuestions + ')'}
+          .
+        </Typography>
       )}
       <Typography gutterBottom>
         Ваш результат: {correctAnswersCount} из {questionsCount}
