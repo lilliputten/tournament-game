@@ -78,12 +78,28 @@ function ShowResultText(props: TGameInfo) {
   );
 }
 
+function getCorrectAnswersCount(partnerInfo?: TPartnerInfo): number {
+  if (!partnerInfo) {
+    return 0;
+  }
+  const questionAnswers: TQuestionAnswers | undefined =
+    (partnerInfo && partnerInfo.questionAnswers) || undefined;
+  const correctAnswersCount =
+    questionAnswers &&
+    Object.values(questionAnswers).filter((result) => result === 'correct').length;
+  return correctAnswersCount || 0;
+}
+
 function ShowResultIcon(props: TGameInfo) {
-  const { isWinner } = props;
-  if (isWinner == undefined) {
+  const { isWinner, isSingle, partnersInfo, token, questions } = props;
+  if (isWinner == undefined && !isSingle) {
     return null;
   }
-  if (isWinner) {
+  // Get correct answers count...
+  const selfInfo = (partnersInfo && token && partnersInfo[token]) || undefined;
+  const isSingleWinnerLike =
+    isSingle && getCorrectAnswersCount(selfInfo) * 2 >= (questions?.length || 0);
+  if (isWinner || isSingleWinnerLike) {
     return <CupWinnerSvg className={styles.image} />;
   }
   return <CandySvg className={styles.image} />;
@@ -102,12 +118,7 @@ function ShowPartnerInfo(props: {
   const duration = getDurationString(startedTimestamp, finishedTimestamp);
 
   // Get correct answers count...
-  // const selfInfo = partnersInfo && token && partnersInfo[token];
-  const questionAnswers: TQuestionAnswers | undefined =
-    (partnerInfo && partnerInfo.questionAnswers) || undefined;
-  const correctAnswersCount =
-    questionAnswers &&
-    Object.values(questionAnswers).filter((result) => result === 'correct').length;
+  const correctAnswersCount = getCorrectAnswersCount(partnerInfo);
 
   return (
     <>
@@ -119,14 +130,7 @@ function ShowPartnerInfo(props: {
 }
 
 function ShowPartnerResults(props: TGameInfo) {
-  const {
-    // finishedTimestamp,
-    startedTimestamp,
-    partnersInfo,
-    token,
-    questions,
-    // isWaitingForOtherPlayer,
-  } = props;
+  const { startedTimestamp, partnersInfo, token, questions } = props;
   const otherTokens = partnersInfo && Object.keys(partnersInfo).filter((key) => key !== token);
   const otherPartners =
     partnersInfo && otherTokens && otherTokens.map((tkn) => ({ token: tkn, ...partnersInfo[tkn] }));
@@ -197,11 +201,7 @@ function ShowInfo(props: TGameInfo) {
 
   // Get correct answers count...
   const selfInfo = partnersInfo && token && partnersInfo[token];
-  const questionAnswers: TQuestionAnswers | undefined =
-    (selfInfo && selfInfo.questionAnswers) || undefined;
-  const correctAnswersCount =
-    questionAnswers &&
-    Object.values(questionAnswers).filter((result) => result === 'correct').length;
+  const correctAnswersCount = selfInfo && getCorrectAnswersCount(selfInfo);
 
   // Get duration string...
   const duration = getDurationString(
@@ -225,7 +225,8 @@ function ShowInfo(props: TGameInfo) {
     <>
       {isWaitingForOtherPlayer && (
         <Typography gutterBottom>
-          Ждём, пока {partnersCount > 2 ? 'ваши соперники завершат' : 'ваш соперник завершит'} свою игру
+          Ждём, пока {partnersCount > 2 ? 'ваши соперники завершат' : 'ваш соперник завершит'} свою
+          игру
           {!!otherPartnersRemainedQuestions &&
             otherPartnersRemainedQuestions > 0 &&
             ' (осталось неотвеченных вопросов: ' + otherPartnersRemainedQuestions + ')'}

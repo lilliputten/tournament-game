@@ -118,12 +118,52 @@ const gameSessionSlice = createSlice({
     resetPlayingState: (state) => {
       // TODO: Reset all parameters!!!
       state.error = undefined;
+
+      state.isPlaying = false;
+      state.isFinished = false;
+      state.Token = undefined;
+      state.gameStatus = undefined;
+      state.gameResumed = undefined;
+      state.gameToken = undefined;
+      state.gameMode = undefined;
+      state.partnerToken = undefined;
+      state.partnerName = undefined;
+      state.partnersInfo = undefined;
       state.winnerToken = undefined;
       state.isWinner = undefined;
-      state.isPlaying = false;
-      state.currentQuestionIdx = 0;
+      state.finishedStatus = undefined;
+      state.finishedTimestamp = undefined;
+      state.finishedTimestr = undefined;
+      state.startedTimestamp = undefined;
+      state.startedTimestr = undefined;
+      state.questionsIds = undefined;
+      state.currentQuestionIdx = undefined;
       state.currentAnswerIdx = undefined;
       state.currentAnswerIsCorrect = undefined;
+
+      /* // All parameters:
+      state.isPlaying = false;
+      state.isFinished = false;
+      state.Token = undefined;
+      state.gameStatus = undefined;
+      state.gameResumed = undefined;
+      state.gameToken = undefined;
+      state.gameMode = undefined;
+      state.partnerToken = undefined;
+      state.partnerName = undefined;
+      state.partnersInfo = undefined;
+      state.winnerToken = undefined;
+      state.isWinner = undefined;
+      state.finishedStatus = undefined;
+      state.finishedTimestamp = undefined;
+      state.finishedTimestr = undefined;
+      state.startedTimestamp = undefined;
+      state.startedTimestr = undefined;
+      state.questionsIds = undefined;
+      state.currentQuestionIdx = undefined;
+      state.currentAnswerIdx = undefined;
+      state.currentAnswerIsCorrect = undefined;
+      */
     },
     setCurrentAnswerIdx: (state, action: PayloadAction<TGameSessionState['currentAnswerIdx']>) => {
       state.currentAnswerIdx = action.payload;

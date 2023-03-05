@@ -7,7 +7,7 @@ import classnames from 'classnames';
 
 import config from '@/config';
 import { getDurationString } from '@/utils';
-import { TGameRecord, TQuestionAnswers, TRecordsTable, TToken } from '@/core';
+import { TGameRecord, TGameToken, TQuestionAnswers, TRecordsTable, TToken } from '@/core';
 
 import styles from './RecordsTableBlockContent.module.scss';
 
@@ -25,6 +25,7 @@ interface TRecordsTableProps {
   onClick?: TCb;
   goToStartPage?: TCb;
   token?: TToken;
+  gameToken?: TGameToken;
   recordsTable?: TRecordsTable;
 }
 
@@ -35,7 +36,15 @@ interface TRecordsTableProps {
  * - Time
  */
 
-function ShowRow({ gameRecord, idx }: { gameRecord: TGameRecord; idx: number }) {
+function ShowRow({
+  gameRecord,
+  activeGameToken,
+  idx,
+}: {
+  gameRecord: TGameRecord;
+  activeGameToken?: TGameToken;
+  idx: number;
+}) {
   const {
     Token, // '230305-052707-183-5323278'
     // finishedByPartner, // '230211-165455-365-5694359'
@@ -60,46 +69,73 @@ function ShowRow({ gameRecord, idx }: { gameRecord: TGameRecord; idx: number }) 
     // timestr, // '2023.03.05 05:27:15'
     winnerToken, // '230211-165455-365-5694359'
   } = gameRecord;
+  const isActiveGame = Token === activeGameToken;
   const winner = winnerToken && partnersInfo && partnersInfo[winnerToken];
   const no = idx + 1;
   const name = (winner && winner.name) || undefined;
   const questionAnswers: TQuestionAnswers | undefined =
     (winner && winner.questionAnswers) || undefined;
+  const answers = questionAnswers && Object.values(questionAnswers);
+  const totalAnswersCount = answers ? answers.length : 0;
   const correctAnswersCount =
-    questionAnswers &&
-    Object.values(questionAnswers).reduce(
-      (summ, value) => (value === 'correct' ? summ + 1 : summ),
-      0,
-    );
+    answers && answers.reduce((summ, value) => (value === 'correct' ? summ + 1 : summ), 0);
   const finishedTimestamp = (winner && winner.finishedTimestamp) || undefined;
   const duration = getDurationString(startedTimestamp, finishedTimestamp);
   // prettier-ignore
   return (
-    <tr id={Token} className={classnames(styles.tableRow)}>
+    <tr
+      id={Token}
+      className={classnames(
+        styles.tableRow,
+        styles['tableRow' + no],
+        isActiveGame && styles.activeGame,
+      )}
+    >
       <td className={classnames(styles.tableCell, styles.cellNo)}>{no}</td>
       <td className={classnames(styles.tableCell, styles.cellName)}>{name}</td>
       <td className={classnames(styles.tableCell, styles.cellTime)}>{duration}</td>
-      <td className={classnames(styles.tableCell, styles.cellAnswers)}>{correctAnswersCount}</td>
+      <td className={classnames(styles.tableCell, styles.cellAnswers)}>
+        {correctAnswersCount} / {totalAnswersCount}
+      </td>
     </tr>
   );
 }
 
-function ShowTable({ recordsTable }: { recordsTable?: TRecordsTable }) {
-  if (!recordsTable || !recordsTable.length) {
+function ShowTable({
+  recordsTable,
+  gameToken,
+}: {
+  recordsTable?: TRecordsTable;
+  gameToken?: TGameToken;
+}) {
+  const isRecordsTable = !!(recordsTable && recordsTable.length);
+  const rows = React.useMemo(
+    () =>
+      isRecordsTable &&
+      recordsTable.map((gameRecord, idx) => (
+        <ShowRow
+          key={gameRecord.Token}
+          idx={idx}
+          gameRecord={gameRecord}
+          activeGameToken={gameToken}
+        />
+      )),
+    [isRecordsTable, recordsTable, gameToken],
+  );
+  if (!isRecordsTable) {
     return <Typography>Турнирная таблица пока пуста.</Typography>;
   }
-  const rows = recordsTable.map((gameRecord, idx) => (
-    <ShowRow key={gameRecord.Token} idx={idx} gameRecord={gameRecord} />
-  ));
   return (
     <>
       <Box className={styles.tableTitle}>Турнирная таблица</Box>
       <table className={styles.table} cellPadding={4} cellSpacing={2} width="100%" border={0}>
         <thead className={styles.tableHeadRow}>
-          <th className={classnames(styles.tableHeadCell, styles.cellNo)}>Место</th>
-          <th className={classnames(styles.tableHeadCell, styles.cellName)}>Игрок</th>
-          <th className={classnames(styles.tableHeadCell, styles.cellTime)}>Время</th>
-          <th className={classnames(styles.tableHeadCell, styles.cellAnswers)}>Верных ответов</th>
+          <tr className={classnames(styles.tableRow, styles.tableHeadRow)}>
+            <th className={classnames(styles.tableHeadCell, styles.cellNo)}>Место</th>
+            <th className={classnames(styles.tableHeadCell, styles.cellName)}>Игрок</th>
+            <th className={classnames(styles.tableHeadCell, styles.cellTime)}>Время</th>
+            <th className={classnames(styles.tableHeadCell, styles.cellAnswers)}>Верных ответов</th>
+          </tr>
         </thead>
         <tbody className={styles.tableBody}>{rows}</tbody>
       </table>
@@ -108,10 +144,10 @@ function ShowTable({ recordsTable }: { recordsTable?: TRecordsTable }) {
 }
 
 export function RecordsTableContent(props: TRecordsTableProps) {
-  const { onClick, goToStartPage, recordsTable } = props;
+  const { onClick, goToStartPage, recordsTable, gameToken } = props;
   return (
     <Box className={classnames(styles.container, styles.WaitingFailed)}>
-      <ShowTable recordsTable={recordsTable} />
+      <ShowTable recordsTable={recordsTable} gameToken={gameToken} />
       <Stack
         className={styles.actions}
         spacing={2}

@@ -1,6 +1,6 @@
 /** @module RecordsTableBlock
  *  @since 2023.02.17, 05:07
- *  @changed 2023.03.05, 20:46
+ *  @changed 2023.03.06, 00:46
  */
 
 import React from 'react';
@@ -8,7 +8,13 @@ import { useRouter } from 'next/router';
 import Box from '@mui/material/Box';
 import classnames from 'classnames';
 
-import { useAppDispatch, useGameParamsToken, useGameParamsUserName, useRecordsTable } from '@/core';
+import {
+  useAppDispatch,
+  useGameParamsToken,
+  useGameParamsUserName,
+  useGameSessionGameToken,
+  useRecordsTable,
+} from '@/core';
 
 import styles from './RecordsTableBlock.module.scss';
 import { loadRecordsTableThunk } from '@/features/RecordsTable/services';
@@ -26,6 +32,8 @@ export function RecordsTableBlock(props: TRecordsTableBlockProps): JSX.Element |
 
   const token = useGameParamsToken();
   const userName = useGameParamsUserName();
+
+  const gameToken = useGameSessionGameToken();
 
   const recordsTable = useRecordsTable();
 
@@ -63,10 +71,11 @@ export function RecordsTableBlock(props: TRecordsTableBlockProps): JSX.Element |
         onClick={handleShowResults}
         goToStartPage={goToStartPage}
         token={token}
+        gameToken={gameToken}
         recordsTable={recordsTable}
       />
     );
-  }, [isReady, handleShowResults, goToStartPage, token, recordsTable]);
+  }, [isReady, handleShowResults, goToStartPage, token, gameToken, recordsTable]);
 
   return (
     <Box className={classnames(className, styles.container)} my={2}>
