@@ -1,6 +1,6 @@
 /** @module RecordsTableBlock
  *  @since 2023.02.17, 05:07
- *  @changed 2023.03.04, 22:21
+ *  @changed 2023.03.05, 20:46
  */
 
 import React from 'react';

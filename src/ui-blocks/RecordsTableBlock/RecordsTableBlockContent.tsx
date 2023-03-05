@@ -28,8 +28,7 @@ interface TRecordsTableProps {
   recordsTable?: TRecordsTable;
 }
 
-/*
- * Table Columns:
+/* Table Columns:
  * - Place
  * - Name
  * - Answers
@@ -85,18 +84,22 @@ function ShowRow({ gameRecord, idx }: { gameRecord: TGameRecord; idx: number }) 
   );
 }
 
-function ShowTable({ recordsTable }: { recordsTable: TRecordsTable }) {
+function ShowTable({ recordsTable }: { recordsTable?: TRecordsTable }) {
+  if (!recordsTable || !recordsTable.length) {
+    return <Typography>Турнирная таблица пока пуста.</Typography>;
+  }
   const rows = recordsTable.map((gameRecord, idx) => (
     <ShowRow key={gameRecord.Token} idx={idx} gameRecord={gameRecord} />
   ));
   return (
     <>
-      <table className={styles.table} cellPadding={4} cellSpacing={2} border={0}>
+      <Box className={styles.tableTitle}>Турнирная таблица</Box>
+      <table className={styles.table} cellPadding={4} cellSpacing={2} width="100%" border={0}>
         <thead className={styles.tableHeadRow}>
-          <td className={classnames(styles.tableHead, styles.cellNo)}>Место</td>
-          <td className={classnames(styles.tableHead, styles.cellName)}>Игрок</td>
-          <td className={classnames(styles.tableHead, styles.cellTime)}>Время</td>
-          <td className={classnames(styles.tableHead, styles.cellAnswers)}>Верных ответов</td>
+          <th className={classnames(styles.tableHeadCell, styles.cellNo)}>Место</th>
+          <th className={classnames(styles.tableHeadCell, styles.cellName)}>Игрок</th>
+          <th className={classnames(styles.tableHeadCell, styles.cellTime)}>Время</th>
+          <th className={classnames(styles.tableHeadCell, styles.cellAnswers)}>Верных ответов</th>
         </thead>
         <tbody className={styles.tableBody}>{rows}</tbody>
       </table>
@@ -108,7 +111,7 @@ export function RecordsTableContent(props: TRecordsTableProps) {
   const { onClick, goToStartPage, recordsTable } = props;
   return (
     <Box className={classnames(styles.container, styles.WaitingFailed)}>
-      {recordsTable && <ShowTable recordsTable={recordsTable} />}
+      <ShowTable recordsTable={recordsTable} />
       <Stack
         className={styles.actions}
         spacing={2}
