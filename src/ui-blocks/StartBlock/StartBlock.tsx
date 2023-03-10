@@ -83,7 +83,7 @@ export function StartBlock(props: TStartBlockProps) {
     <Box className={classnames(className, styles.container)}>
       <Stack className={classnames(styles.content)}>
         <Typography variant="h5" className={classnames(styles.title)} gutterBottom>
-          Турнир по теме «Что проверить в договорах»
+          Турнир по теме «Изменения в работе»
         </Typography>
         {!isLoading && hasStarted && token && (
           <>
