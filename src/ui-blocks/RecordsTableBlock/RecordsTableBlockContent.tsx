@@ -93,10 +93,10 @@ function ShowRow({
     >
       <td className={classnames(styles.tableCell, styles.cellNo)}>{no}</td>
       <td className={classnames(styles.tableCell, styles.cellName)}>{name}</td>
-      <td className={classnames(styles.tableCell, styles.cellTime)}>{duration}</td>
       <td className={classnames(styles.tableCell, styles.cellAnswers)}>
         {correctAnswersCount} / {totalAnswersCount}
       </td>
+      <td className={classnames(styles.tableCell, styles.cellTime)}>{duration}</td>
     </tr>
   );
 }
@@ -133,8 +133,8 @@ function ShowTable({
           <tr className={classnames(styles.tableRow, styles.tableHeadRow)}>
             <th className={classnames(styles.tableHeadCell, styles.cellNo)}>Место</th>
             <th className={classnames(styles.tableHeadCell, styles.cellName)}>Игрок</th>
-            <th className={classnames(styles.tableHeadCell, styles.cellTime)}>Время</th>
             <th className={classnames(styles.tableHeadCell, styles.cellAnswers)}>Верных ответов</th>
+            <th className={classnames(styles.tableHeadCell, styles.cellTime)}>Время</th>
           </tr>
         </thead>
         <tbody className={styles.tableBody}>{rows}</tbody>
@@ -145,6 +145,7 @@ function ShowTable({
 
 export function RecordsTableContent(props: TRecordsTableProps) {
   const { onClick, goToStartPage, recordsTable, gameToken } = props;
+  const isFinishedGame = !!gameToken;
   return (
     <Box className={classnames(styles.container, styles.WaitingFailed)}>
       <ShowTable recordsTable={recordsTable} gameToken={gameToken} />
@@ -161,7 +162,7 @@ export function RecordsTableContent(props: TRecordsTableProps) {
             <span className="Text">Сыграть ещё раз</span>
           </Button>
         )}
-        {!!onClick && (
+        {!!onClick && isFinishedGame && (
           <Button className="FixMuiButton" onClick={onClick} disabled={!onClick}>
             <span className="Text">Посмотреть результаты</span>
           </Button>

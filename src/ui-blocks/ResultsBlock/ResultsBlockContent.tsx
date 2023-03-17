@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -11,8 +12,9 @@ import config from '@/config';
 import styles from './ResultsBlockContent.module.scss';
 import { TPartnerInfo, TPartnersInfo, TQuestionAnswers, TQuestions, TToken } from '@/core';
 
-import CandySvg from './assets/candy.svg';
-import CupWinnerSvg from './assets/cup-winner.svg';
+import candySvg from './assets/candy.svg';
+import cupWinnerSvg from './assets/cup-winner.svg';
+import waitingForPartnerGif from './assets/waiting-for-partner.gif';
 
 export interface TResultsBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
@@ -91,7 +93,10 @@ function getCorrectAnswersCount(partnerInfo?: TPartnerInfo): number {
 }
 
 function ShowResultIcon(props: TGameInfo) {
-  const { isWinner, isSingle, partnersInfo, token, questions } = props;
+  const { isWinner, isSingle, partnersInfo, token, questions, isWaitingForOtherPlayer } = props;
+  if (isWaitingForOtherPlayer) {
+    return <Image src={waitingForPartnerGif} width={289} height={350} alt="Ожидаем партнёра" />;
+  }
   if (isWinner == undefined && !isSingle) {
     return null;
   }
@@ -100,9 +105,15 @@ function ShowResultIcon(props: TGameInfo) {
   const isSingleWinnerLike =
     isSingle && getCorrectAnswersCount(selfInfo) * 2 >= (questions?.length || 0);
   if (isWinner || isSingleWinnerLike) {
-    return <CupWinnerSvg className={styles.image} />;
+    // return <CupWinnerSvg className={styles.image} />;
+    return (
+      <Image src={cupWinnerSvg as unknown as string} width={165} height={184} alt="Вы победили!" />
+    );
   }
-  return <CandySvg className={styles.image} />;
+  // return <CandySvg className={styles.image} />;
+  return (
+    <Image src={candySvg as unknown as string} width={184} height={102} alt="Вы завершили игру" />
+  );
 }
 
 function ShowPartnerInfo(props: {

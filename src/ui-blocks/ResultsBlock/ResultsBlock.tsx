@@ -55,6 +55,7 @@ export function ResultsBlock(props: TResultsBlockProps): JSX.Element | null {
     router.push('/');
   }, [router]);
 
+  // Go to main page if game not ready...
   React.useEffect(() => {
     // Go to the start page if environment isn't ready yet
     if (!isReady /* && !config.build.isDev */) {

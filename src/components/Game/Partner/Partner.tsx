@@ -45,13 +45,13 @@ export function Partner(props: TPartnerProps): JSX.Element | null {
       // Correct & wrong styles
       const className = classnames(
         styles.question,
-        (isCorrect || isWrong) && !self && styles.questionFinished,
-        isCorrect && self && styles.questionCorrect,
-        isWrong && self && styles.questionWrong,
+        // (isCorrect || isWrong) && !self && styles.questionFinished,
+        isCorrect && styles.questionCorrect,
+        isWrong && styles.questionWrong,
       );
       return <Box key={key} id={key} className={className} />;
     });
-  }, [questions, questionAnswers, self]);
+  }, [questions, questionAnswers]);
 
   return (
     <Box className={classnames(className, styles.container, styles[selfId])}>

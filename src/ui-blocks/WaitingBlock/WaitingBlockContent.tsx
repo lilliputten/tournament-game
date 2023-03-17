@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -10,6 +11,9 @@ import { TGameSessionState } from '@/features/GameSession';
 
 import styles from './WaitingBlockContent.module.scss';
 import { TGameParamsState } from '@/features/GameParams';
+
+import waitingGif from './assets/globe-2.gif';
+import hoorayGif from './assets/hooray.gif';
 
 export interface TWaitingBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
@@ -57,6 +61,9 @@ export function WaitingMulti({
 }) {
   return (
     <Box className={classnames(styles.container, styles.WaitingMulti)}>
+      <Box>
+        <Image src={waitingGif} width={300} height={300} alt="Ожидаем партнёра" />
+      </Box>
       <Typography variant="h5" gutterBottom>
         Ищем соперника
       </Typography>
@@ -149,6 +156,9 @@ interface TGameReadyParams {
 export function GameReady({ partnerName, gameMode, startGameDelaySec }: TGameReadyParams) {
   return (
     <Box className={classnames(styles.container, styles.GameReady)}>
+      <Box>
+        <Image src={hoorayGif} width={200} height={200} alt="Партнёр нашёлся!" />
+      </Box>
       <Typography variant="h5" gutterBottom>
         {gameMode === 'multi' ? 'Ура! Соперник нашёлся' : 'Всё готово!'}
       </Typography>

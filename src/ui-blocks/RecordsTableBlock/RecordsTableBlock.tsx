@@ -39,16 +39,13 @@ export function RecordsTableBlock(props: TRecordsTableBlockProps): JSX.Element |
 
   const isReady = !!(userName && token);
 
+  // To check if game finished -- to show results
+
   const goToStartPage = React.useCallback(() => {
     router.push('/');
   }, [router]);
 
-  React.useEffect(() => {
-    // Go to the start page if environment isn't ready yet
-    if (!isReady /* && !config.build.isDev */) {
-      goToStartPage();
-    }
-  }, [goToStartPage, isReady]);
+  // TODO: Use loading state from records feature
 
   React.useEffect(() => {
     if (isReady) {

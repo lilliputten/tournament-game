@@ -3,10 +3,11 @@
 
 /** @module next.config
  *  @since 2023.01.26, 18:09
- *  @changed 2023.03.04, 16:13
+ *  @changed 2023.03.17, 13:09
  */
 
 const path = require('path');
+const withImages = require('next-images');
 const fs = require('fs');
 
 const prjPath = path.resolve(__dirname);
@@ -85,16 +86,18 @@ fs.writeFileSync(jsGeneratedConfigFile, jsStr);
 // console.log('Generated', scssGeneratedConfigFile);
 
 const nextConfig = {
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }) => {
-    // @see https://react-svgr.com/docs/webpack/
-    // @see https://react-svgr.com/docs/next/
-    config.module.rules.push({
-      test: /\.svg$/,
-      issuer: /\.[jt]sx?$/,
-      use: ['@svgr/webpack'],
-    });
-    return config;
-  },
+  /* // svgr (onflicting with withImages)
+   * webpack: (config, { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }) => {
+   *   // @see https://react-svgr.com/docs/webpack/
+   *   // @see https://react-svgr.com/docs/next/
+   *   config.module.rules.push({
+   *     test: /\.svg$/,
+   *     issuer: /\.[jt]sx?$/,
+   *     use: ['@svgr/webpack'],
+   *   });
+   *   return config;
+   * },
+   */
   reactStrictMode: false, // NOTE: Debug only? It causes double rendering and hooks calling.
   images: {
     unoptimized: true,
@@ -109,4 +112,5 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withImages(nextConfig);
+// module.exports = nextConfig;

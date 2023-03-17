@@ -4,6 +4,8 @@
  */
 
 import React from 'react';
+// import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -26,7 +28,7 @@ import {
 import { actions as gameParamsActions } from '@/features/GameParams/reducer';
 import { TWithGameParamsWrapperProps } from '../withGameParamsWrapper/withGameParamsWrapper';
 
-import CupSvg from './assets/cup.svg';
+import cupSvg from './assets/cup.svg';
 
 import styles from './StartBlock.module.scss';
 
@@ -102,6 +104,11 @@ export function StartBlock(props: TStartBlockProps) {
                 <span className="Text">Турнир для двоих</span>
               </Button>
             </ButtonGroup>
+            <Typography gutterBottom mt={1}>
+              <Button className="FixMuiButton" href="/records-table">
+                <span className="Text">Посмотреть турнирную таблицу</span>
+              </Button>
+            </Typography>
           </>
         )}
         <UserNameDialog
@@ -112,7 +119,7 @@ export function StartBlock(props: TStartBlockProps) {
         />
       </Stack>
       <Stack className={classnames(styles.visual)}>
-        <CupSvg />
+        <Image src={cupSvg as unknown as string} width={121} height={184} alt="Старт турнира" />
       </Stack>
     </Box>
   );
