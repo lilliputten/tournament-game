@@ -14,7 +14,8 @@ import { TPartnerInfo, TPartnersInfo, TQuestionAnswers, TQuestions, TToken } fro
 
 import candySvg from './assets/candy.svg';
 import cupWinnerSvg from './assets/cup-winner.svg';
-import waitingForPartnerGif from './assets/waiting-for-partner.gif';
+// import waitingForPartnerGif from './assets/waiting-for-partner.gif';
+import waitingForPartnerGif from './assets/clock.gif';
 
 export interface TResultsBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
@@ -95,7 +96,11 @@ function getCorrectAnswersCount(partnerInfo?: TPartnerInfo): number {
 function ShowResultIcon(props: TGameInfo) {
   const { isWinner, isSingle, partnersInfo, token, questions, isWaitingForOtherPlayer } = props;
   if (isWaitingForOtherPlayer) {
-    return <Image src={waitingForPartnerGif} width={289} height={350} alt="Ожидаем партнёра" />;
+    return (
+      <Stack className={styles.waitingForPartnerIcon} alignItems="center" justifyContent="center">
+        <Image src={waitingForPartnerGif} width={312} height={312} alt="Ожидаем партнёра" />
+      </Stack>
+    );
   }
   if (isWinner == undefined && !isSingle) {
     return null;

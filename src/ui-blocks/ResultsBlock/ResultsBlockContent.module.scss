@@ -28,3 +28,16 @@ $sectionsMargin: 10px;
 .image {
   padding: 20px;
 }
+
+.waitingForPartnerIcon {
+  $size: 320px;
+  width: $size;
+  height: $size;
+  overflow: hidden;
+  margin: 30px auto;
+  border-radius: 50%;
+  background-color: #fff;
+  > img {
+    margin-right: 10px;
+  }
+}
