@@ -11,7 +11,6 @@ import classnames from 'classnames';
 import {
   useAppDispatch,
   useGameParamsToken,
-  useGameParamsUserName,
   useGameSessionGameToken,
   useRecordsTable,
 } from '@/core';
@@ -31,13 +30,13 @@ export function RecordsTableBlock(props: TRecordsTableBlockProps): JSX.Element |
   const router = useRouter();
 
   const token = useGameParamsToken();
-  const userName = useGameParamsUserName();
+  // const userName = useGameParamsUserName();
 
   const gameToken = useGameSessionGameToken();
 
   const recordsTable = useRecordsTable();
 
-  const isReady = !!(userName && token);
+  // const isReady = !!(userName && token);
 
   // To check if game finished -- to show results
 
@@ -48,10 +47,8 @@ export function RecordsTableBlock(props: TRecordsTableBlockProps): JSX.Element |
   // TODO: Use loading state from records feature
 
   React.useEffect(() => {
-    if (isReady) {
-      dispatch(loadRecordsTableThunk());
-    }
-  }, [isReady, dispatch]);
+    dispatch(loadRecordsTableThunk());
+  }, [dispatch]);
 
   const handleShowResults = React.useCallback(() => {
     router.push('/results');
@@ -59,10 +56,12 @@ export function RecordsTableBlock(props: TRecordsTableBlockProps): JSX.Element |
 
   // const content = 'RecordsTableBlock';
   const content = React.useMemo(() => {
-    if (!isReady) {
-      // Don't render nothing and go to the start page if environment isn't ready yet...
-      return <Empty reason="Not ready" />;
-    }
+    /*
+     * if (!isReady) {
+     *   // Don't render nothing and go to the start page if environment isn't ready yet...
+     *   return <Empty reason="Not ready" />;
+     * }
+     */
     return (
       <RecordsTableContent
         onClick={handleShowResults}
@@ -72,7 +71,7 @@ export function RecordsTableBlock(props: TRecordsTableBlockProps): JSX.Element |
         recordsTable={recordsTable}
       />
     );
-  }, [isReady, handleShowResults, goToStartPage, token, gameToken, recordsTable]);
+  }, [handleShowResults, goToStartPage, token, gameToken, recordsTable]);
 
   return (
     <Box className={classnames(className, styles.container)} my={2}>

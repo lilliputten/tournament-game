@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 
 import config from '@/config';
 import { getDurationString } from '@/utils';
-import { TGameToken, TRecordEntry, TRecordsTable, TToken, useGameParamsToken } from '@/core';
+import { TGameToken, TRecordEntry, TRecordsTable, TToken } from '@/core';
 
 import styles from './RecordsTableBlockContent.module.scss';
 
@@ -39,15 +39,16 @@ interface TRecordsTableProps {
 
 function ShowRow({
   recordEntry,
+  token,
   activeGameToken,
   idx,
 }: {
   recordEntry: TRecordEntry;
+  token?: TToken;
   activeGameToken?: TGameToken;
   idx: number;
 }) {
   const no = idx + 1;
-  const currentToken = useGameParamsToken();
   const {
     // finishedByPartner, // '230317-125246-307-744394'
     // finishedStatus, // 'all'
@@ -71,7 +72,7 @@ function ShowRow({
     // status, // 'finished'
     // winnerToken, // '230310-134747-174-765536'
   } = recordEntry; // New variant (game record entries
-  const isActiveGame = gameToken === activeGameToken && partnerToken === currentToken;
+  const isActiveGame = gameToken === activeGameToken && partnerToken === token;
   const answers = questionAnswers && Object.values(questionAnswers);
   const totalAnswersCount = answers ? answers.length : 0;
   const correctAnswersCount =
