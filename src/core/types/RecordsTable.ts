@@ -1,3 +1,3 @@
-import { TGameRecord } from './GameRecord';
+import { TRecordEntry } from './RecordEntry';
 
-export type TRecordsTable = TGameRecord[];
+export type TRecordsTable = TRecordEntry[];

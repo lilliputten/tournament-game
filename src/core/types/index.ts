@@ -1,5 +1,6 @@
 export * from './FinishedStatus';
 export * from './GameRecord';
+export * from './RecordEntry';
 export * from './RecordsTable';
 export * from './common';
 export * from './gameMode';

@@ -1,4 +1,5 @@
-import { TPartnersInfo, TToken } from '@/core';
+import { TPartnersInfo } from './questions';
+import { TToken } from './tokens';
 import { TFinishedStatus } from './FinishedStatus';
 
 export type TGameSessionFinishedStatus = string;

@@ -4,10 +4,11 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Stack } from '@mui/system';
 import classnames from 'classnames';
+import { format } from 'date-fns';
 
 import config from '@/config';
 import { getDurationString } from '@/utils';
-import { TGameRecord, TGameToken, TQuestionAnswers, TRecordsTable, TToken } from '@/core';
+import { TGameToken, TRecordEntry, TRecordsTable, TToken, useGameParamsToken } from '@/core';
 
 import styles from './RecordsTableBlockContent.module.scss';
 
@@ -37,54 +38,52 @@ interface TRecordsTableProps {
  */
 
 function ShowRow({
-  gameRecord,
+  recordEntry,
   activeGameToken,
   idx,
 }: {
-  gameRecord: TGameRecord;
+  recordEntry: TRecordEntry;
   activeGameToken?: TGameToken;
   idx: number;
 }) {
-  const {
-    Token, // '230305-052707-183-5323278'
-    // finishedByPartner, // '230211-165455-365-5694359'
-    // finishedStatus, // 'all'
-    // finishedTimestamp, // 1677968835348
-    // finishedTimestr, // '2023.03.05 05:27:15'
-    // gameMode, // 'single'
-    // gameStatus, // 'finished'
-    // gameToken, // '230305-052707-183-5323278'
-    // lastAnswerTimestamp, // 1677968831867
-    // lastAnswerTimestr, // '2023.03.05 05:27:11'
-    // lastAnsweredBy, // '230211-165455-365-5694359'
-    // lastCheckTimestamp, // 1677968828564
-    // lastCheckTimestr, // '2023.03.05 05:27:08'
-    // lastCheckedBy, // '230211-165455-365-5694359'
-    // partners, // ['230211-165455-365-5694359']
-    partnersInfo, // {230211-165455-365-5694359: {…}}
-    // questionsIds, // ['Rekvizity-kakogo-UFK']
-    startedTimestamp, // 1677968827183
-    // startedTimestr, // '2023.03.05 05:27:07'
-    // timestamp, // 1677968835348
-    // timestr, // '2023.03.05 05:27:15'
-    winnerToken, // '230211-165455-365-5694359'
-  } = gameRecord;
-  const isActiveGame = Token === activeGameToken;
-  const winner = winnerToken && partnersInfo && partnersInfo[winnerToken];
   const no = idx + 1;
-  const name = (winner && winner.name) || undefined;
-  const questionAnswers: TQuestionAnswers | undefined =
-    (winner && winner.questionAnswers) || undefined;
+  const currentToken = useGameParamsToken();
+  const {
+    // finishedByPartner, // '230317-125246-307-744394'
+    // finishedStatus, // 'all'
+    finishedTimestamp, // 1679034851649
+    // finishedTimestr, // '2023.03.17 13:34:11'
+    // gameMode, // 'multi'
+    // gameStatus, // 'finished'
+    gameToken, // '230317-132512-472-5153359'
+    // lastAnswerTimestamp, // 1679034850533
+    // lastAnswerTimestr, // '2023.03.17 13:34:10'
+    // lastAnsweredBy, // '230317-125246-307-744394'
+    // lastCheckTimestamp, // 1679034850255
+    // lastCheckTimestr, // '2023.03.17 13:34:10'
+    // lastCheckedBy, // '230317-125246-307-744394'
+    name, // 'fox'
+    partnerToken, // '230317-125246-307-744394'
+    questionAnswers, // {Buhgalter-kompanii-pri-zapolnen: 'wrong', Rekvizity-kakogo-UFK: 'wrong'}
+    // questionsIds, // (2) ['Rekvizity-kakogo-UFK', 'Buhgalter-kompanii-pri-zapolnen']
+    startedTimestamp, // 1679034312471
+    // startedTimestr, // '2023.03.17 13:25:12'
+    // status, // 'finished'
+    // winnerToken, // '230310-134747-174-765536'
+  } = recordEntry; // New variant (game record entries
+  const isActiveGame = gameToken === activeGameToken && partnerToken === currentToken;
   const answers = questionAnswers && Object.values(questionAnswers);
   const totalAnswersCount = answers ? answers.length : 0;
   const correctAnswersCount =
     answers && answers.reduce((summ, value) => (value === 'correct' ? summ + 1 : summ), 0);
-  const finishedTimestamp = (winner && winner.finishedTimestamp) || undefined;
+  const finishedStr =
+    finishedTimestamp && format(new Date(finishedTimestamp), config.constants.dateTimeFormat);
   const duration = getDurationString(startedTimestamp, finishedTimestamp);
+  const recordId = gameToken + '/' + partnerToken;
   // prettier-ignore
   return (
     <tr
-      id={Token}
+      id={recordId}
       className={classnames(
         styles.tableRow,
         styles['tableRow' + no],
@@ -94,9 +93,10 @@ function ShowRow({
       <td className={classnames(styles.tableCell, styles.cellNo)}>{no}</td>
       <td className={classnames(styles.tableCell, styles.cellName)}>{name}</td>
       <td className={classnames(styles.tableCell, styles.cellAnswers)}>
-        {correctAnswersCount} / {totalAnswersCount}
+        {correctAnswersCount}{!!totalAnswersCount && ' / ' + totalAnswersCount}
       </td>
       <td className={classnames(styles.tableCell, styles.cellTime)}>{duration}</td>
+      <td className={classnames(styles.tableCell, styles.cellDate)}>{finishedStr}</td>
     </tr>
   );
 }
@@ -112,11 +112,11 @@ function ShowTable({
   const rows = React.useMemo(
     () =>
       isRecordsTable &&
-      recordsTable.map((gameRecord, idx) => (
+      recordsTable.map((recordEntry, idx) => (
         <ShowRow
-          key={gameRecord.Token}
+          key={recordEntry.gameToken + '/' + recordEntry.partnerToken}
           idx={idx}
-          gameRecord={gameRecord}
+          recordEntry={recordEntry}
           activeGameToken={gameToken}
         />
       )),
@@ -135,6 +135,7 @@ function ShowTable({
             <th className={classnames(styles.tableHeadCell, styles.cellName)}>Игрок</th>
             <th className={classnames(styles.tableHeadCell, styles.cellAnswers)}>Верных ответов</th>
             <th className={classnames(styles.tableHeadCell, styles.cellTime)}>Время</th>
+            <th className={classnames(styles.tableHeadCell, styles.cellDate)}>Дата</th>
           </tr>
         </thead>
         <tbody className={styles.tableBody}>{rows}</tbody>
