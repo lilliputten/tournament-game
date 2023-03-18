@@ -1,6 +1,6 @@
 /** @module RecordsTableBlock
  *  @since 2023.02.17, 05:07
- *  @changed 2023.03.06, 00:46
+ *  @changed 2023.03.19, 02:02
  */
 
 import React from 'react';
@@ -17,7 +17,7 @@ import {
 
 import styles from './RecordsTableBlock.module.scss';
 import { loadRecordsTableThunk } from '@/features/RecordsTable/services';
-import { Empty, RecordsTableContent } from './RecordsTableBlockContent';
+import { RecordsTableContent } from './RecordsTableBlockContent';
 
 export interface TRecordsTableBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
@@ -30,13 +30,10 @@ export function RecordsTableBlock(props: TRecordsTableBlockProps): JSX.Element |
   const router = useRouter();
 
   const token = useGameParamsToken();
-  // const userName = useGameParamsUserName();
 
   const gameToken = useGameSessionGameToken();
 
   const recordsTable = useRecordsTable();
-
-  // const isReady = !!(userName && token);
 
   // To check if game finished -- to show results
 
