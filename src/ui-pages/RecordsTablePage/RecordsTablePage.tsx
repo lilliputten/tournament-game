@@ -6,7 +6,7 @@
 import GenericPageLayout from '@/layout/GenericPageLayout';
 import { PageSectionWrapper } from '@/ui-elements';
 import { subPageTitle } from '@/ui-support/pageUtils';
-import { RecordsTableBlock } from '@/ui-blocks/RecordsTableBlock';
+import { RecordsTableBlock, WrappedRecordsTableBlock } from '@/ui-blocks/RecordsTableBlock';
 
 import styles from './RecordsTablePage.module.scss';
 
@@ -16,7 +16,7 @@ export function RecordsTablePage(): JSX.Element {
   return (
     <GenericPageLayout className={styles.root} title={title}>
       <PageSectionWrapper flex flexVertical fullSizeFlexChild flexCenter>
-        <RecordsTableBlock />
+        <WrappedRecordsTableBlock />
       </PageSectionWrapper>
     </GenericPageLayout>
   );

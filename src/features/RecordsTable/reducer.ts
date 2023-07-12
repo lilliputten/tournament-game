@@ -1,6 +1,6 @@
 /** @module reducer
  *  @since 2023.03.05, 04:16
- *  @changed 2023.03.05, 05:07
+ *  @changed 2023.03.19, 02:21
  */
 
 import { createSlice } from '@reduxjs/toolkit';
@@ -50,6 +50,7 @@ const questionsSlice = createSlice({
           // Basic state...
           state.loadingCount--;
           state.isLoading = !!state.loadingCount;
+          state.hasInited = true;
         },
       )
       .addCase(
@@ -77,6 +78,8 @@ const questionsSlice = createSlice({
 
 // Export selecors...
 export const selectors = {
+  selectHasInited: (state: TRecordsTableState): TRecordsTableState['hasInited'] => state.hasInited,
+
   // Basic (common) selectors...
   selectIsLoading: (state: TRecordsTableState): TRecordsTableState['isLoading'] => state.isLoading,
   selectError: (state: TRecordsTableState): TRecordsTableState['error'] => state.error,

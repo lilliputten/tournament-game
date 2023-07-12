@@ -1,6 +1,6 @@
 <!--
 @since 2023.02.07, 20:04
-@changed 2023.02.09, 16:22
+@changed 2023.07.12, 16:53
 -->
 
 # Tournament game client app
@@ -16,7 +16,7 @@
 
 Server repo: https://github.com/lilliputten/tournament-game-server
 
-Client repo: https://github.com/lilliputten/tournament-game
+Client repo: https://github.com/lilliputten/tournament-game-client
 
 ## Install
 

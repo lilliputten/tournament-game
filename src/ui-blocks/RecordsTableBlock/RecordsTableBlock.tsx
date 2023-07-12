@@ -7,17 +7,22 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Box from '@mui/material/Box';
 import classnames from 'classnames';
+import { compose } from 'redux';
 
 import {
   useAppDispatch,
   useGameParamsToken,
   useGameSessionGameToken,
   useRecordsTable,
+  useRecordsTableError,
+  useRecordsTableHasInited,
+  useRecordsTableIsLoading,
 } from '@/core';
 
 import styles from './RecordsTableBlock.module.scss';
 import { loadRecordsTableThunk } from '@/features/RecordsTable/services';
-import { RecordsTableContent } from './RecordsTableBlockContent';
+import { Empty, RecordsTableContent } from './RecordsTableBlockContent';
+import { withRecordsTableWrapperFabric } from '@/ui-blocks/withRecordsTableWrapper';
 
 export interface TRecordsTableBlockProps extends JSX.IntrinsicAttributes {
   className?: string;
@@ -28,6 +33,12 @@ export function RecordsTableBlock(props: TRecordsTableBlockProps): JSX.Element |
 
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  const hasInited = useRecordsTableHasInited();
+  const isLoading = useRecordsTableIsLoading();
+  const error = useRecordsTableError();
+
+  const isReady = hasInited && !isLoading && !error; // All errors & loading splashers should be rendered in `withRecordsTableWrapper`
 
   const token = useGameParamsToken();
 
@@ -53,12 +64,10 @@ export function RecordsTableBlock(props: TRecordsTableBlockProps): JSX.Element |
 
   // const content = 'RecordsTableBlock';
   const content = React.useMemo(() => {
-    /*
-     * if (!isReady) {
-     *   // Don't render nothing and go to the start page if environment isn't ready yet...
-     *   return <Empty reason="Not ready" />;
-     * }
-     */
+    if (!isReady) {
+      // Don't render nothing and go to the start page if environment isn't ready yet...
+      return <Empty reason="Not ready" />;
+    }
     return (
       <RecordsTableContent
         onClick={handleShowResults}
@@ -68,7 +77,7 @@ export function RecordsTableBlock(props: TRecordsTableBlockProps): JSX.Element |
         recordsTable={recordsTable}
       />
     );
-  }, [handleShowResults, goToStartPage, token, gameToken, recordsTable]);
+  }, [isReady, handleShowResults, goToStartPage, token, gameToken, recordsTable]);
 
   return (
     <Box className={classnames(className, styles.container)} my={2}>
@@ -76,3 +85,12 @@ export function RecordsTableBlock(props: TRecordsTableBlockProps): JSX.Element |
     </Box>
   );
 }
+
+// Export wrapped version
+export const WrappedRecordsTableBlock = compose<React.FC<TRecordsTableBlockProps>>(
+  withRecordsTableWrapperFabric<TRecordsTableBlockProps>({
+    errorClassName: styles.error,
+    wrapperClassName: styles.wrapper,
+    contentClassName: styles.content,
+  }),
+)(RecordsTableBlock);

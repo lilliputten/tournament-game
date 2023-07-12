@@ -1,6 +1,6 @@
 /** @module types
  *  @since 2023.03.05, 04:16
- *  @changed 2023.03.05, 05:07
+ *  @changed 2023.03.19, 02:21
  */
 
 import { AnyAction, Reducer } from 'redux';
@@ -13,6 +13,7 @@ export interface TRecordsTableState {
   // State...
   loadingCount: number;
   isLoading: boolean;
+  hasInited: boolean;
   error?: Error;
 }
 
